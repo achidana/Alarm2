@@ -1,4 +1,4 @@
-package com.example.swalt.alarm2;
+package com.example.ashwin.test;
 
 import org.junit.Test;
 

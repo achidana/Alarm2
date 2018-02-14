@@ -1,4 +1,4 @@
-package com.example.swalt.alarm2;
+package com.example.ashwin.test;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.example.swalt.alarm2", appContext.getPackageName());
+        assertEquals("com.example.ashwin.test", appContext.getPackageName());
     }
 }
