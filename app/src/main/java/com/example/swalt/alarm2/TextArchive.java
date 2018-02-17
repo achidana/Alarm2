@@ -1,10 +1,17 @@
 package com.example.swalt.alarm2;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.ViewAnimator;
 
 import java.util.ArrayList;
@@ -18,7 +25,8 @@ import java.util.ArrayList;
 public class TextArchive extends ListActivity {
     private ArrayList<String> textMessages = new ArrayList<String>();
     private ArrayAdapter<String> adapter;
-    int clickCount = 0;
+    private ListView listView = new ListView(this);
+    private String userText = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,9 +34,10 @@ public class TextArchive extends ListActivity {
         setContentView(R.layout.activity_send_text);
         adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, textMessages);
-        setListAdapter(adapter);
-
-        //initialize();
+        listView = (ListView)findViewById(R.id.textList);
+        listView.setAdapter(adapter);
+        initialize();
+        initializeListener();
     }
 
     private void initialize() {
@@ -37,26 +46,80 @@ public class TextArchive extends ListActivity {
         String template2 = "Can you call me to wake me up?";
 
         textMessages.add(template0);
+        adapter.notifyDataSetChanged();
         textMessages.add(template1);
+        adapter.notifyDataSetChanged();
         textMessages.add(template2);
-    }
-
-    public void addItems(View v) {
-        textMessages.add("clicked: " + clickCount++);
         adapter.notifyDataSetChanged();
     }
 
-    public void addMessage(String message) {
-        textMessages.add(message);
+    //Called when button is pressed
+    public void addItems(View v) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("New Message");
+
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                userText = input.getText().toString();
+                textMessages.add(userText);
+                adapter.notifyDataSetChanged();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.cancel();
+            }
+        });
+        builder.show();
     }
 
-    public void removeMessage(String message) {
-        textMessages.remove(message);
-    }
+    public void initializeListener() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(final AdapterView<?> adapterView, View view, int i, long l) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(TextArchive.this);
+                builder.setTitle("Edit or Delete?");
+                final int toRemove = i;
 
-    public void editMessage(String oldMessage, String newMessage) {
-        textMessages.remove(textMessages.indexOf(oldMessage));
-        textMessages.add(newMessage);
+                builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        textMessages.remove(toRemove);
+                        adapter.notifyDataSetChanged();
+                    }
+                });
 
+                builder.setNeutralButton("Edit", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String editText = textMessages.get(i);
+
+                        final EditText newInput = new EditText(TextArchive.this);
+                        newInput.setInputType(InputType.TYPE_CLASS_TEXT);
+                        newInput.setHint(editText);
+                        String edittedText = newInput.getText().toString();
+
+                        textMessages.remove(toRemove);
+                        adapter.notifyDataSetChanged();
+                        textMessages.add(edittedText);
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                });
+                builder.show();
+            }
+        });
     }
 }

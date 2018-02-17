@@ -15,5 +15,12 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+
+    <!-- Strings related to adding texts -->
+    <string name="text_screen_name">Text Messages</string>
+    <string name="text_header">Stored Messages</string>
+    <string name="button_title">Add New Message</string>
+    <string name="text_hint">Input Text</string>
+
     <string name="title_activity_home_screen">HomeScreen</string>
 </resources>

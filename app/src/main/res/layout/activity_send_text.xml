@@ -17,21 +17,22 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="Stored Messages"
+            android:text="@string/text_header"
             android:textAlignment="center"
             />
         <Button
             android:id="@+id/addBtn"
-            android:text="Add New Message"
+            android:text="@string/button_title"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:onClick="addItems"/>
 
         <ListView
-            android:id="@android:id/list"
+            android:id="@+id/textList"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:drawSelectorOnTop="false" />
+
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
