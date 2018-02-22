@@ -11,15 +11,15 @@
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
-        <EditText
+
+        <TextView
             android:id="@+id/textMessageTitle"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
+            android:ems="20"
             android:text="@string/text_header"
             android:textAlignment="center"
-            />
+            android:textSize="30sp" />
         <Button
             android:id="@+id/addBtn"
             android:text="@string/button_title"
@@ -28,7 +28,7 @@
             android:onClick="addItems"/>
 
         <ListView
-            android:id="@+id/textList"
+            android:id="@+id/list"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:drawSelectorOnTop="false" />

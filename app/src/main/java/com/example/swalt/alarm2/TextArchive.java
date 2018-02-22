@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
+import android.util.Log;
+import java.lang.Object;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -22,10 +24,11 @@ import java.util.ArrayList;
  * Include customization? Double check sprint doc
  */
 
-public class TextArchive extends ListActivity {
+public class TextArchive extends Activity {
+
     private ArrayList<String> textMessages = new ArrayList<String>();
     private ArrayAdapter<String> adapter;
-    private ListView listView = new ListView(this);
+    private ListView listView;
     private String userText = "";
 
     @Override
@@ -34,7 +37,7 @@ public class TextArchive extends ListActivity {
         setContentView(R.layout.activity_send_text);
         adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, textMessages);
-        listView = (ListView)findViewById(R.id.textList);
+        listView = (ListView)findViewById(R.id.list);
         listView.setAdapter(adapter);
         initialize();
         initializeListener();
@@ -62,6 +65,7 @@ public class TextArchive extends ListActivity {
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
 
+        //OK is pressed, opens editText and adds to adapter
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -70,6 +74,8 @@ public class TextArchive extends ListActivity {
                 adapter.notifyDataSetChanged();
             }
         });
+
+        //Cancel is pressed, closes the box without updating list
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -79,14 +85,17 @@ public class TextArchive extends ListActivity {
         builder.show();
     }
 
+    //Initilializes onClick functionality of listView
     public void initializeListener() {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(final AdapterView<?> adapterView, View view, int i, long l) {
+            public void onItemClick(final AdapterView<?> adapterView, final View view, int i, long l) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(TextArchive.this);
                 builder.setTitle("Edit or Delete?");
+                //toRemove is the index of the item in the list to be removed/editted
                 final int toRemove = i;
 
+                //Delete is pressed, removes item from list
                 builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -95,23 +104,18 @@ public class TextArchive extends ListActivity {
                     }
                 });
 
+                //Edit is pressed, calls seperate function editItem
+                //TODO: fix removing before message is changed, proper indexing
                 builder.setNeutralButton("Edit", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        String editText = textMessages.get(i);
-
-                        final EditText newInput = new EditText(TextArchive.this);
-                        newInput.setInputType(InputType.TYPE_CLASS_TEXT);
-                        newInput.setHint(editText);
-                        String edittedText = newInput.getText().toString();
-
-                        textMessages.remove(toRemove);
-                        adapter.notifyDataSetChanged();
-                        textMessages.add(edittedText);
+                        String editText = textMessages.get(toRemove);
+                        editItem(view, editText, toRemove);
                         adapter.notifyDataSetChanged();
                     }
                 });
 
+                //Cancel is pressed, returns to normal state
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -121,5 +125,37 @@ public class TextArchive extends ListActivity {
                 builder.show();
             }
         });
+    }
+
+    //Similar structure to addItem, called when edit is pressed
+    public void editItem(View v, final String current, final int index) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Edit Message");
+
+        //Opens editText with previous message already loaded
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        input.setText(current);
+        builder.setView(input);
+
+        //OK is pressed, adds new message
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                userText = input.getText().toString();
+                textMessages.set(index, userText);
+                adapter.notifyDataSetChanged();
+            }
+        });
+        //Cancel is pressed, ignores changes made and restores original message to list
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                textMessages.add(current);
+                adapter.notifyDataSetChanged();
+                dialogInterface.cancel();
+            }
+        });
+        builder.show();
     }
 }

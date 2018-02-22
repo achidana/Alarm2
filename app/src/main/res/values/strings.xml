@@ -22,5 +22,20 @@
     <string name="button_title">Add New Message</string>
     <string name="text_hint">Input Text</string>
 
+    <!-- Strings related to adding audio messages -->
+    <string name="audio_screen_name">Text Messages</string>
+    <string name="audio_header">Stored Messages</string>
+    <string name="audio_button_title">Add New Voice Message</string>
+    <string name="audio_record_title">Record</string>
+    <string name="stop_button">Stop</string>
+    <string name="record_button">Record</string>
+    <string name="play_button">Play</string>
+    <string name="save_button">Save</string>
+    <string name="record">Record</string>
+    <!-- audio message uses same text_hint -->
+
+    <!-- Strings related to Verify -->
+    <string name="verify">Verify</string>
+
     <string name="title_activity_home_screen">HomeScreen</string>
 </resources>

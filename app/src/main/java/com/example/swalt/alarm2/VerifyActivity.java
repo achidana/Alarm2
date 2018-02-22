@@ -5,10 +5,17 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.telephony.PhoneNumberUtils;
+import android.util.Log;
+
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.HintRequest;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApi;
+import com.google.android.gms.common.api.GoogleApiActivity;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 
@@ -16,8 +23,11 @@ import com.google.android.gms.common.api.GoogleApiClient;
  * Created by JohnRedmon on 2/11/18.
  */
 
-public class VerifyActivity extends Activity {
-    public static final int RESOLVE_HINT = 1001;
+//I think this can't connect because there's no attached phone number
+public class VerifyActivity extends Activity implements
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
+    public static final int RESOLVE_HINT = 1010;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,9 +39,9 @@ public class VerifyActivity extends Activity {
     private void requestHint() {
         HintRequest hintRequest = new HintRequest.Builder().setPhoneNumberIdentifierSupported(true).build();
         GoogleApiClient apiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
                 .addApi(Auth.CREDENTIALS_API)
-                .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
-                .addOnConnectionFailedListener((GoogleApiClient.OnConnectionFailedListener) this)
                 .build();
         apiClient.connect();
         PendingIntent intent = Auth.CredentialsApi.getHintPickerIntent(apiClient, hintRequest);
@@ -59,5 +69,20 @@ public class VerifyActivity extends Activity {
                 }
             }
         }
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        Log.d("Connect Success", "Success");
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.d("Connect Suspend", "Suspend");
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        //Log.d("Connect Failed", connectionResult.getErrorMessage());
     }
 }
