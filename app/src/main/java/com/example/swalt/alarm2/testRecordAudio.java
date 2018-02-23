@@ -44,9 +44,8 @@ public class testRecordAudio extends AppCompatActivity {
         if(!audioVoice.exists()){
             audioVoice.mkdir();
         }
-        //Change generateVoiceFilename to take input of user
         voiceStoragePath = voiceStoragePath + File.separator + "voices/" + generateVoiceFilename(6) + ".3gpp";
-        System.out.println("Audio path : " + voiceStoragePath);
+        //System.out.println("Audio path : " + voiceStoragePath);
 
         recordingButton = (Button)findViewById(R.id.recording_button);
         stopButton = (Button)findViewById(R.id.stop_button);
@@ -87,11 +86,15 @@ public class testRecordAudio extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent data = new Intent();
+                data.putExtra("SavedLocation", voiceStoragePath);
+                setResult(RESULT_OK, data);
                 finish();
             }
         });
     }
 
+    /*
     @Override
     public void finish() {
         Intent data = new Intent();
@@ -99,6 +102,7 @@ public class testRecordAudio extends AppCompatActivity {
         setResult(RESULT_OK, data);
         testRecordAudio.super.finish();
     }
+    */
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -141,6 +145,7 @@ public class testRecordAudio extends AppCompatActivity {
         }
         stopButton.setEnabled(false);
         playButton.setEnabled(true);
+        saveButton.setEnabled(true);
     }
 
     private void playLastStoredAudioMusic(){
@@ -185,17 +190,14 @@ public class testRecordAudio extends AppCompatActivity {
     }
 
     private void initializeMediaRecord(){
-        Log.d("initTag", "inside init");
         mediaRecorder = new MediaRecorder();
-        //EMulator crashes at line below because there is no mic to set
-        //Need to try on real phone
+        //Exception handling
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
         try {
             mediaRecorder.setOutputFile(voiceStoragePath);
         } catch (Exception e) {
-            Log.d("Exception handle", "Handled");
             e.printStackTrace();
         }
     }

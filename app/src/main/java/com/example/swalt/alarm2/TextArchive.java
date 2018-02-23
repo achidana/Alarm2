@@ -105,7 +105,6 @@ public class TextArchive extends Activity {
                 });
 
                 //Edit is pressed, calls seperate function editItem
-                //TODO: fix removing before message is changed, proper indexing
                 builder.setNeutralButton("Edit", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

@@ -1,9 +1,11 @@
 package com.example.swalt.alarm2;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,6 +19,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApi;
 import com.google.android.gms.common.api.GoogleApiActivity;
 import com.google.android.gms.common.api.GoogleApiClient;
+
+import java.security.KeyStore;
 
 
 /**
@@ -33,6 +37,11 @@ public class VerifyActivity extends Activity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify);
+        /* To be done in homescreen
+        SharedPreferences.Editor editor = getSharedPreferences("Verify bool", MODE_PRIVATE).edit();
+        editor.putBoolean("Verified", false);
+        editor.apply();
+        */
         requestHint();
     }
 
@@ -62,9 +71,17 @@ public class VerifyActivity extends Activity implements
                     final String unformattedPhone = cred.getId(); //Put this in server
                     if(PhoneNumberUtils.isGlobalPhoneNumber(unformattedPhone)) {
                         //Phone number is real, allow entry
+                        //Built in variable will be moved to homescreen,
+                        //Left here for now
+                        SharedPreferences.Editor editor = getSharedPreferences("Verify bool", MODE_PRIVATE).edit();
+                        editor.putBoolean("Verified", true);
+                        editor.apply();
+                        //switch intent
                     }
                     else {
-                        //Different screen that blocks
+                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                        builder.setTitle("Invalid Phone Number");
+                        //Do not switch intent, lock at screen
                     }
                 }
             }
@@ -83,6 +100,6 @@ public class VerifyActivity extends Activity implements
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        //Log.d("Connect Failed", connectionResult.getErrorMessage());
+        Log.d("Connect Fail", "Fail");
     }
 }
