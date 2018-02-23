@@ -12,6 +12,7 @@ import android.widget.TimePicker;
 
 public class Add_alarm extends AppCompatActivity {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +37,6 @@ public class Add_alarm extends AppCompatActivity {
                 Switch callSwitch= (Switch) findViewById(R.id.Call_switch);
 
                 EditText name= (EditText) findViewById(R.id.name);
-                Button save=(Button) findViewById(R.id.save);
                 int timePicker_hour= timePicker.getCurrentHour();
                 int timePicker_min= timePicker.getCurrentMinute();
                 String alarmName=name.getText().toString();

@@ -2,4 +2,8 @@
     <string name="app_name">test</string>
     <string name="title_activity_sample">sample</string>
     <string name="title_activity_sample_homescrn">sample_homescrn</string>
+
+
+    <string name="action_add_alarm">Add alarm</string>
+
 </resources>

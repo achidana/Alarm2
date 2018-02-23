@@ -1,21 +1,72 @@
 package com.example.ashwin.test;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
-public class HomeScreen extends AppCompatActivity {
+import java.util.ArrayList;
 
+public class HomeScreen extends AppCompatActivity {
+    ArrayList <Alarm_object> alarmObjectsList= new ArrayList<Alarm_object>();
+
+    ListView listView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
-        TextView test_output= (TextView) findViewById(R.id.test_output);
-        //String output=getIntent().getIntExtra("hour",0)+"";
-        String output=getIntent().getBooleanExtra("call_switch",false)+"";
-        test_output.setText(output);
-        //EditText dimple= (EditText) findViewById(R.id.dimple);
-        //dimple.setText(getIntent().getExtras().getString("hour"));
+
+
+         listView= (ListView) findViewById(R.id.listview);
+      //  ArrayList <Alarm_object> alarmObjectsList= new ArrayList<Alarm_object>();
+
+        int hour = getIntent().getIntExtra("hour",0);
+        int min = getIntent().getIntExtra("min",0);
+        boolean text = getIntent().getBooleanExtra("text_switch",false);
+        boolean call = getIntent().getBooleanExtra("call_switch",false);
+        String name = getIntent().getExtras().getString("name");
+
+        Alarm_object alarm_object=new Alarm_object(hour, min, text, call, name);
+
+        alarmObjectsList.add(alarm_object);
+
+        ListAdapter customAdapter = new CustomAdapter(this, alarmObjectsList);
+
+
+
+
+        listView.setAdapter(customAdapter);
+
+
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.menu_home_screen,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+{
+    switch (item.getItemId())
+    {
+
+        case R.id.add_alarm_action:
+                 startActivity(new Intent(this, Add_alarm.class));
+                return true;
+
+
+    }
+
+    return super.onOptionsItemSelected(item);
+}
+
 }
