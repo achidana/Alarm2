@@ -13,8 +13,10 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+
 public class HomeScreen extends AppCompatActivity {
-    ArrayList <Alarm_object> alarmObjectsList= new ArrayList<Alarm_object>();
+   // ArrayList <Alarm_object> alarmObjectsList= new ArrayList<Alarm_object>();
+
 
     ListView listView;
     @Override
@@ -25,11 +27,14 @@ public class HomeScreen extends AppCompatActivity {
 
          listView= (ListView) findViewById(R.id.listview);
       //  ArrayList <Alarm_object> alarmObjectsList= new ArrayList<Alarm_object>();
+        Globals global_arraylist= (Globals) getApplication();
+        ArrayList <Alarm_object> alarmObjectsList=global_arraylist.alarmObjectsList;
 
         int hour = getIntent().getIntExtra("hour",0);
         int min = getIntent().getIntExtra("min",0);
         boolean text = getIntent().getBooleanExtra("text_switch",false);
         boolean call = getIntent().getBooleanExtra("call_switch",false);
+
         String name = getIntent().getExtras().getString("name");
 
         Alarm_object alarm_object=new Alarm_object(hour, min, text, call, name);
