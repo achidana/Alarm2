@@ -12,10 +12,13 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TimePicker;
 
+import java.util.ArrayList;
+
 public class Add_alarm extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_alarm);
 
@@ -31,15 +34,20 @@ public class Add_alarm extends AppCompatActivity {
                 EditText name= (EditText) findViewById(R.id.name);
                 int timePicker_hour= timePicker.getCurrentHour();
                 int timePicker_min= timePicker.getCurrentMinute();
-                String alarmName=name.getText().toString();
-                startIntent.putExtra("hour",timePicker_hour);
-                startIntent.putExtra("min",timePicker_min);
-                startIntent.putExtra("text_switch",textSwitch.isChecked());
-                startIntent.putExtra("call_switch",callSwitch.isChecked());
-                startIntent.putExtra("name",alarmName);
+              //  String alarmName=name.getText().toString();
+              //  startIntent.putExtra("hour",timePicker_hour);
+             //   startIntent.putExtra("min",timePicker_min);
+             //   startIntent.putExtra("text_switch",textSwitch.isChecked());
+             //   startIntent.putExtra("call_switch",callSwitch.isChecked());
+             //   startIntent.putExtra("name",alarmName);
+                Alarm_object alarm_object=new Alarm_object(timePicker_hour, timePicker_min, textSwitch.isChecked(), callSwitch.isChecked(), name.getText().toString(), true);
 
+                Globals global_arraylist= (Globals) getApplication();
+                ArrayList<Alarm_object> alarmObjectsList=global_arraylist.alarmObjectsList;
 
-                startActivity(startIntent);
+                alarmObjectsList.add(alarm_object);
+                startActivity(startIntent);     // go back to homescreen on hit save
+
             }
         });
 

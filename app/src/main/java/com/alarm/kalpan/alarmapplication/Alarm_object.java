@@ -12,8 +12,9 @@ public class Alarm_object {
     boolean call;
     String name;
     String ampm;
+    boolean onOff;
 
-    public Alarm_object(int hour, int min, boolean text, boolean call, String name) {
+    public Alarm_object(int hour, int min, boolean text, boolean call, String name, boolean onOff) {
         this.hour = hour;
         this.min = min;
         this.text = text;
@@ -21,9 +22,16 @@ public class Alarm_object {
         this.name = name;
         this.ampm = "AM";
         if(this.hour >= 12) {
-            this.hour -= 12;
             ampm = "PM";
         }
+    }
+
+    public boolean isOnOff() {
+        return onOff;
+    }
+
+    public void setOnOff(boolean onOff) {
+        this.onOff = onOff;
     }
 
     public void setHour(int hour) {
@@ -69,10 +77,16 @@ public class Alarm_object {
 
     public String getTime()
     {
+        int tempHour;
+        tempHour = this.hour;
+
+        if(this.hour >= 12) {
+            tempHour -= 12;
+        }
         String min_temp = min+"";
         if(min < 10) {
             min_temp = "0"+ min;
         }
-        return hour + ":" + min_temp + " " + ampm;
+        return tempHour + ":" + min_temp + " " + ampm;
     }
 }
