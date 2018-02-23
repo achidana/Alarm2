@@ -12,7 +12,7 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TimePicker;
 
-public class Add_alarm extends Activity {
+public class Add_alarm extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
