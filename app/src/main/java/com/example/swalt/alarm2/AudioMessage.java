@@ -4,6 +4,7 @@ import android.media.MediaPlayer;
 
 /**
  * Created by JohnRedmon on 2/20/18.
+ * Contents of an audio message, name is what user sees mp3 is attached file
  */
 
 public class AudioMessage {

@@ -37,5 +37,11 @@
     <!-- Strings related to Verify -->
     <string name="verify">Verify</string>
 
+    <!--Strings related to group alarm -->
+    <string name="group">Group Admin</string>
+    <string name="phone_hint">Enter Number</string>
+    <string name="enter_name">Enter name</string>
+    <string name="user_button">Add User</string>
+
     <string name="title_activity_home_screen">HomeScreen</string>
 </resources>

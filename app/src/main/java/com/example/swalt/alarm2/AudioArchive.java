@@ -24,6 +24,7 @@ import java.util.ArrayList;
 
 /**
  * Created by JohnRedmon on 2/20/18.
+ * Stores the audio messages
  */
 
 public class AudioArchive extends Activity{
@@ -88,7 +89,7 @@ public class AudioArchive extends Activity{
                 userText = input.getText().toString();
                 try {
                     mp.setDataSource(audioFileLocation);
-                    System.out.println("HERE1: " + audioFileLocation);
+                    //System.out.println("HERE1: " + audioFileLocation);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -21,7 +21,6 @@ import java.util.ArrayList;
 /**
  * Created by JohnRedmon on 2/11/18.
  * Contains Default text messages to be used for phone a friend
- * Include customization? Double check sprint doc
  */
 
 public class TextArchive extends Activity {
@@ -105,6 +104,7 @@ public class TextArchive extends Activity {
                 });
 
                 //Edit is pressed, calls seperate function editItem
+                //TODO: Check editting of default values/cancel
                 builder.setNeutralButton("Edit", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -147,6 +147,7 @@ public class TextArchive extends Activity {
             }
         });
         //Cancel is pressed, ignores changes made and restores original message to list
+        //TODO: Check that cancel doesn't add a new entry
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
