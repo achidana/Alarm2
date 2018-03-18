@@ -24,6 +24,7 @@ public class Alarm_object {
         if(this.hour >= 12) {
             ampm = "PM";
         }
+        this.onOff=onOff;
     }
 
     public boolean isOnOff() {
@@ -89,4 +90,5 @@ public class Alarm_object {
         }
         return tempHour + ":" + min_temp + " " + ampm;
     }
+
 }

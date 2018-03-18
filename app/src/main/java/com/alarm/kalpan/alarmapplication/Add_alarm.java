@@ -22,7 +22,6 @@ import static android.provider.Settings.System.DEFAULT_NOTIFICATION_URI;
 import static android.provider.Settings.System.DEFAULT_RINGTONE_URI;
 
 public class Add_alarm extends AppCompatActivity {
-//ASHWIN
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -43,10 +42,10 @@ public class Add_alarm extends AppCompatActivity {
                 int timePicker_min= timePicker.getCurrentMinute();
               //  String alarmName=name.getText().toString();
               //  startIntent.putExtra("hour",timePicker_hour);
-             //   startIntent.putExtra("min",timePicker_min);
-             //   startIntent.putExtra("text_switch",textSwitch.isChecked());
-             //   startIntent.putExtra("call_switch",callSwitch.isChecked());
-             //   startIntent.putExtra("name",alarmName);
+              //   startIntent.putExtra("min",timePicker_min);
+              //   startIntent.putExtra("text_switch",textSwitch.isChecked());
+              //   startIntent.putExtra("call_switch",callSwitch.isChecked());
+              //   startIntent.putExtra("name",alarmName);
                 Alarm_object alarm_object=new Alarm_object(timePicker_hour, timePicker_min, textSwitch.isChecked(), callSwitch.isChecked(), name.getText().toString(), true);
 
                 Globals global_arraylist= (Globals) getApplication();
