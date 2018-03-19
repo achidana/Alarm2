@@ -15,6 +15,7 @@ import android.widget.TimePicker;
 import android.media.RingtoneManager;
 
 
+import android.net.Uri;
 import java.util.ArrayList;
 
 import static android.provider.Settings.System.DEFAULT_ALARM_ALERT_URI;
@@ -23,7 +24,7 @@ import static android.provider.Settings.System.DEFAULT_RINGTONE_URI;
 
 public class Add_alarm extends AppCompatActivity {
 
-
+    Uri ringtoneUri;
 
 
     @Override
@@ -40,8 +41,7 @@ public class Add_alarm extends AppCompatActivity {
         Switch textSwitch= (Switch) findViewById(R.id.text_switch);
         Switch callSwitch= (Switch) findViewById(R.id.Call_switch);
         EditText name= (EditText) findViewById(R.id.name);
-
-
+        Button selectRingtone = (Button) findViewById(R.id.button2);    /* button that shows that you want to select a ringtone */
 
         if( alarmObjectsList.size()>0 && getIntent().getBooleanExtra("edit_flag",false))
         {
@@ -54,7 +54,16 @@ public class Add_alarm extends AppCompatActivity {
 
 
         }
-
+        selectRingtone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                /* next line makes an intent that will be used for startActivityForResult. That activity will be a popup */
+                Intent ringtonePickerIntent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+                ringtonePickerIntent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false);   /* this basically is a mechanism for giving data to the activity where this intent would go. RingtoneManager defines all these constants and handles them approriately from the receiving end. This thing tells that we don't allow one option of silent in the list of sounds */
+                ringtonePickerIntent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALL);   /*important: we have all sounds, which I believe is more versatile and user friendly for the user. So even non alarm types would show up */
+                startActivityForResult(ringtonePickerIntent, 1);    /*reqeust code is 1 but is more helpful probably with many calls or complex programs, not for this testing purposes scenario */
+            }
+        });
         Button save=(Button) findViewById(R.id.save);
         save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,7 +86,7 @@ public class Add_alarm extends AppCompatActivity {
 
                 if(getIntent().getBooleanExtra("edit_flag",false)==false)
                 {
-                    Alarm_object alarm_object=new Alarm_object(timePicker_hour, timePicker_min, textSwitch.isChecked(), callSwitch.isChecked(), name.getText().toString(), true);
+                    Alarm_object alarm_object=new Alarm_object(timePicker_hour, timePicker_min, textSwitch.isChecked(), callSwitch.isChecked(), name.getText().toString(), true, ringtoneUri);
                     Globals global_arraylist= (Globals) getApplication();
                     ArrayList<Alarm_object> alarmObjectsList=global_arraylist.alarmObjectsList;
                     alarmObjectsList.add(alarm_object);
@@ -110,11 +119,7 @@ public class Add_alarm extends AppCompatActivity {
             }
         });
 
-        /* next line makes an intent that will be used for startActivityForResult. That activity will be a popup */
-        Intent ringtonePickerIntent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
-        ringtonePickerIntent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false);   /* this basically is a mechanism for giving data to the activity where this intent would go. RingtoneManager defines all these constants and handles them approriately from the receiving end. This thing tells that we don't allow one option of silent in the list of sounds */
-        ringtonePickerIntent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALL);   /*important: we have all sounds, which I believe is more versatile and user friendly for the user. So even non alarm types would show up */
-        startActivityForResult(ringtonePickerIntent, 1);    /*reqeust code is 1 but is more helpful probably with many calls or complex programs, not for this testing purposes scenario */
+
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -160,7 +165,7 @@ public class Add_alarm extends AppCompatActivity {
 
                 // or else the ringtone is the selected ringtone
 
-
+                ringtoneUri = uri;
                 //important: we just need to save the URI right now, in the program, or in the memory. We don't need to play pause etc right now, right? (possibly right)
 
             }

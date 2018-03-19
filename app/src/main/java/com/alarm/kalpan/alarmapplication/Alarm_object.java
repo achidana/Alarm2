@@ -1,5 +1,7 @@
 package com.alarm.kalpan.alarmapplication;
 
+import android.net.Uri;
+
 /**
  * Created by ashwin on 2/22/18.
  */
@@ -13,8 +15,11 @@ public class Alarm_object {
     String name;
     String ampm;
     boolean onOff;
+    Uri ringtoneUri;
 
-    public Alarm_object(int hour, int min, boolean text, boolean call, String name, boolean onOff) {
+
+
+    public Alarm_object(int hour, int min, boolean text, boolean call, String name, boolean onOff, Uri ringtoneUri) {
         this.hour = hour;
         this.min = min;
         this.text = text;
@@ -25,6 +30,7 @@ public class Alarm_object {
             ampm = "PM";
         }
         this.onOff=onOff;
+        this.ringtoneUri = ringtoneUri;
     }
 
 
