@@ -27,9 +27,6 @@ public class Alarm_object {
         this.onOff=onOff;
     }
 
-    public boolean isOnOff() {
-        return onOff;
-    }
 
     public void setOnOff(boolean onOff) {
         this.onOff = onOff;
@@ -37,6 +34,12 @@ public class Alarm_object {
 
     public void setHour(int hour) {
         this.hour = hour;
+        if(this.hour >= 12) {
+            ampm = "PM";
+        }
+        else {
+            ampm="AM";
+        }
     }
 
     public void setMin(int min) {
@@ -55,6 +58,10 @@ public class Alarm_object {
         this.name = name;
     }
 
+
+    public boolean isOnOff() {
+        return onOff;
+    }
 
     public int getHour() {
         return hour;

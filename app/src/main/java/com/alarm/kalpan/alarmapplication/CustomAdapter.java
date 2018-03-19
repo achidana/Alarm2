@@ -42,7 +42,7 @@ class CustomAdapter extends ArrayAdapter<Alarm_object>  {
 
 
     @Override
-    public View getView(int position, @Nullable final View convertView, @NonNull final ViewGroup parent) {
+    public View getView(final int position, @Nullable final View convertView, @NonNull final ViewGroup parent) {
 
         LayoutInflater inflater = LayoutInflater.from(getContext());
         View customView = inflater.inflate(R.layout.custom_row_homescreen,parent,false);
@@ -86,8 +86,9 @@ class CustomAdapter extends ArrayAdapter<Alarm_object>  {
             public void onClick(View v) {
 
                 Intent startIntent= new Intent(context, Add_alarm.class);
+                startIntent.putExtra("position", position);
+                startIntent.putExtra("edit_flag", true);
                 context.startActivity(startIntent);
-
 
 
 
