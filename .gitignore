@@ -1,3 +1,8 @@
+.idea/libraries/
+
+
+
+
 #copy pasted from android gitignore suggested by github
 # Built application files
 *.apk
