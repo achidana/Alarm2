@@ -14,14 +14,15 @@ import java.util.Calendar;
 public class MyAlarmManager {
     static boolean myCreateTimeAlarm(Alarm_object timeAlarm, Context context)
     {
+        System.out.println("flag 3");
         AlarmManager alarmManager;
         PendingIntent alarmIntent;
         int hour;
         int minutes;
         alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, AlarmReceiver.class);
-        //important: always use the above method to make an intent... To retrieve the PendingIntent we make next, which disappears in to the system, we actually need to have the same Intent action of the underlying intent
-        alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+        Intent intent = new Intent(context.getApplicationContext(), AlarmReceiver.class);
+        //important: always use the above method to make an intent... To retrieve the PendingIntent we make next, which disappears in to the system, we actually need to have the same Intent things of the underlying intent
+        alarmIntent = PendingIntent.getBroadcast(context, timeAlarm.alarmID, intent, 0);
 
         hour = timeAlarm.getHour();
         minutes = timeAlarm.getMin();
@@ -41,9 +42,8 @@ public class MyAlarmManager {
 
     static boolean myCancelTimeAlarm(Alarm_object timeAlarm, Context context)
     {
-        Intent intent = new Intent(context, AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
-
+        Intent intent = new Intent(context.getApplicationContext(), AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, timeAlarm.alarmID, intent, 0);
         AlarmManager alarmManager;
 
         alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);

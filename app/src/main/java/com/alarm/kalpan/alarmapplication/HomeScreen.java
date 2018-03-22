@@ -38,8 +38,7 @@ public class HomeScreen extends AppCompatActivity {
         ListAdapter customAdapter = new CustomAdapter(this, alarmObjectsList);
 
         listView.setAdapter(customAdapter);
-        if(alarmObjectsList.size() == 1)
-            MyAlarmManager.myCreateTimeAlarm(alarmObjectsList.get(0), getApplicationContext());
+        
 
 
 

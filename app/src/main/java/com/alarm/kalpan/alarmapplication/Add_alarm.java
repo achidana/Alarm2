@@ -25,7 +25,8 @@ import static android.provider.Settings.System.DEFAULT_RINGTONE_URI;
 public class Add_alarm extends AppCompatActivity {
 
     Uri ringtoneUri;
-
+    boolean edit;
+    Alarm_object alarm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,10 +47,13 @@ public class Add_alarm extends AppCompatActivity {
         if( alarmObjectsList.size()>0 && getIntent().getBooleanExtra("edit_flag",false))
         {
             int edit_position=getIntent().getIntExtra("position",0);
+            alarm = alarmObjectsList.get(edit_position);
+            edit = true;
             timePicker.setHour(alarmObjectsList.get(edit_position).getHour());
             timePicker.setMinute(alarmObjectsList.get(edit_position).getMin());
             textSwitch.setChecked(alarmObjectsList.get(edit_position).isText());
             callSwitch.setChecked(alarmObjectsList.get(edit_position).isCall());
+
             name.setText(alarmObjectsList.get(edit_position).getName());
 
 
@@ -90,19 +94,35 @@ public class Add_alarm extends AppCompatActivity {
                     Globals global_arraylist= (Globals) getApplication();
                     ArrayList<Alarm_object> alarmObjectsList=global_arraylist.alarmObjectsList;
                     alarmObjectsList.add(alarm_object);
+                    MyAlarmManager.myCreateTimeAlarm(alarm_object, getApplicationContext());    //second argument to be given as it cannot be obtained directly by the MyAlarmManager class
 
 
                 }
 
                 else
                 {
-                    int edit_position=getIntent().getIntExtra("position",0);
-                    alarmObjectsList.get(edit_position).setHour(timePicker_hour);
-                    alarmObjectsList.get(edit_position).setMin(timePicker_min);
-                    alarmObjectsList.get(edit_position).setText(textSwitch.isChecked());
-                    alarmObjectsList.get(edit_position).setCall(callSwitch.isChecked());
-                    alarmObjectsList.get(edit_position).setName(name.getText().toString());
-                    alarmObjectsList.get(edit_position).setOnOff(true);
+                    if(alarm.isOnOff())
+                    {
+                        MyAlarmManager.myCancelTimeAlarm(alarm, getApplicationContext());
+                        alarm.setHour(timePicker_hour);
+                        alarm.setMin(timePicker_min);
+                        alarm.setText(textSwitch.isChecked());
+                        alarm.setCall(callSwitch.isChecked());
+                        alarm.setName(name.getText().toString());
+                        System.out.println("flag 1");
+                        MyAlarmManager.myCreateTimeAlarm(alarm, getApplicationContext());
+                    }
+
+                    else
+                    {
+                        alarm.setHour(timePicker_hour);
+                        alarm.setMin(timePicker_min);
+                        alarm.setText(textSwitch.isChecked());
+                        alarm.setCall(callSwitch.isChecked());
+                        alarm.setName(name.getText().toString());
+                        System.out.println("flag 2");
+                    }
+
 
                 }
 //                Alarm_object alarm_object=new Alarm_object(timePicker_hour, timePicker_min, textSwitch.isChecked(), callSwitch.isChecked(), name.getText().toString(), true);

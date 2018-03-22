@@ -16,6 +16,8 @@ public class Alarm_object {
     String ampm;
     boolean onOff;
     Uri ringtoneUri;
+    int alarmID;
+    private static int alarmIDGenerator = 0;
 
 
 
@@ -31,6 +33,7 @@ public class Alarm_object {
         }
         this.onOff=onOff;
         this.ringtoneUri = ringtoneUri;
+        alarmID = alarmIDGenerator++;
     }
 
 

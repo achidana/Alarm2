@@ -63,17 +63,18 @@ class CustomAdapter extends ArrayAdapter<Alarm_object>  {
         }
 
 
-
         homescrn_toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
                     a.setOnOff(true);
-                        // write a request to schedule the alarm
-                    //System.out.println("ON");
+                    MyAlarmManager.myCreateTimeAlarm(a, context.getApplicationContext());
+                    //debug line
+                    System.out.println("ON");
                 }
                 else {
                     a.setOnOff(false);
+                    MyAlarmManager.myCancelTimeAlarm(a, context.getApplicationContext());
                     //System.out.println("OFF");
                 }
             }
