@@ -30,6 +30,8 @@ public class Add_alarm extends AppCompatActivity {
     boolean edit;
     Alarm_object alarm; // the old alarm if we are editting one alarm.
     String text = null; // if we change it, we will make it non-null, which indicates whether it is ready
+    // same for the next few variables
+    String number = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +66,22 @@ public class Add_alarm extends AppCompatActivity {
         {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                //TODO: check whether it is a blocking call, the next screen of text shows up on the screen
+                Intent getNumber = new Intent(getBaseContext(), GetInfo.class);
+                startActivityForResult(getNumber, 2);
                 Intent get_a_message = new Intent(getBaseContext(), TextArchive.class);
-                startActivityForResult(get_a_message, 2);
+                startActivityForResult(get_a_message, 3);
+            }
+        });
+
+        callSwitch.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                Intent getNumber = new Intent(getBaseContext(), GetInfo.class);
+                startActivityForResult(getNumber, 2);   /* request code 2 indicates get number */
+                Intent get_voice_message = new Intent(getBaseContext(), AudioArchive.class);
+                startActivityForResult(get_voice_message, 4);
             }
         });
         selectRingtone.setOnClickListener(new View.OnClickListener() {
@@ -169,6 +185,7 @@ public class Add_alarm extends AppCompatActivity {
 
         if(resultCode == Activity.RESULT_OK)
         {
+            String temp;
             switch(requestCode)
             {
                 case 1:
@@ -198,10 +215,18 @@ public class Add_alarm extends AppCompatActivity {
                     break;
 
                 case 2:
-                    String s = data.getStringExtra("theText");
-                    text = s;   /* set object variable to this value */
+                    temp = data.getStringExtra("theNumber");
+                    number = temp;
+                case 3:
+                    temp = data.getStringExtra("theText");
+                    text = temp;   /* set object variable to this value */
                     break;
 
+                case 4:
+                    String name = data.getStringExtra("name");
+                    String filepath = data.getStringExtra("filepath");
+                    //put into audio message object
+                    break;
             }
         }
     }

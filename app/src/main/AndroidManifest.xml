@@ -2,6 +2,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.alarm.kalpan.alarmapplication">
 
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+
     <application
         android:name=".Globals"
         android:allowBackup="true"
@@ -23,7 +33,15 @@
 
         <receiver android:name=".AlarmReceiver" />
 
-        <activity android:name=".TextArchive"></activity>
+        <activity android:name=".TextArchive" />
+        <activity android:name=".GetInfo" />
+        <activity android:name=".AudioArchive" />
+        <activity android:name=".TestRecordAudio">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".AudioArchive"
+                />
+        </activity>
     </application>
 
 </manifest>
