@@ -75,7 +75,7 @@
             android:textAlignment="center"
             android:ems="10"
             android:textSize="20sp"
-            android:text="Test"
+            android:text="Set Alarm"
             android:layout_weight="1"
             tools:layout_editor_absoluteY="16dp" />
 
@@ -85,8 +85,8 @@
         android:id="@+id/addUser"
         android:text="@string/user_button"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <!-- android:onClick="addItems" -->
+        android:layout_height="wrap_content"
+        android:onClick="addUser">
     </Button>
 
     <ListView

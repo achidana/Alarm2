@@ -25,12 +25,11 @@
             android:label="@string/text_screen_name"
             android:theme="@style/AppTheme.NoActionBar">
 
-            <!--
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            -->
 
         </activity>
 
@@ -75,10 +74,18 @@
             android:name=".NewGroupAlarm"
             android:label="@string/group">
 
+            <!--
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            -->
+
+        </activity>
+
+        <activity
+            android:name=".GroupAlarm"
+            android:label="Group Alarm">
 
         </activity>
 

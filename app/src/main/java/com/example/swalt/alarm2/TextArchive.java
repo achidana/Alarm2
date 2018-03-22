@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
@@ -114,11 +115,16 @@ public class TextArchive extends Activity {
                     }
                 });
 
-                //Cancel is pressed, returns to normal state
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                //Select is pressed, closes dialog box and returns String to caller
+                builder.setNegativeButton("Select", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent data = new Intent();
+                        data.putExtra("theText", textMessages.get(toRemove));
+                        setResult(RESULT_OK, data);
                         dialogInterface.cancel();
+                        //Sends selected message back to main alarm page
+                        finish();
                     }
                 });
                 builder.show();

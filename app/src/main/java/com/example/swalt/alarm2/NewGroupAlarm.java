@@ -68,6 +68,7 @@ public class NewGroupAlarm extends Activity{
     }
 
     public void sendToGroupAlarm () {
+        Log.d("TAG", "sendtogroup");
         Intent intent = new Intent(this, GroupAlarm.class);
         intent.putExtra("Username", username);
         intent.putExtra("PhoneNumber", phoneNumber);

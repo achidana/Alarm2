@@ -151,11 +151,18 @@ public class AudioArchive extends Activity{
                 });
 
 
-                //Cancel is pressed, returns to normal state
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                //Select is pressed, closes dialog box and returns data to caller
+                builder.setNegativeButton("Select", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent data = new Intent();
+                        data.putExtra("name", amObjects.get(toRemove).getName());
+                        //Filepath, would have to set the mp3 player again in the caller
+                        data.putExtra("filepath",audioFileLocation);
+                        //data.getParcelableExtra("mp3", amObjects.get(toRemove).getMediaPlayer());
                         dialogInterface.cancel();
+                        setResult(RESULT_OK, data);
+                        finish();
                     }
                 });
                 builder.show();
