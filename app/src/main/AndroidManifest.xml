@@ -18,9 +18,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".HomeScreen" />
-        <activity android:name=".Add_alarm"/>
-        <activity android:name=".AlarmRinger"></activity>
+        <activity android:name=".Add_alarm" />
+        <activity android:name=".AlarmRinger" />
+
         <receiver android:name=".AlarmReceiver" />
+
+        <activity android:name=".TextArchive"></activity>
     </application>
 
 </manifest>

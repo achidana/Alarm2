@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TimePicker;
@@ -21,28 +22,28 @@ import java.util.ArrayList;
 import static android.provider.Settings.System.DEFAULT_ALARM_ALERT_URI;
 import static android.provider.Settings.System.DEFAULT_NOTIFICATION_URI;
 import static android.provider.Settings.System.DEFAULT_RINGTONE_URI;
+import static android.provider.Settings.System.RINGTONE;
 
 public class Add_alarm extends AppCompatActivity {
 
     Uri ringtoneUri;
     boolean edit;
-    Alarm_object alarm;
+    Alarm_object alarm; // the old alarm if we are editting one alarm.
+    String text = null; // if we change it, we will make it non-null, which indicates whether it is ready
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_alarm);
-
         Globals global_arraylist= (Globals) getApplication();
         final ArrayList<Alarm_object> alarmObjectsList=global_arraylist.alarmObjectsList;
-
-
         TimePicker timePicker= (TimePicker) findViewById(R.id.timePicker);
         Switch textSwitch= (Switch) findViewById(R.id.text_switch);
         Switch callSwitch= (Switch) findViewById(R.id.Call_switch);
         EditText name= (EditText) findViewById(R.id.name);
         Button selectRingtone = (Button) findViewById(R.id.button2);    /* button that shows that you want to select a ringtone */
+
 
         if( alarmObjectsList.size()>0 && getIntent().getBooleanExtra("edit_flag",false))
         {
@@ -58,6 +59,15 @@ public class Add_alarm extends AppCompatActivity {
 
 
         }
+
+        textSwitch.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                Intent get_a_message = new Intent(getBaseContext(), TextArchive.class);
+                startActivityForResult(get_a_message, 2);
+            }
+        });
         selectRingtone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -159,38 +169,41 @@ public class Add_alarm extends AppCompatActivity {
 
         if(resultCode == Activity.RESULT_OK)
         {
-            if(requestCode == 1)
+            switch(requestCode)
             {
-                Uri uri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);   /* get the URI lying in the data of the intent parameter given in this function */
+                case 1:
+                    //ringtone
+                    Uri uri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+                    /* the uri above is the picked ringtone, or default and so on.
+                     * the ringtone Manager class does all of that
+                     * We have to use that but have to check its type, right ? (that is done below
+                    */
 
-                /* the uri above is the picked ringtone, or default and so on.
-                * the ringtone Manager class does all of that
-                * We have to use that but have to check its type, right ? (that is done below
-                 */
+                    // nothing special comes to mind right now, but these default cases might require special consideration
 
-                // nothing special comes to mind right now, but these default cases might require special consideration
+                    if(uri.equals(DEFAULT_RINGTONE_URI))
+                    {
+                        //handle
+                    }
+                    if(uri.equals(DEFAULT_ALARM_ALERT_URI))
+                    {
+                        //handle
+                    }
+                    if(uri.equals(DEFAULT_NOTIFICATION_URI))
+                    {
+                        //handle
+                    }
+                    ringtoneUri = uri;
+                    //important: we just need to save the URI right now, in the program, or in the memory. We don't need to play pause etc right now, right? (possibly right)
+                    break;
 
-                if(uri.equals(DEFAULT_RINGTONE_URI))
-                {
-                    //handle
-                }
-                if(uri.equals(DEFAULT_ALARM_ALERT_URI))
-                {
-                    //handle
-                }
-                if(uri.equals(DEFAULT_NOTIFICATION_URI))
-                {
-                    //handle
-                }
-
-                // or else the ringtone is the selected ringtone
-
-                ringtoneUri = uri;
-                //important: we just need to save the URI right now, in the program, or in the memory. We don't need to play pause etc right now, right? (possibly right)
+                case 2:
+                    String s = data.getStringExtra("theText");
+                    text = s;   /* set object variable to this value */
+                    break;
 
             }
         }
-
     }
 }
 
