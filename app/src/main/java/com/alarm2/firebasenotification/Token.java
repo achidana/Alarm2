@@ -6,4 +6,5 @@ package com.alarm2.firebasenotification;
 
 public class Token {
     public String token;
+    public String userId;
 }
