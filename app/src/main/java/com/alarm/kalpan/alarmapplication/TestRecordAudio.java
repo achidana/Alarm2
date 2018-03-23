@@ -187,6 +187,7 @@ public class TestRecordAudio extends AppCompatActivity {
             stopAudioPlay();
         }
     }
+    
 
     private void initializeMediaRecord(){
         mediaRecorder = new MediaRecorder();
