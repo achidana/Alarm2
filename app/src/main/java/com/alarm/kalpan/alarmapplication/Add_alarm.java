@@ -67,7 +67,11 @@ public class Add_alarm extends AppCompatActivity {
         {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                //we only call the screen to enter number here, and not the other screen. That screen is to be started once the screen for entering the number finish() es  and returns.
+
+                //IMPORTANT: We start two activities, both of which are sitting on top of this activity. But we want enter a number to come first, and so we start it last
+                Intent get_a_message = new Intent(getBaseContext(), TextArchive.class);
+                startActivityForResult(get_a_message, 3);
+
                 Intent getNumber = new Intent(getBaseContext(), GetInfo.class);
                 startActivityForResult(getNumber, 2);
 
@@ -78,9 +82,12 @@ public class Add_alarm extends AppCompatActivity {
         {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                //read comment on textSwitch's listener
+                Intent getVoiceMessage = new Intent(getBaseContext(), AudioArchive.class);
+                startActivityForResult(getVoiceMessage, 4);
+
                 Intent getNumber = new Intent(getBaseContext(), GetInfo.class);
                 startActivityForResult(getNumber, 2);   /* request code 2 indicates get number */
-
             }
         });
         selectRingtone.setOnClickListener(new View.OnClickListener() {
@@ -216,8 +223,7 @@ public class Add_alarm extends AppCompatActivity {
                     temp = data.getStringExtra("theNumber");
                     number = temp;
 
-                    Intent get_a_message = new Intent(getBaseContext(), TextArchive.class);
-                    startActivityForResult(get_a_message, 3);
+
 
                 case 3:
                     temp = data.getStringExtra("theText");
