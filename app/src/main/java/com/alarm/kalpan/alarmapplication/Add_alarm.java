@@ -32,6 +32,7 @@ public class Add_alarm extends AppCompatActivity {
     String text = null; // if we change it, we will make it non-null, which indicates whether it is ready
     // same for the next few variables
     String number = null;
+    String childActivityType = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,11 +67,10 @@ public class Add_alarm extends AppCompatActivity {
         {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                //TODO: check whether it is a blocking call, the next screen of text shows up on the screen
+                //we only call the screen to enter number here, and not the other screen. That screen is to be started once the screen for entering the number finish() es  and returns.
                 Intent getNumber = new Intent(getBaseContext(), GetInfo.class);
                 startActivityForResult(getNumber, 2);
-                Intent get_a_message = new Intent(getBaseContext(), TextArchive.class);
-                startActivityForResult(get_a_message, 3);
+
             }
         });
 
@@ -80,8 +80,7 @@ public class Add_alarm extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 Intent getNumber = new Intent(getBaseContext(), GetInfo.class);
                 startActivityForResult(getNumber, 2);   /* request code 2 indicates get number */
-                Intent get_voice_message = new Intent(getBaseContext(), AudioArchive.class);
-                startActivityForResult(get_voice_message, 4);
+
             }
         });
         selectRingtone.setOnClickListener(new View.OnClickListener() {
@@ -148,26 +147,25 @@ public class Add_alarm extends AppCompatActivity {
                         alarm.setName(name.getText().toString());
                         System.out.println("flag 2");
                     }
-
-
                 }
-//                Alarm_object alarm_object=new Alarm_object(timePicker_hour, timePicker_min, textSwitch.isChecked(), callSwitch.isChecked(), name.getText().toString(), true);
-//
-//                Globals global_arraylist= (Globals) getApplication();
-//                ArrayList<Alarm_object> alarmObjectsList=global_arraylist.alarmObjectsList;
-//
-//                alarmObjectsList.add(alarm_object);
-
-
-
                 startActivity(startIntent);
-
             }
-        });
+        }); //end of listener's call back for save button
 
+    }   // end of onCreate method
 
+    @Override
+    public void onPause()
+    {
+        super.onPause();
     }
 
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+
+    }
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         if(resultCode == Activity.RESULT_CANCELED)  /* user backed out or operation failed for some reason */
@@ -217,6 +215,10 @@ public class Add_alarm extends AppCompatActivity {
                 case 2:
                     temp = data.getStringExtra("theNumber");
                     number = temp;
+
+                    Intent get_a_message = new Intent(getBaseContext(), TextArchive.class);
+                    startActivityForResult(get_a_message, 3);
+
                 case 3:
                     temp = data.getStringExtra("theText");
                     text = temp;   /* set object variable to this value */
