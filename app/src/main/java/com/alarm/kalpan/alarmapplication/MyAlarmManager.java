@@ -38,9 +38,6 @@ public class MyAlarmManager {
         //we probably should check for Android version and then make the call below
         alarmManager.setExactAndAllowWhileIdle(alarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
         /*how do we understand that the call above was successful? TODO */
-
-
-
         return true;    /*we return true in any branch, so not useful TODO*/
     }
 

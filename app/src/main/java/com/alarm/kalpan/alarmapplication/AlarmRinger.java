@@ -24,4 +24,6 @@ public class AlarmRinger extends AppCompatActivity {
 
         ringtone.play();
     }
+
+    private void playForTime()
 }
