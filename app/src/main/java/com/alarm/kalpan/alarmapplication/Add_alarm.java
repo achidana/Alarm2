@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import static android.provider.Settings.System.DEFAULT_ALARM_ALERT_URI;
 import static android.provider.Settings.System.DEFAULT_NOTIFICATION_URI;
 import static android.provider.Settings.System.DEFAULT_RINGTONE_URI;
-import static android.provider.Settings.System.RINGTONE;
 
 public class Add_alarm extends AppCompatActivity {
 
@@ -127,8 +126,6 @@ public class Add_alarm extends AppCompatActivity {
                     ArrayList<Alarm_object> alarmObjectsList=global_arraylist.alarmObjectsList;
                     alarmObjectsList.add(alarm_object);
                     MyAlarmManager.myCreateTimeAlarm(alarm_object, getApplicationContext());    //second argument to be given as it cannot be obtained directly by the MyAlarmManager class
-
-
                 }
 
                 else
