@@ -141,7 +141,7 @@ public class GroupAlarm extends Activity{
         String notAwake = "";
         for (int i = 0; i < users.size(); i++) {
             if (users.get(i).getStopAlarm()) {
-                notAwake.concat(users.get(i).getName() + "\n");
+                notAwake = notAwake + (users.get(i).getName() + "\n");
             }
         }
         showUsers.setTitle(notAwake);
