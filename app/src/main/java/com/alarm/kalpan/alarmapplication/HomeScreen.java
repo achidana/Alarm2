@@ -16,7 +16,6 @@ public class HomeScreen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //TODO Check if first time, and then do login and that stuff
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
 

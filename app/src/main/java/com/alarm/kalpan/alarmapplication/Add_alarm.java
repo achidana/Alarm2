@@ -165,6 +165,7 @@ public class Add_alarm extends AppCompatActivity {
     public void onPause()
     {
         super.onPause();
+
     }
 
     @Override
