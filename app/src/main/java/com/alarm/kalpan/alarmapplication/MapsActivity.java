@@ -14,6 +14,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
@@ -24,13 +26,16 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.io.IOException;
 import java.util.List;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback  {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    //private FusedLocationProviderClient mFusedLocationClient;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +57,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //                Log.d("Maps", "An error occurred: " + status);
 //            }
 //        });
+       // mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            // TODO: Consider calling
+//            //    ActivityCompat#requestPermissions
+//            // here to request the missing permissions, and then overriding
+//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//            //                                          int[] grantResults)
+//            // to handle the case where the user grants the permission. See the documentation
+//            // for ActivityCompat#requestPermissions for more details.
+//            return;
+//        }
+//        mFusedLocationClient.getLastLocation()
+//                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+//                    @Override
+//                    public void onSuccess(Location location) {
+//                        // Got last known location. In some rare situations this can be null.
+//                        if (location != null) {
+//                            // Logic to handle location object
+//                        }
+//                    }
+//                });
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -80,13 +108,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onPlaceSelected(Place place) {
 
-               // Log.d("Maps", "Place selected: " + place. ());
+                 Log.d("Maps", "Place selected: " + place.getName ());
                 Geocoder geocoder=new Geocoder(getApplicationContext());
                 List <Address> addressList;
                 Address goToaddress;
                 try {
+
+
                     addressList= geocoder.getFromLocationName(place.getName().toString(),1);
-                     goToaddress=addressList.get(0);
+                    if(addressList.size()==0)
+                    {
+                                Toast.makeText(getApplicationContext(),"TRY AGAIN",Toast.LENGTH_LONG).show();
+                                return;
+                    }
+                    goToaddress=addressList.get(0);
                     moveCameratoLocation(goToaddress.getLatitude(),goToaddress.getLongitude(),15);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -116,7 +151,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
         }
-       // mMap.setMyLocationEnabled(true);
+        // mMap.setMyLocationEnabled(true);
         //mMap.getUiSettings().setMyLocationButtonEnabled(true);
 
         // mMap.setOnMyLocationButtonClickListener(this);
@@ -144,7 +179,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         LatLng latLng= new LatLng(lat,lng);
         CameraUpdate update= CameraUpdateFactory.newLatLngZoom(latLng,zoom);
-        mMap.moveCamera(update);
+        mMap.animateCamera(update);
 
 
     }
