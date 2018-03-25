@@ -94,15 +94,6 @@ public class testRecordAudio extends AppCompatActivity {
         });
     }
 
-    /*
-    @Override
-    public void finish() {
-        Intent data = new Intent();
-        data.putExtra("SavedLocation", voiceStoragePath);
-        setResult(RESULT_OK, data);
-        testRecordAudio.super.finish();
-    }
-    */
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

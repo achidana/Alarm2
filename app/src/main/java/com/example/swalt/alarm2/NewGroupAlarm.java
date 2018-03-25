@@ -68,10 +68,16 @@ public class NewGroupAlarm extends Activity{
     }
 
     public void sendToGroupAlarm () {
+        String isUser = "false";
+        if (getIntent().getStringExtra("User") != null) {
+            isUser = getIntent().getStringExtra("User");
+            if (isUser.equals("true")) isUser = "true";
+        }
         Log.d("TAG", "sendtogroup");
         Intent intent = new Intent(this, GroupAlarm.class);
         intent.putExtra("Username", username);
         intent.putExtra("PhoneNumber", phoneNumber);
+        intent.putExtra("isUser", isUser);
         startActivity(intent);
     }
 }

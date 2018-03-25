@@ -22,6 +22,7 @@ public class User{
     private String name;
     private String phoneNumber;
     private boolean isAdmin;
+    private boolean stopAlarm;
 
     public User() {
         super();
@@ -32,6 +33,7 @@ public class User{
         this.setName(name);
         this.setPhoneNumber(phoneNumber);
         this.setAdmin(isAdmin);
+        this.stopAlarm = false;
     }
 
     public String getName() {
@@ -56,6 +58,14 @@ public class User{
 
     public void setAdmin(boolean admin) {
         isAdmin = admin;
+    }
+
+    public boolean getStopAlarm() {
+        return stopAlarm;
+    }
+
+    public void setStopAlarm(boolean stopAlarm) {
+        this.stopAlarm = stopAlarm;
     }
 
     @Override

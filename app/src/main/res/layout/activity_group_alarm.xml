@@ -21,7 +21,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:id="@+id/editText"
+                android:id="@+id/editGroupAdmin"
                 android:layout_width="383dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -56,7 +56,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/editText4"
+            android:id="@+id/groupName"
             android:layout_width="383dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -80,6 +80,16 @@
             tools:layout_editor_absoluteY="16dp" />
 
     </LinearLayout>
+
+        <!-- When pressed, will pull up list of users that have not used alarm -->
+    <Button
+        android:id="@+id/activeAlarms"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/user_count"
+        android:textAlignment="center"
+        android:onClick="showAlarmStatus"
+        />
 
     <Button
         android:id="@+id/addUser"

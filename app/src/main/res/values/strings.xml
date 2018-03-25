@@ -42,6 +42,12 @@
     <string name="phone_hint">Enter Number</string>
     <string name="enter_name">Enter name</string>
     <string name="user_button">Add User</string>
+    <string name="user_count">Alarms Rung: %d/%d</string>
+    <string name="menu_name">Username</string>
+    <string name="menu_phone">Phone Number</string>
+    <string name="menu_alarm">Not Acknowledged</string>
+    <string name="list_header">Group Alarms</string>
+    <string name="add_group_btn">Add Group Alarm</string>
 
     <string name="title_activity_home_screen">HomeScreen</string>
 </resources>

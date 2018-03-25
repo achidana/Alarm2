@@ -33,16 +33,17 @@ class CustomUserAdapter extends ArrayAdapter<User> {
         public View getView(final int position, @Nullable final View convertView, @NonNull final ViewGroup parent) {
 
             LayoutInflater inflater = LayoutInflater.from(getContext());
-            //Think maybe need to set up overlaw boundaries instead of new layout
+            //Think maybe need to set up overlap boundaries instead of new layout
             View customView = inflater.inflate(R.layout.activity_group_alarm, parent, false);
+
 
             u = getItem(position);
 
             TextView nameDisplay = customView.findViewById(R.id.displayName);
-            //TextView numberDisplay = customView.findViewById(R.id.phoneNumber);
+  //          TextView numberDisplay = customView.findViewById(R.id.phoneNumber);
 
             nameDisplay.setText(u.getName());
-            //.setText(u.getPhoneNumber());
+//            numberDisplay.setText(u.getPhoneNumber());
 
 /*
             homescrn_toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -75,10 +76,9 @@ class CustomUserAdapter extends ArrayAdapter<User> {
 
                 }
             });
-
 */
-
             return customView;
         }
+
     }
 

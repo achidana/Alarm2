@@ -158,7 +158,7 @@ public class AudioArchive extends Activity{
                         Intent data = new Intent();
                         data.putExtra("name", amObjects.get(toRemove).getName());
                         //Filepath, would have to set the mp3 player again in the caller
-                        data.putExtra("filepath",audioFileLocation);
+                        data.putExtra("filepath", audioFileLocation);
                         //data.getParcelableExtra("mp3", amObjects.get(toRemove).getMediaPlayer());
                         dialogInterface.cancel();
                         setResult(RESULT_OK, data);
