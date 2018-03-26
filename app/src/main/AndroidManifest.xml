@@ -8,10 +8,11 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+
 
     <application
         android:name=".Globals"
@@ -24,10 +25,10 @@
         <activity android:name=".HomeScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".Add_alarm" />
         <activity android:name=".AlarmRinger" />
 
@@ -39,12 +40,12 @@
         <activity android:name=".TestRecordAudio">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".AudioArchive"
-                />
+                android:value=".AudioArchive" />
         </activity>
-        <activity android:name=".GroupAlarm"/>
-        <activity android:name=".GroupAlarmList">
-        </activity>
+        <activity android:name=".GroupAlarm" />
+        <activity android:name=".GroupAlarmList"></activity>
+        <activity android:name=".CustomRingtone"></activity>
+
     </application>
 
 </manifest>

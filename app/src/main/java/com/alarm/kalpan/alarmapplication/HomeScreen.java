@@ -103,7 +103,6 @@ public class HomeScreen extends AppCompatActivity {
     public void updateDatabase()
     {
         try{Thread.sleep(5000);} catch(InterruptedException e){};   // dummy time absorption for mimicking updation of database
-        Thread.dumpStack();
         runOnUiThread(new Runnable() {
             @Override
             public void run() {

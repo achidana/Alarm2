@@ -19,6 +19,10 @@ public class Alarm_object {
     int alarmID;
     public static int alarmIDGenerator = 0;
 
+    String numberToCall;
+    String textMessage;
+    String fileToVoiceMessage;
+
     public Alarm_object(int hour, int min, boolean text, boolean call, String name, boolean onOff, Uri ringtoneUri) {
         this.hour = hour;
         this.min = min;
@@ -34,6 +38,15 @@ public class Alarm_object {
         alarmID = alarmIDGenerator++;
     }
 
+    public void setTextMessage(String textMessage)
+    {
+        this.textMessage = textMessage;
+    }
+
+    public void setNumberToCall(String numberToCall)
+    {
+        this.numberToCall = numberToCall;
+    }
 
     public void setOnOff(boolean onOff) {
         this.onOff = onOff;

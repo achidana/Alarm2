@@ -53,6 +53,8 @@
 
 
     <string name="title_activity_home_screen">HomeScreen</string>
-    
+
     <string name="preference_file_key">com.alarm.kalpan.alarmapplication</string>
+
+    <string name="select">select</string>
 </resources>

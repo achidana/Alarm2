@@ -16,6 +16,8 @@ import android.media.RingtoneManager;
 
 
 import android.net.Uri;
+
+import java.io.File;
 import java.util.ArrayList;
 
 import static android.provider.Settings.System.DEFAULT_ALARM_ALERT_URI;
@@ -136,6 +138,10 @@ public class Add_alarm extends AppCompatActivity {
 
 
                 if (editGroup) {
+                    if(ringtoneUri == null)
+                    {
+                        ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+                    }
                     alarm.setHour(timePicker_hour);
                     alarm.setMin(timePicker_min);
                     alarm.setText(textSwitch.isChecked());
@@ -145,7 +151,15 @@ public class Add_alarm extends AppCompatActivity {
 
                 else if(getIntent().getBooleanExtra("edit_flag",false)==false)
                 {
+                        if(ringtoneUri == null)
+                        {
+                            ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+                        }
                         Alarm_object alarm_object = new Alarm_object(timePicker_hour, timePicker_min, textSwitch.isChecked(), callSwitch.isChecked(), name.getText().toString(), true, ringtoneUri);
+                        if(alarm_object.isText())
+                        {
+                            alarm_object.setTextMessage(text);
+                        }
                         Globals global_arraylist = (Globals) getApplication();
                         ArrayList<Alarm_object> alarmObjectsList = global_arraylist.alarmObjectsList;
                         alarmObjectsList.add(alarm_object);
@@ -273,6 +287,10 @@ public class Add_alarm extends AppCompatActivity {
                 case 4:
                     String name = data.getStringExtra("name");
                     String filepath = data.getStringExtra("filepath");
+
+                    //important: todo: setting this as ringtone too, change in future
+                    File file = new File(filepath);
+                    ringtoneUri = Uri.fromFile(file);
                     //put into audio message object
                     break;
             }

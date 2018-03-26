@@ -10,12 +10,22 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import javax.net.ssl.HttpsURLConnection;
+
 import static android.os.PowerManager.ACQUIRE_CAUSES_WAKEUP;
 import static android.os.PowerManager.FULL_WAKE_LOCK;
 
 public class AlarmRinger extends AppCompatActivity {
     Ringtone ringtone;
     Thread thread;
+    Thread thread1;
     PowerManager.WakeLock wakeLock;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +35,7 @@ public class AlarmRinger extends AppCompatActivity {
         setContentView(R.layout.activity_alarm_ringer);
         ringtoneUri = (Uri) getIntent().getParcelableExtra("ringtoneUri");
         ringtone = RingtoneManager.getRingtone(getBaseContext(), ringtoneUri);
-        Runnable runnable = new PlayRingtone(ringtone, 25);
+        Runnable runnable = new PlayRingtone(ringtone, 10);
 
         //next lines are to ensure that device screen wakes up
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -34,6 +44,14 @@ public class AlarmRinger extends AppCompatActivity {
         thread = new Thread(runnable, "playRingtoneThread");
         thread.start();
 
+        thread1 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                afterFail(10);  // 25 second fail save time
+            }
+        });
+
+        thread1.start();
         // TODO: make proper nomenclature of ID
         stopButton = findViewById(R.id.button);
         stopButton.setOnClickListener(new Button.OnClickListener()
@@ -41,6 +59,7 @@ public class AlarmRinger extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 thread.interrupt();
+                thread1.interrupt();
                 try {
                     Thread.sleep(1000);
                 }
@@ -56,4 +75,56 @@ public class AlarmRinger extends AppCompatActivity {
         });
     }
 
+    public void afterFail(int timeInSeconds)
+    {
+        try
+        {
+            Thread.sleep(timeInSeconds * 1000);
+        }
+
+        catch(InterruptedException e)
+        {
+            return;
+        }
+
+        String text;
+        String phoneNumber;
+
+        phoneNumber = "7656378554";
+
+        text = "hello%20world";
+        System.out.println(text);
+        URL url;
+        HttpURLConnection conn;
+        StringBuilder result = new StringBuilder();
+        try
+        {
+            url = new URL("http://45.56.125.90:5000/" + "text/" + phoneNumber + "/" + text);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setDoInput(true);
+            conn.setRequestMethod("GET");
+            BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String line = "";
+            while((line = rd.readLine()) != null)
+            {
+                result.append(line);
+            }
+
+            String res = result.toString();
+            conn.disconnect();
+        }
+
+        catch (MalformedURLException e)
+        {
+            url = null;
+            // handle
+        }
+
+        catch(IOException e)
+        {
+            conn = null;
+        }
+
+        // do scott
+    }
 }
