@@ -14,4 +14,10 @@
         android:title="@string/action_add_alarm"
         app:showAsAction="always" />
 
+    <item
+        android:id="@+id/update_database"
+        android:title="Save"
+        app:showAsAction="always" />
+
+
 </menu>

@@ -4,7 +4,6 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Parcelable;
 
 import java.util.Calendar;
 
@@ -23,7 +22,7 @@ public class MyAlarmManager {
         Intent intent = new Intent(context.getApplicationContext(), AlarmReceiver.class);
         intent.putExtra("ringtoneUri", timeAlarm.ringtoneUri);
         //important: always use the above method to make an intent... To retrieve the PendingIntent we make next, which disappears in to the system, we actually need to have the same Intent things of the underlying intent
-        alarmIntent = PendingIntent.getBroadcast(context, timeAlarm.alarmID, intent, 0);
+        alarmIntent = PendingIntent.getBroadcast(context.getApplicationContext(), timeAlarm.alarmID, intent, 0);
 
         hour = timeAlarm.getHour();
         minutes = timeAlarm.getMin();

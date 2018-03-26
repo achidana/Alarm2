@@ -2,9 +2,6 @@ package com.alarm.kalpan.alarmapplication;
 
 import android.media.AudioAttributes;
 import android.media.Ringtone;
-import android.support.v4.media.AudioAttributesCompat;
-
-import static android.media.AudioAttributes.USAGE_ALARM;
 
 /**
  * Created by kalpanjasani on 3/25/18.

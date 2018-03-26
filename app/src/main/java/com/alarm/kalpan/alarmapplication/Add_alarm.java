@@ -1,13 +1,9 @@
 package com.alarm.kalpan.alarmapplication;
 
 import android.app.Activity;
-import android.media.Ringtone;
-import android.net.Uri;
-import android.os.Bundle;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -144,7 +140,6 @@ public class Add_alarm extends AppCompatActivity {
                         alarm.setText(textSwitch.isChecked());
                         alarm.setCall(callSwitch.isChecked());
                         alarm.setName(name.getText().toString());
-                        System.out.println("flag 1");
                         MyAlarmManager.myCreateTimeAlarm(alarm, getApplicationContext());
                     }
 
@@ -155,7 +150,6 @@ public class Add_alarm extends AppCompatActivity {
                         alarm.setText(textSwitch.isChecked());
                         alarm.setCall(callSwitch.isChecked());
                         alarm.setName(name.getText().toString());
-                        System.out.println("flag 2");
                     }
                 }
                 startActivity(startIntent);
@@ -175,7 +169,13 @@ public class Add_alarm extends AppCompatActivity {
     public void onResume()
     {
         super.onResume();
+    }
 
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+        //can add stuff here if important
     }
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {

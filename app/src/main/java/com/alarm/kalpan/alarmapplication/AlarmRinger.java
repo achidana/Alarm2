@@ -1,8 +1,6 @@
 package com.alarm.kalpan.alarmapplication;
 
 import android.content.Context;
-import android.content.Intent;
-import android.media.AudioAttributes;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -12,7 +10,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import static android.media.AudioManager.STREAM_ALARM;
 import static android.os.PowerManager.ACQUIRE_CAUSES_WAKEUP;
 import static android.os.PowerManager.FULL_WAKE_LOCK;
 
