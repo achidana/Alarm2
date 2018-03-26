@@ -25,14 +25,29 @@ import java.net.URL;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-
+    public static final String ACCOUNT_SID = "ACa6873b79829fb995b9370c799cf83904";
+    public static final String AUTH_TOKEN = "0525a486a792661745634c026fded00f";
+    public static Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        context = MainActivity.this;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         Button btnShowToken = (Button) findViewById(R.id.button_show_token);
         btnShowToken.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Get the token
+                String token = FirebaseInstanceId.getInstance().getToken();
+
+                Log.d("MainActivity", "Token: " + token);
+                Toast.makeText(MainActivity.this, token, Toast.LENGTH_LONG).show();
+
+            }
+        });
+
+        Button createGroup = (Button) findViewById(R.id.createGroup);
+        createGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Get the token
@@ -82,12 +97,11 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
-
                 thread.start();
-
-                Log.d("MainActivity", "Token: " + token);
-                Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+    public static void displayData(String data) {
+        Toast.makeText(context, data, Toast.LENGTH_LONG).show();
     }
 }

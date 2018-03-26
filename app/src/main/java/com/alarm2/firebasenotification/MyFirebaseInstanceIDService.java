@@ -38,6 +38,7 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
                 try {
                     Token tok = new Token();
                     tok.token = FirebaseInstanceId.getInstance().getToken();
+                    tok.userId = "9374596097";
                     String pNum;
                     TelephonyManager tMgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
                     pNum = "9374596097";

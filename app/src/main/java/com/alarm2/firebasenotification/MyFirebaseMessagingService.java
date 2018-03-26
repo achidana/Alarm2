@@ -8,6 +8,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -26,6 +27,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         //Check if the message contains data
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data: " + remoteMessage.getData());
+            //MainActivity.displayData(remoteMessage.getData().toString());
+            sendNotification("Message data: " + remoteMessage.getData());
         }
 
         //Check if the message contains notification
