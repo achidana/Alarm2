@@ -1,5 +1,6 @@
 package com.alarm.kalpan.alarmapplication;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,11 @@ public class HomeScreen extends AppCompatActivity {
         //TODO Check if first time, and then do login and that stuff
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
+        
+        if(thePreferences.getString("existsString", null) == null)
+        {
+
+        }
 
         listView= (ListView) findViewById(R.id.listview);
         //  ArrayList <Alarm_object> alarmObjectsList= new ArrayList<Alarm_object>();
@@ -27,7 +33,8 @@ public class HomeScreen extends AppCompatActivity {
         ListAdapter customAdapter = new CustomAdapter(this, alarmObjectsList);
 
         listView.setAdapter(customAdapter);
-        
+
+
 
 
 

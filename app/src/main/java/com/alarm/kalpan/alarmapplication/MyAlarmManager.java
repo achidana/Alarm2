@@ -29,11 +29,18 @@ public class MyAlarmManager {
 
         // Set the alarm to start
         Calendar calendar = Calendar.getInstance();
+        Calendar rightNow = (Calendar) calendar.clone();
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.HOUR_OF_DAY, hour);
         calendar.set(Calendar.MINUTE, minutes);
         // we always want to start the alarm at the start of the minute, not relative to when we actually set it
         calendar.set(Calendar.SECOND, 0);
+
+        if(calendar.compareTo(rightNow) < 0)
+        {
+            calendar.add(Calendar.DATE, 1);
+        }
+
         //we probably should check for Android version and then make the call below
         alarmManager.setExactAndAllowWhileIdle(alarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
         /*how do we understand that the call above was successful? TODO */

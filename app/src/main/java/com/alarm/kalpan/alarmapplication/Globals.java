@@ -13,6 +13,5 @@ public class Globals extends Application
 
     ArrayList<Alarm_object> alarmObjectsList= new ArrayList<Alarm_object>();
 
-
 }
 

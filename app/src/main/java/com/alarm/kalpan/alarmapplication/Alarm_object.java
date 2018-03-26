@@ -17,7 +17,7 @@ public class Alarm_object {
     boolean onOff;
     Uri ringtoneUri;
     int alarmID;
-    private static int alarmIDGenerator = 0;
+    public static int alarmIDGenerator = 0;
 
     public Alarm_object(int hour, int min, boolean text, boolean call, String name, boolean onOff, Uri ringtoneUri) {
         this.hour = hour;
