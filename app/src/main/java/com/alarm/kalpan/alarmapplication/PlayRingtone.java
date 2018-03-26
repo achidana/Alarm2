@@ -2,6 +2,9 @@ package com.alarm.kalpan.alarmapplication;
 
 import android.media.AudioAttributes;
 import android.media.Ringtone;
+import android.support.v4.media.AudioAttributesCompat;
+
+import static android.media.AudioAttributes.USAGE_ALARM;
 
 /**
  * Created by kalpanjasani on 3/25/18.
@@ -17,7 +20,9 @@ public class PlayRingtone implements Runnable{
     }
     @Override
     public void run() {
-        ringtone.setAudioAttributes(AudioAttributes.Builder.);
+        ringtone.setAudioAttributes(new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).build());
+
+        // need to up the volume, vibrate the phone, and check the thread location of the play
         ringtone.play();
         try
         {
@@ -28,7 +33,7 @@ public class PlayRingtone implements Runnable{
             // do nothing
         }
         finally {
-            ringtone.stop()
+            ringtone.stop();
         }
 
     }

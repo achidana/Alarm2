@@ -1,6 +1,7 @@
 package com.alarm.kalpan.alarmapplication;
 
 import android.app.Activity;
+import android.media.Ringtone;
 import android.net.Uri;
 import android.os.Bundle;
 import android.content.Intent;
@@ -121,6 +122,11 @@ public class Add_alarm extends AppCompatActivity {
 
                 if(getIntent().getBooleanExtra("edit_flag",false)==false)
                 {
+                    if(ringtoneUri == null)
+                    {
+                        ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+                    }
+
                     Alarm_object alarm_object=new Alarm_object(timePicker_hour, timePicker_min, textSwitch.isChecked(), callSwitch.isChecked(), name.getText().toString(), true, ringtoneUri);
                     Globals global_arraylist= (Globals) getApplication();
                     ArrayList<Alarm_object> alarmObjectsList=global_arraylist.alarmObjectsList;
