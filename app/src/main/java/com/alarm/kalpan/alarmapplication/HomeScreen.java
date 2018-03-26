@@ -45,6 +45,17 @@ public class HomeScreen extends AppCompatActivity {
     }
 
     @Override
+    public void onResume()
+    {
+        super.onResume();
+        Globals global_arraylist= (Globals) getApplication();
+        ArrayList <Alarm_object> alarmObjectsList=global_arraylist.alarmObjectsList;
+        ListAdapter customAdapter = new CustomAdapter(this, alarmObjectsList);
+
+        listView.setAdapter(customAdapter);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
         getMenuInflater().inflate(R.menu.menu_home_screen,menu);
@@ -59,6 +70,10 @@ public class HomeScreen extends AppCompatActivity {
 
             case R.id.add_alarm_action:
                 startActivity(new Intent(this, Add_alarm.class));
+                return true;
+
+            case R.id.add_group_alarm:
+                startActivity(new Intent(this, GroupAlarmList.class));
                 return true;
 
 

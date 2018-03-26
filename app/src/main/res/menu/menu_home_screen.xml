@@ -14,4 +14,9 @@
         android:title="@string/action_add_alarm"
         app:showAsAction="always" />
 
+    <item
+        android:id="@+id/add_group_alarm"
+        android:title="@string/action_add_group_alarm"
+        app:showAsAction="always" />
+
 </menu>

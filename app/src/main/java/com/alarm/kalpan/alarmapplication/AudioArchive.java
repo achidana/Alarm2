@@ -48,6 +48,7 @@ public class AudioArchive extends Activity{
         initializeListener();
     }
 
+    //To be filled with default sounds
     private void initialize() {
         String name0 = "Bells";
         String name1 = "John's Voice";
