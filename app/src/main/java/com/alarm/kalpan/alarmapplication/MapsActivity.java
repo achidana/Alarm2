@@ -8,15 +8,22 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.Api;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
@@ -29,14 +36,22 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 
+import java.io.FileDescriptor;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     LocationManager locationManager;
+    private GoogleApiClient googleApiClient;
+    private LocationRequest locationRequest;
+    private final static int MY_PERMISSION_FINE = 101;
+    private FusedLocationProviderClient fusedLocationProviderClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,95 +62,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        if(locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
-        {
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, new LocationListener() {
-                @Override
-                public void onLocationChanged(Location location) {
-                    Toast.makeText(getApplicationContext(),"NETWORK ",Toast.LENGTH_LONG).show();
-                    double lat=location.getLatitude();
-                    double lng=location.getLongitude();
-                    LatLng latLng=new LatLng(lat,lng);
-                    Geocoder geocoder=new Geocoder(getApplicationContext());
 
-
-                    try {
-                        List <Address> addressList=geocoder.getFromLocation(lat,lng,1);
-                        mMap.addMarker(new MarkerOptions().position(latLng).title("My location"));
-                        moveCameratoLocation(lat,lng,10);
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-
-                }
-
-                @Override
-                public void onStatusChanged(String provider, int status, Bundle extras) {
-
-                }
-
-                @Override
-                public void onProviderEnabled(String provider) {
-
-                }
-
-                @Override
-                public void onProviderDisabled(String provider) {
-
-                }
-            });
-        }
-        else if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
-        {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, new LocationListener() {
-                @Override
-                public void onLocationChanged(Location location) {
-                    Toast.makeText(getApplicationContext(),"GPS ",Toast.LENGTH_LONG).show();
-                    double lat=location.getLatitude();
-                    double lng=location.getLongitude();
-                    LatLng latLng=new LatLng(lat,lng);
-                    Geocoder geocoder=new Geocoder(getApplicationContext());
-
-
-                    try {
-                        List <Address> addressList=geocoder.getFromLocation(lat,lng,1);
-                        mMap.addMarker(new MarkerOptions().position(latLng).title("My location"));
-                        moveCameratoLocation(lat,lng,10);
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onStatusChanged(String provider, int status, Bundle extras) {
-
-                }
-
-                @Override
-                public void onProviderEnabled(String provider) {
-
-                }
-
-                @Override
-                public void onProviderDisabled(String provider) {
-
-                }
-            });
-        }
+//        googleApiClient =new GoogleApiClient.Builder(this)
+//                .addApi(LocationServices.API)
+//                .addConnectionCallbacks(this)
+//                .addOnConnectionFailedListener(this)
+//                .build();
 
 
     }
@@ -157,6 +89,56 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        LatLng sydney = new LatLng(-34, 151);
 //        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
 //        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+            mMap.setMyLocationEnabled(true);
+            //Toast.makeText(getApplicationContext(), "222222222222222222 ", Toast.LENGTH_LONG).show();
+
+//            mMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+//                @Override
+//                public boolean onMyLocationButtonClick() {
+//
+//                    fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
+//                    try {
+//                        Task t = fusedLocationProviderClient.getLastLocation();
+//
+//                        if (t.isComplete()) {
+//                            moveCameratoLocation(fusedLocationProviderClient.getLastLocation().getResult().getLatitude(), fusedLocationProviderClient.getLastLocation().getResult().getLongitude(), 15);
+//                            System.out.println(fusedLocationProviderClient.getLastLocation().getResult().getLatitude());
+//                        }
+//
+//
+//                    } catch (SecurityException e) {
+//
+//                    }
+//
+//                    return true;
+//                }
+//            });
+
+
+        } else {
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                Toast.makeText(getApplicationContext(), "Requesting Permission ", Toast.LENGTH_LONG).show();
+
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSION_FINE);
+                //requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 100);
+            }
+
+
+        }
+
+        if (mMap.isMyLocationEnabled()) {
+
+
+            Toast.makeText(getApplicationContext(), "Location is enabled ", Toast.LENGTH_LONG).show();
+
+
+        }
+
 
         PlaceAutocompleteFragment placeAutoComplete = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.search_bar);
         placeAutoComplete.setOnPlaceSelectedListener(new PlaceSelectionListener() {
@@ -185,27 +167,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //                }
 
 
-                LatLng latLng=place.getLatLng();
-                Geocoder geocoder=new Geocoder(getApplicationContext());
+                LatLng latLng = place.getLatLng();
+                Geocoder geocoder = new Geocoder(getApplicationContext());
 
 
                 try {
-                    List <Address> addressList=geocoder.getFromLocation(latLng.latitude,latLng.longitude,1);
-                    mMap.addMarker(new MarkerOptions().position(latLng).title(addressList.get(0).getLocality()+","+addressList.get(0).getCountryName()));
-                    moveCameratoLocation(latLng.latitude,latLng.longitude,10);
+                    List<Address> addressList = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+                    mMap.addMarker(new MarkerOptions().position(latLng).title(addressList.get(0).getLocality() + "," + addressList.get(0).getCountryName()));
+                    moveCameratoLocation(latLng.latitude, latLng.longitude, 10);
 
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-
-
-
-
-
-
-
-
 
 
             @Override
@@ -245,15 +219,69 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //    }
 
 
+    public void moveCameratoLocation(double lat, double lng, float zoom) {
 
-    public void moveCameratoLocation(double lat, double lng , float zoom)
-    {
-
-        LatLng latLng= new LatLng(lat,lng);
-        CameraUpdate update= CameraUpdateFactory.newLatLngZoom(latLng,zoom);
+        LatLng latLng = new LatLng(lat, lng);
+        CameraUpdate update = CameraUpdateFactory.newLatLngZoom(latLng, zoom);
         mMap.animateCamera(update);
-
-
     }
 
 }
+
+
+//    public void getLocation()
+//    {
+//        fusedLocationProviderClient=LocationServices.getFusedLocationProviderClient(this);
+//        try {
+//
+//
+//
+//        }catch (SecurityException e)
+//        {
+//
+//        }
+//    }
+
+//    @Override
+//    public void onConnected(@Nullable Bundle bundle) {
+//
+//        LocationServices.getFusedLocationProviderClient()
+//    }
+//
+//    @Override
+//    public void onConnectionSuspended(int i) {
+//
+//    }
+//
+//    @Override
+//    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+//
+//    }
+
+//
+//    @Override
+//    public void onLocationChanged(Location location) {
+//
+//    }
+//
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        googleApiClient.connect();
+//    }
+//
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//    }
+//
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//    }
+//
+//    @Override
+//    protected void onStop() {
+//        super.onStop();
+//    }
+
