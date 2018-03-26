@@ -24,7 +24,6 @@
         <activity android:name=".HomeScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -42,6 +41,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".AudioArchive"
                 />
+        </activity>
+        <activity android:name=".GroupAlarm"/>
+        <activity android:name=".GroupAlarmList">
         </activity>
     </application>
 

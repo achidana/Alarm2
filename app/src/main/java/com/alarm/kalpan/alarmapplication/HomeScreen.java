@@ -20,10 +20,10 @@ public class HomeScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
         
-        if(thePreferences.getString("existsString", null) == null)
-        {
+        //if(thePreferences.getString("existsString", null) == null)
+        //{
 
-        }
+        //}
 
         listView= (ListView) findViewById(R.id.listview);
         //  ArrayList <Alarm_object> alarmObjectsList= new ArrayList<Alarm_object>();
@@ -41,6 +41,17 @@ public class HomeScreen extends AppCompatActivity {
     }
 
     @Override
+    public void onResume()
+    {
+        super.onResume();
+        Globals global_arraylist= (Globals) getApplication();
+        ArrayList <Alarm_object> alarmObjectsList=global_arraylist.alarmObjectsList;
+        ListAdapter customAdapter = new CustomAdapter(this, alarmObjectsList);
+
+        listView.setAdapter(customAdapter);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
         getMenuInflater().inflate(R.menu.menu_home_screen,menu);
@@ -55,6 +66,10 @@ public class HomeScreen extends AppCompatActivity {
 
             case R.id.add_alarm_action:
                 startActivity(new Intent(this, Add_alarm.class));
+                return true;
+
+            case R.id.add_group_alarm:
+                startActivity(new Intent(this, GroupAlarmList.class));
                 return true;
 
 
@@ -84,11 +99,6 @@ public class HomeScreen extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void onResume()
-    {
-        super.onResume();
-        // may add stuff here
-    }
 
     public void updateDatabase()
     {
