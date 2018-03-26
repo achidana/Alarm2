@@ -2,8 +2,10 @@ package com.alarm.kalpan.alarmapplication;
 
 import android.app.Activity;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.content.Intent;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -33,6 +35,7 @@ public class Add_alarm extends AppCompatActivity {
     // same for the next few variables
     String number = null;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 

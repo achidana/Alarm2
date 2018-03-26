@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "18940380565",
+    "firebase_url": "https://alarm2-db345.firebaseio.com",
+    "project_id": "alarm2-db345",
+    "storage_bucket": "alarm2-db345.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:18940380565:android:085d51a51a25bad7",
+        "android_client_info": {
+          "package_name": "com.alarm.kalpan.alarmapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "18940380565-0st62jskq128nd2k29vj70t1ksdib86r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkMAfPziBVbpwGRSrcy2Edz1eMtQ8b578"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
