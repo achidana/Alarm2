@@ -1,5 +1,6 @@
 package com.alarm.kalpan.alarmapplication;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.content.Intent;
@@ -19,11 +20,24 @@ public class HomeScreen extends AppCompatActivity {
         //TODO Check if first time, and then do login and that stuff
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
-        
-        //if(thePreferences.getString("existsString", null) == null)
-        //{
 
-        //}
+      //  SharedPreferences preferencesFile = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+      //  if(preferencesFile.getString("existsString", null) == null)
+       // {
+      //      SharedPreferences.Editor editor = preferencesFile.edit();
+
+     //       editor.putBoolean("firstTime", false);
+     //       editor.putString("username", "Kalpan");
+     //       editor.putInt("newAlarmID", 0); // set the next id to be 0
+     //       editor.putString("existsString", "exists");
+
+     //   }
+
+
+      //  else
+      //  {
+//
+  //      }
 
         listView= (ListView) findViewById(R.id.listview);
         //  ArrayList <Alarm_object> alarmObjectsList= new ArrayList<Alarm_object>();

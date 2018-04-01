@@ -78,6 +78,11 @@ public class Alarm_object {
         this.name = name;
     }
 
+    public void setRingtoneUri(Uri ringtoneUri )
+    {
+        this.ringtoneUri = ringtoneUri;
+    }
+
 
     public boolean isOnOff() {
         return onOff;
@@ -117,5 +122,6 @@ public class Alarm_object {
         }
         return tempHour + ":" + min_temp + " " + ampm;
     }
+
 
 }
