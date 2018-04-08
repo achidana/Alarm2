@@ -1,12 +1,11 @@
 package com.alarm.kalpan.alarmapplication;
 
 import android.app.Activity;
-import android.net.Uri;
-import android.os.Bundle;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
+
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -17,21 +16,25 @@ import android.media.RingtoneManager;
 
 
 import android.net.Uri;
+
+import java.io.File;
 import java.util.ArrayList;
 
 import static android.provider.Settings.System.DEFAULT_ALARM_ALERT_URI;
 import static android.provider.Settings.System.DEFAULT_NOTIFICATION_URI;
 import static android.provider.Settings.System.DEFAULT_RINGTONE_URI;
-import static android.provider.Settings.System.RINGTONE;
+
 
 public class Add_alarm extends AppCompatActivity {
 
     Uri ringtoneUri;
     boolean edit;
+    boolean editGroup;
     Alarm_object alarm; // the old alarm if we are editting one alarm.
     String text = null; // if we change it, we will make it non-null, which indicates whether it is ready
     // same for the next few variables
     String number = null;
+    String childActivityType = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +47,24 @@ public class Add_alarm extends AppCompatActivity {
         Switch textSwitch= (Switch) findViewById(R.id.text_switch);
         Switch callSwitch= (Switch) findViewById(R.id.Call_switch);
         EditText name= (EditText) findViewById(R.id.name);
+        //Defaults name to Group Alarm name
+        if (getIntent().getStringExtra("GroupAlarm") != null) {
+            String groupAlarmName = getIntent().getStringExtra("defaultName");
+            name.setText(groupAlarmName);
+            for (int i = 0; i < alarmObjectsList.size(); i++) {
+                if(alarmObjectsList.get(i).getName().equals(groupAlarmName)) {
+                    Log.d("TAG", "Here");
+                    alarm = alarmObjectsList.get(i);
+                    editGroup = true;
+                    timePicker.setHour(alarmObjectsList.get(i).getHour());
+                    timePicker.setMinute(alarmObjectsList.get(i).getMin());
+                    textSwitch.setChecked(alarmObjectsList.get(i).isText());
+                    callSwitch.setChecked(alarmObjectsList.get(i).isCall());
+
+                    name.setText(alarmObjectsList.get(i).getName());
+                }
+            }
+        }
         Button selectRingtone = (Button) findViewById(R.id.button2);    /* button that shows that you want to select a ringtone */
 
 
@@ -66,11 +87,14 @@ public class Add_alarm extends AppCompatActivity {
         {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                //TODO: check whether it is a blocking call, the next screen of text shows up on the screen
-                Intent getNumber = new Intent(getBaseContext(), GetInfo.class);
-                startActivityForResult(getNumber, 2);
+
+                //IMPORTANT: We start two activities, both of which are sitting on top of this activity. But we want enter a number to come first, and so we start it last
                 Intent get_a_message = new Intent(getBaseContext(), TextArchive.class);
                 startActivityForResult(get_a_message, 3);
+
+                Intent getNumber = new Intent(getBaseContext(), GetInfo.class);
+                startActivityForResult(getNumber, 2);
+
             }
         });
 
@@ -78,10 +102,12 @@ public class Add_alarm extends AppCompatActivity {
         {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                //read comment on textSwitch's listener
+                Intent getVoiceMessage = new Intent(getBaseContext(), AudioArchive.class);
+                startActivityForResult(getVoiceMessage, 4);
+
                 Intent getNumber = new Intent(getBaseContext(), GetInfo.class);
                 startActivityForResult(getNumber, 2);   /* request code 2 indicates get number */
-                Intent get_voice_message = new Intent(getBaseContext(), AudioArchive.class);
-                startActivityForResult(get_voice_message, 4);
             }
         });
         selectRingtone.setOnClickListener(new View.OnClickListener() {
@@ -99,31 +125,47 @@ public class Add_alarm extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Intent startIntent= new Intent(getApplicationContext(),HomeScreen.class);
                 TimePicker timePicker= (TimePicker) findViewById(R.id.timePicker);
                 Switch textSwitch= (Switch) findViewById(R.id.text_switch);
                 Switch callSwitch= (Switch) findViewById(R.id.Call_switch);
                 EditText name= (EditText) findViewById(R.id.name);
+                Log.d("TAG", "Name: " + name.getText().toString());
 
                 int timePicker_hour= timePicker.getCurrentHour();
                 int timePicker_min= timePicker.getCurrentMinute();
-              //  String alarmName=name.getText().toString();
-              //  startIntent.putExtra("hour",timePicker_hour);
-             //   startIntent.putExtra("min",timePicker_min);
-             //   startIntent.putExtra("text_switch",textSwitch.isChecked());
-             //   startIntent.putExtra("call_switch",callSwitch.isChecked());
-             //   startIntent.putExtra("name",alarmName);
-
-                if(getIntent().getBooleanExtra("edit_flag",false)==false)
-                {
-                    Alarm_object alarm_object=new Alarm_object(timePicker_hour, timePicker_min, textSwitch.isChecked(), callSwitch.isChecked(), name.getText().toString(), true, ringtoneUri);
-                    Globals global_arraylist= (Globals) getApplication();
-                    ArrayList<Alarm_object> alarmObjectsList=global_arraylist.alarmObjectsList;
-                    alarmObjectsList.add(alarm_object);
-                    MyAlarmManager.myCreateTimeAlarm(alarm_object, getApplicationContext());    //second argument to be given as it cannot be obtained directly by the MyAlarmManager class
 
 
+
+
+                if (editGroup) {
+                    if(ringtoneUri == null)
+                    {
+                        ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+                    }
+                    alarm.setHour(timePicker_hour);
+                    alarm.setMin(timePicker_min);
+                    alarm.setText(textSwitch.isChecked());
+                    alarm.setCall(callSwitch.isChecked());
+                    alarm.setName(name.getText().toString());
                 }
+
+                else if(getIntent().getBooleanExtra("edit_flag",false)==false)
+                {
+                        if(ringtoneUri == null)
+                        {
+                            ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+                        }
+                        Alarm_object alarm_object = new Alarm_object(timePicker_hour, timePicker_min, textSwitch.isChecked(), callSwitch.isChecked(), name.getText().toString(), true, ringtoneUri);
+                        if(alarm_object.isText())
+                        {
+                            alarm_object.setTextMessage(text);
+                        }
+                        Globals global_arraylist = (Globals) getApplication();
+                        ArrayList<Alarm_object> alarmObjectsList = global_arraylist.alarmObjectsList;
+                        alarmObjectsList.add(alarm_object);
+                        MyAlarmManager.myCreateTimeAlarm(alarm_object, getApplicationContext());    //second argument to be given as it cannot be obtained directly by the MyAlarmManager class
+                }
+
 
                 else
                 {
@@ -135,7 +177,6 @@ public class Add_alarm extends AppCompatActivity {
                         alarm.setText(textSwitch.isChecked());
                         alarm.setCall(callSwitch.isChecked());
                         alarm.setName(name.getText().toString());
-                        System.out.println("flag 1");
                         MyAlarmManager.myCreateTimeAlarm(alarm, getApplicationContext());
                     }
 
@@ -146,28 +187,46 @@ public class Add_alarm extends AppCompatActivity {
                         alarm.setText(textSwitch.isChecked());
                         alarm.setCall(callSwitch.isChecked());
                         alarm.setName(name.getText().toString());
-                        System.out.println("flag 2");
                     }
-
-
                 }
-//                Alarm_object alarm_object=new Alarm_object(timePicker_hour, timePicker_min, textSwitch.isChecked(), callSwitch.isChecked(), name.getText().toString(), true);
-//
-//                Globals global_arraylist= (Globals) getApplication();
-//                ArrayList<Alarm_object> alarmObjectsList=global_arraylist.alarmObjectsList;
-//
-//                alarmObjectsList.add(alarm_object);
 
 
 
-                startActivity(startIntent);
+
+
+
+                if (getIntent().getStringExtra("GroupAlarm") != null) {
+                    finishActivity(timePicker_hour, timePicker_min);
+                }
+                else {
+                    Intent startIntent = new Intent(getApplicationContext(), HomeScreen.class);
+                    startActivity(startIntent);
+                }
 
             }
-        });
+        }); //end of listener's call back for save button
 
+    }   // end of onCreate method
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
 
     }
 
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+    }
+
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+        //can add stuff here if important
+    }
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         if(resultCode == Activity.RESULT_CANCELED)  /* user backed out or operation failed for some reason */
@@ -217,6 +276,9 @@ public class Add_alarm extends AppCompatActivity {
                 case 2:
                     temp = data.getStringExtra("theNumber");
                     number = temp;
+
+
+
                 case 3:
                     temp = data.getStringExtra("theText");
                     text = temp;   /* set object variable to this value */
@@ -225,10 +287,27 @@ public class Add_alarm extends AppCompatActivity {
                 case 4:
                     String name = data.getStringExtra("name");
                     String filepath = data.getStringExtra("filepath");
+
+                    //important: todo: setting this as ringtone too, change in future
+                    File file = new File(filepath);
+                    ringtoneUri = Uri.fromFile(file);
                     //put into audio message object
                     break;
             }
         }
+    }
+
+    //Used for group alarm
+    //Group alarm appears in main list but only after time alarm is created
+    //Consider adding flag
+    public void finishActivity(int h, int m) {
+        Intent startIntent = new Intent();
+        Integer hour = h;
+        Integer minute = m;
+        String displayTime = hour.toString() + ":" + minute.toString();
+        startIntent.putExtra("AlarmName", displayTime);
+        setResult(RESULT_OK, startIntent);
+        finish();
     }
 }
 

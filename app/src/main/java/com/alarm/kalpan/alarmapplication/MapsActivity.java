@@ -51,7 +51,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleApiClient googleApiClient;
     private LocationRequest locationRequest;
     private final static int MY_PERMISSION_FINE = 101;
-    private FusedLocationProviderClient fusedLocationProviderClient;
+    //private FusedLocationProviderClient fusedLocationProviderClient;
+    private FusedLocationProviderClient mFusedLocationClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +63,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
 
 //        googleApiClient =new GoogleApiClient.Builder(this)
 //                .addApi(LocationServices.API)
@@ -92,6 +95,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+//            mFusedLocationClient.getLastLocation()
+//                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+//                        @Override
+//                        public void onSuccess(Location location) {
+//                            moveCameratoLocation(location.getLatitude(),location.getLongitude(),15);
+//                            Toast.makeText(getApplicationContext(), "Moving to current location ", Toast.LENGTH_LONG).show();
+//
+//
+//                            if (location != null) {
+//                                    Toast.makeText(getApplicationContext(), "Error ", Toast.LENGTH_LONG).show();
+//                            }
+//                        }
+//                    });
+
+
 
             mMap.setMyLocationEnabled(true);
             //Toast.makeText(getApplicationContext(), "222222222222222222 ", Toast.LENGTH_LONG).show();
@@ -127,6 +146,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSION_FINE);
                 //requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 100);
             }
+
 
 
         }
