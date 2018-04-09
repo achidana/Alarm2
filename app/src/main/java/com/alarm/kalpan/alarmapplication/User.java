@@ -12,6 +12,7 @@ public class User{
     private String phoneNumber;
     private boolean isAdmin;
     private boolean stopAlarm;
+    private static User phoneUser;
 
     public User() {
         super();
@@ -60,5 +61,18 @@ public class User{
     @Override
     public String toString() {
         return getName() + ": " + getPhoneNumber();
+    }
+
+    /** Kalpan: This method allows to retrieve the user of the application on this phone
+     * Note that it is a static method
+     */
+    static User getUser()
+    {
+        return phoneUser;
+    }
+
+    static void setUser(User user)
+    {
+        phoneUser = user;
     }
 }

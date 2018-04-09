@@ -12,32 +12,53 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class HomeScreen extends AppCompatActivity {
     ListView listView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //TODO Check if first time, and then do login and that stuff
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
 
-      //  SharedPreferences preferencesFile = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-      //  if(preferencesFile.getString("existsString", null) == null)
-       // {
-      //      SharedPreferences.Editor editor = preferencesFile.edit();
+        String name = "Ashwin";
+        String number = "7736839870";
+        String userToken = "23423423";
 
-     //       editor.putBoolean("firstTime", false);
-     //       editor.putString("username", "Kalpan");
-     //       editor.putInt("newAlarmID", 0); // set the next id to be 0
-     //       editor.putString("existsString", "exists");
+        SharedPreferences preferencesFile = getSharedPreferences(getString(R.string.preference_file_key) + ".prefs", Context.MODE_PRIVATE);
+        if(preferencesFile.getBoolean("firstTime", true))
+        {
+            SharedPreferences.Editor editor = preferencesFile.edit();
 
-     //   }
+            editor.putBoolean("firstTime", false);
+            editor.putString("username", name); //connect with login screen and get username and number
+            editor.putString("userToken", userToken); //TODO: connect with login screen to get first time token (what if no network?)
+            editor.putString("userNumber", number); //TODO: put correct number
+            editor.apply(); //important: editor.apply will do in background (so gui freeze)
+
+            System.out.println("flag 1");
+            // TODO: in connect with the login screen: load the variables name, user and userToken
+        }
 
 
-      //  else
-      //  {
-//
-  //      }
+        else
+        {
+            Map<String, ?> kvset = preferencesFile.getAll();
+            name = new String((String)(kvset.get("username")));   // making a new string as original is to be considered immutable
+            number = new String((String)(kvset.get("userNumber")));
+            userToken = new String((String) (kvset.get("userToken")));
+            System.out.println("flag 2");
+
+        }
+
+        User user = new User();
+        user.setPhoneNumber(number);
+        user.setName(name);
+        User.setUser(user); // the user of this application
+
+        //loading the database
+
 
         listView= (ListView) findViewById(R.id.listview);
         //  ArrayList <Alarm_object> alarmObjectsList= new ArrayList<Alarm_object>();
