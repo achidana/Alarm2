@@ -42,3 +42,5 @@ captures/
 *.iml
 
 .DS_STORE 
+
+.idea/caches/
