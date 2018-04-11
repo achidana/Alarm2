@@ -79,7 +79,7 @@ public class Add_alarm extends AppCompatActivity {
             timePicker.setMinute(alarmObjectsList.get(edit_position).getMin());
             textSwitch.setChecked(alarmObjectsList.get(edit_position).isText());
             callSwitch.setChecked(alarmObjectsList.get(edit_position).isCall());
-            ringtoneUri = alarm.ringtoneUri;
+            ringtoneUri = alarm.getRingtoneUri();
             name.setText(alarmObjectsList.get(edit_position).getName());
 
 
