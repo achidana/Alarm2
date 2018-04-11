@@ -25,4 +25,9 @@
         android:title="@string/action_add_group_alarm"
         app:showAsAction="always" />
 
+    <item
+        android:id="@+id/location_alarm"
+        android:title="Location alarm"
+        app:showAsAction="always" />
+
 </menu>

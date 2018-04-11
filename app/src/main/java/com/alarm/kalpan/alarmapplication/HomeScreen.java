@@ -107,6 +107,11 @@ public class HomeScreen extends AppCompatActivity {
                 startActivity(new Intent(this, GroupAlarmList.class));
                 return true;
 
+            case R.id.location_alarm:
+                startActivity(new Intent(this, MapsActivity.class));
+                return true;
+
+
 
             case R.id.update_database:
                 Toast.makeText(getApplicationContext(), "starting", Toast.LENGTH_SHORT).show();

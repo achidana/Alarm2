@@ -57,4 +57,7 @@
     <string name="preference_file_key">prefs</string>
 
     <string name="select">select</string>
+    <string name="title_activity_maps">Map</string>
+
+
 </resources>

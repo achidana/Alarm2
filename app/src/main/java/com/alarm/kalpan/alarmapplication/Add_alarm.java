@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.media.Ringtone;
 import android.support.v7.app.AppCompatActivity;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
-
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -13,10 +15,6 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TimePicker;
-import android.media.RingtoneManager;
-
-
-import android.net.Uri;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -112,6 +110,7 @@ public class Add_alarm extends AppCompatActivity {
                 startActivityForResult(getNumber, 2);   /* request code 2 indicates get number */
             }
         });
+
         selectRingtone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
