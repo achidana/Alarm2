@@ -39,4 +39,6 @@ proguard/
 captures/
 
 # Intellij
-*.iml 
+*.iml
+
+.DS_STORE 
