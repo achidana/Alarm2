@@ -1,28 +1,26 @@
 package com.alarm.kalpan.alarmapplication;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.Api;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingClient;
+import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
@@ -36,13 +34,10 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 
-import java.io.FileDescriptor;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -50,9 +45,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     LocationManager locationManager;
     private GoogleApiClient googleApiClient;
     private LocationRequest locationRequest;
+    ArrayList<Geofence> geofenceList = new ArrayList<>();
     private final static int MY_PERMISSION_FINE = 101;
     //private FusedLocationProviderClient fusedLocationProviderClient;
     private FusedLocationProviderClient mFusedLocationClient;
+    PendingIntent GeofencePendingIntent;
+    private GeofencingClient mGeofencingClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +62,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        mGeofencingClient = LocationServices.getGeofencingClient(this);
 
 
 //        googleApiClient =new GoogleApiClient.Builder(this)
@@ -96,20 +95,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-//            mFusedLocationClient.getLastLocation()
-//                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-//                        @Override
-//                        public void onSuccess(Location location) {
-//                            moveCameratoLocation(location.getLatitude(),location.getLongitude(),15);
-//                            Toast.makeText(getApplicationContext(), "Moving to current location ", Toast.LENGTH_LONG).show();
-//
-//
-//                            if (location != null) {
-//                                    Toast.makeText(getApplicationContext(), "Error ", Toast.LENGTH_LONG).show();
-//                            }
-//                        }
-//                    });
+            mFusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            moveCameratoLocation(location.getLatitude(), location.getLongitude(), 15);
+                            Toast.makeText(getApplicationContext(), "Moving to current location ", Toast.LENGTH_LONG).show();
 
+
+                            if (location != null) {
+                                //Toast.makeText(getApplicationContext(), "Error ", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
 
 
             mMap.setMyLocationEnabled(true);
@@ -148,7 +146,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
 
 
-
         }
 
         if (mMap.isMyLocationEnabled()) {
@@ -158,6 +155,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
         }
+
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+
+            @Override
+            public void onMapClick(LatLng point) {
+                // TODO Auto-generated method stub
+                MarkerOptions marker = new MarkerOptions().position(
+                        new LatLng(point.latitude, point.longitude));
+
+                mMap.addMarker(marker);
+                if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+                    String key = point.latitude + "_" + point.longitude;
+
+                    makeGeofence(point.latitude, point.longitude, key);
+
+                    mGeofencingClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent());
+
+                }
+
+
+            }
+        });
 
 
         PlaceAutocompleteFragment placeAutoComplete = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.search_bar);
@@ -195,6 +215,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     List<Address> addressList = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
                     mMap.addMarker(new MarkerOptions().position(latLng).title(addressList.get(0).getLocality() + "," + addressList.get(0).getCountryName()));
                     moveCameratoLocation(latLng.latitude, latLng.longitude, 10);
+
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -246,62 +267,41 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.animateCamera(update);
     }
 
+    private PendingIntent getGeofencePendingIntent() {
+        if (GeofencePendingIntent != null) {
+            return GeofencePendingIntent;
+        }
+        Intent intent = new Intent(this, LocationAlarm.class);
+
+        GeofencePendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        return GeofencePendingIntent;
+    }
+
+    private void makeGeofence(double lat, double lang, String key) {
+        geofenceList.add(new Geofence.Builder()
+                .setRequestId(key)
+                .setCircularRegion(
+                        lat, lang, 100
+                )
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
+                .setExpirationDuration(0)
+                .build());
+    }
+
+    private GeofencingRequest getGeofencingRequest() {
+
+
+        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
+
+
+        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
+
+        builder.addGeofences(geofenceList);
+
+        return builder.build();
+    }
+
 }
 
-
-//    public void getLocation()
-//    {
-//        fusedLocationProviderClient=LocationServices.getFusedLocationProviderClient(this);
-//        try {
-//
-//
-//
-//        }catch (SecurityException e)
-//        {
-//
-//        }
-//    }
-
-//    @Override
-//    public void onConnected(@Nullable Bundle bundle) {
-//
-//        LocationServices.getFusedLocationProviderClient()
-//    }
-//
-//    @Override
-//    public void onConnectionSuspended(int i) {
-//
-//    }
-//
-//    @Override
-//    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-//
-//    }
-
-//
-//    @Override
-//    public void onLocationChanged(Location location) {
-//
-//    }
-//
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        googleApiClient.connect();
-//    }
-//
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//    }
-//
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//    }
-//
-//    @Override
-//    protected void onStop() {
-//        super.onStop();
-//    }
 
