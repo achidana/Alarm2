@@ -19,5 +19,6 @@ public class Globals extends Application
     public Map<String, ArrayList<User>> userList = new HashMap<>();
     public Map<String, String> timeList = new HashMap<>();
 
+
 }
 

@@ -1,28 +1,33 @@
 package com.alarm.kalpan.alarmapplication;
 
+import android.arch.persistence.room.Entity;
 import android.net.Uri;
 
 /**
  * Created by ashwin on 2/22/18.
  */
 
+@Entity
 public class Alarm_object {
 
-    int hour;
-    int min;
-    boolean text;
-    boolean call;
-    String name;
-    String ampm;
-    boolean onOff;
-    Uri ringtoneUri;
-    int alarmID;
-    public static int alarmIDGenerator = 0;
+    private int hour;
+    private int min;
+    private boolean text;
+    private boolean call;
+    private String name;
+    private String ampm;
+    private boolean onOff;
 
-    String numberToCall;
-    String textMessage;
-    String fileToVoiceMessage;
 
+
+    private Uri ringtoneUri;
+
+    private int alarmID;
+    private String numberToCall;
+    private String textMessage;
+    private String fileToVoiceMessage;
+
+    //TODO: have other constructors that fill in default stuff if not provided (like ringtone and on off and such
     public Alarm_object(int hour, int min, boolean text, boolean call, String name, boolean onOff, Uri ringtoneUri) {
         this.hour = hour;
         this.min = min;
@@ -35,7 +40,20 @@ public class Alarm_object {
         }
         this.onOff=onOff;
         this.ringtoneUri = ringtoneUri;
-        alarmID = alarmIDGenerator++;
+    }
+
+
+    public int getAlarmID() {
+        return alarmID;
+    }
+
+    public void setAlarmID(int alarmID) {
+        this.alarmID = alarmID;
+    }
+
+
+    public Uri getRingtoneUri() {
+        return ringtoneUri;
     }
 
     public void setTextMessage(String textMessage)
@@ -78,6 +96,11 @@ public class Alarm_object {
         this.name = name;
     }
 
+    public void setRingtoneUri(Uri ringtoneUri )
+    {
+        this.ringtoneUri = ringtoneUri;
+    }
+
 
     public boolean isOnOff() {
         return onOff;
@@ -117,5 +140,6 @@ public class Alarm_object {
         }
         return tempHour + ":" + min_temp + " " + ampm;
     }
+
 
 }

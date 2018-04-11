@@ -6,35 +6,36 @@
     android:layout_height="match_parent"
     tools:context="com.alarm.kalpan.alarmapplication.GetInfo">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center_vertical" >
+    <Button
+        android:id="@+id/OK"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="47dp"
+        android:layout_marginStart="152dp"
+        android:text="OK"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Enter number"
-            android:textSize="24sp"
-            android:textStyle="bold" />
-        <EditText
-            android:id="@+id/editTextPhoneNumber"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/prompt_number"
-            android:inputType="phone" />
+    <Button
+        android:id="@+id/selectContact"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="143dp"
+        android:text="Select Contact"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/OK"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="OK"
-            android:layout_marginBottom="60dp" />
-
-
-
-    </LinearLayout>
+    <EditText
+        android:id="@+id/editTextPhoneNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:inputType="phone"
+        android:text="Name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/selectContact" />
 
 </android.support.constraint.ConstraintLayout>

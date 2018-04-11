@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.alarm.kalpan.alarmapplication.Add_alarm">
+    tools:context="com.alarm.kalpan.alarmapplication.Add_alarm"
+    android:orientation="vertical"
+    >
+    <TimePicker
+        android:id="@+id/timePicker"
+        android:layout_width="380dp"
+        android:layout_height="379dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_gravity="center"/>
 
     <EditText
         android:id="@+id/name"
@@ -21,8 +31,17 @@
         app:layout_constraintTop_toBottomOf="@+id/timePicker" />
 
     <Switch
+        android:id="@+id/onOffSwitch"
+        android:layout_width="match_parent"
+        android:layout_height="27dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Toggle on/off"
+        />
+
+    <Switch
         android:id="@+id/text_switch"
-        android:layout_width="113dp"
+        android:layout_width="match_parent"
         android:layout_height="27dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -31,9 +50,11 @@
         app:layout_constraintTop_toBottomOf="@+id/name"
         android:layout_marginLeft="8dp" />
 
+
+
     <Switch
         android:id="@+id/Call_switch"
-        android:layout_width="113dp"
+        android:layout_width="match_parent"
         android:layout_height="27dp"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
@@ -42,12 +63,7 @@
         app:layout_constraintTop_toBottomOf="@+id/name"
         android:layout_marginRight="8dp" />
 
-    <TimePicker
-        android:id="@+id/timePicker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+
 
     <Button
         android:id="@+id/save"
@@ -66,13 +82,11 @@
     <Button
         android:id="@+id/button2"
         android:layout_width="110dp"
-        android:layout_height="33dp"
+        android:layout_height="match_parent"
         android:layout_marginBottom="5dp"
         android:layout_marginStart="8dp"
-        android:text="ringtone"
-        android:textSize="8sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:text="Ringtone"
+        android:textSize="14sp" />
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>
 

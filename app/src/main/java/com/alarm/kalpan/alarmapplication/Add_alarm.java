@@ -2,6 +2,8 @@ package com.alarm.kalpan.alarmapplication;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.media.Ringtone;
+import android.support.v7.app.AppCompatActivity;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -31,7 +33,6 @@ public class Add_alarm extends AppCompatActivity {
     String text = null; // if we change it, we will make it non-null, which indicates whether it is ready
     // same for the next few variables
     String number = null;
-    String childActivityType = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +46,7 @@ public class Add_alarm extends AppCompatActivity {
         Switch callSwitch= (Switch) findViewById(R.id.Call_switch);
         EditText name= (EditText) findViewById(R.id.name);
         //Defaults name to Group Alarm name
+
         if (getIntent().getStringExtra("GroupAlarm") != null) {
             String groupAlarmName = getIntent().getStringExtra("defaultName");
             name.setText(groupAlarmName);
@@ -64,17 +66,18 @@ public class Add_alarm extends AppCompatActivity {
         }
         Button selectRingtone = (Button) findViewById(R.id.button2);    /* button that shows that you want to select a ringtone */
 
+        // if edit flag is up... Note that the second argument is the default value that will be there, if the extra is not there
 
         if( alarmObjectsList.size()>0 && getIntent().getBooleanExtra("edit_flag",false))
         {
-            int edit_position=getIntent().getIntExtra("position",0);
+            int edit_position = getIntent().getIntExtra("position",0);
             alarm = alarmObjectsList.get(edit_position);
             edit = true;
             timePicker.setHour(alarmObjectsList.get(edit_position).getHour());
             timePicker.setMinute(alarmObjectsList.get(edit_position).getMin());
             textSwitch.setChecked(alarmObjectsList.get(edit_position).isText());
             callSwitch.setChecked(alarmObjectsList.get(edit_position).isCall());
-
+            ringtoneUri = alarm.getRingtoneUri();
             name.setText(alarmObjectsList.get(edit_position).getName());
 
 
@@ -114,7 +117,7 @@ public class Add_alarm extends AppCompatActivity {
                 /* next line makes an intent that will be used for startActivityForResult. That activity will be a popup */
                 Intent ringtonePickerIntent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
                 ringtonePickerIntent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false);   /* this basically is a mechanism for giving data to the activity where this intent would go. RingtoneManager defines all these constants and handles them approriately from the receiving end. This thing tells that we don't allow one option of silent in the list of sounds */
-                ringtonePickerIntent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALL);   /*important: we have all sounds, which I believe is more versatile and user friendly for the user. So even non alarm types would show up */
+                ringtonePickerIntent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALARM);   /*important: we have all sounds, which I believe is more versatile and user friendly for the user. So even non alarm types would show up */
                 startActivityForResult(ringtonePickerIntent, 1);    /*reqeust code is 1 but is more helpful probably with many calls or complex programs, not for this testing purposes scenario */
             }
         });
@@ -147,7 +150,7 @@ public class Add_alarm extends AppCompatActivity {
                     alarm.setName(name.getText().toString());
                 }
 
-                else if(getIntent().getBooleanExtra("edit_flag",false)==false)
+                else if(getIntent().getBooleanExtra("edit_flag",false) == false)
                 {
                         if(ringtoneUri == null)
                         {
@@ -175,6 +178,8 @@ public class Add_alarm extends AppCompatActivity {
                         alarm.setText(textSwitch.isChecked());
                         alarm.setCall(callSwitch.isChecked());
                         alarm.setName(name.getText().toString());
+                        alarm.setRingtoneUri(ringtoneUri);
+                        System.out.println("Flag 1");
                         MyAlarmManager.myCreateTimeAlarm(alarm, getApplicationContext());
                     }
 
@@ -185,20 +190,18 @@ public class Add_alarm extends AppCompatActivity {
                         alarm.setText(textSwitch.isChecked());
                         alarm.setCall(callSwitch.isChecked());
                         alarm.setName(name.getText().toString());
+                        System.out.println("Flag 2");
+                        alarm.setRingtoneUri(ringtoneUri);
                     }
                 }
-
-
-
-
 
 
                 if (getIntent().getStringExtra("GroupAlarm") != null) {
                     finishActivity(timePicker_hour, timePicker_min);
                 }
                 else {
-                    Intent startIntent = new Intent(getApplicationContext(), HomeScreen.class);
-                    startActivity(startIntent);
+                    finish();   //this is better than calling startActivity of Homescreen, as we will now go back to the previous activity that called this activity (may it be settings or group alarm or whatever)
+                    // we cleaer out memory and so don't need to reset any variables after calling finish(). Note that we would have had to reset variables otherwise as we may have data of previous alarm when we create on additional alarm. The state of this activity isn't reset (in that case)
                 }
 
             }
@@ -268,7 +271,7 @@ public class Add_alarm extends AppCompatActivity {
                         //handle
                     }
                     ringtoneUri = uri;
-                    //important: we just need to save the URI right now, in the program, or in the memory. We don't need to play pause etc right now, right? (possibly right)
+
                     break;
 
                 case 2:
