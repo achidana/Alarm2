@@ -2,6 +2,7 @@ package com.alarm.kalpan.alarmapplication;
 
 import android.app.Application;
 
+import java.sql.Time;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 public class Globals extends Application
 {
 
-    ArrayList<Alarm_object> alarmObjectsList= new ArrayList<Alarm_object>();
+    ArrayList<TimeAlarm> alarmObjectsList= new ArrayList<Alarm_object>();
 
     public Map<String, ArrayList<String>> groupList = new HashMap<>();
     public Map<String, ArrayList<User>> userList = new HashMap<>();

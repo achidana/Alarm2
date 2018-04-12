@@ -19,13 +19,13 @@ import java.util.ArrayList;
  * Created by ashwin on 2/22/18.
  */
 
-class CustomAdapter extends ArrayAdapter<Alarm_object>  {
-    Alarm_object a;
+class CustomAdapter extends ArrayAdapter<TimeAlarm>  {
+    TimeAlarm a;
     public Context context;
 
 
 
-    CustomAdapter(Context context, ArrayList < Alarm_object> alarmObjectsList) {
+    CustomAdapter(Context context, ArrayList < TimeAlarm> alarmObjectsList) {
         super(context,R.layout.custom_row_homescreen,alarmObjectsList);
         this.context = context;
     }

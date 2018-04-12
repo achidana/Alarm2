@@ -12,7 +12,7 @@ import java.util.Calendar;
  */
 
 public class MyAlarmManager {
-    static boolean myCreateTimeAlarm(Alarm_object timeAlarm, Context context)
+    static boolean myCreateTimeAlarm(TimeAlarm timeAlarm, Context context)
     {
         AlarmManager alarmManager;
         PendingIntent alarmIntent;
@@ -47,7 +47,7 @@ public class MyAlarmManager {
         return true;    /*we return true in any branch, so not useful TODO*/
     }
 
-    static boolean myCancelTimeAlarm(Alarm_object timeAlarm, Context context)
+    static boolean myCancelTimeAlarm(TimeAlarm timeAlarm, Context context)
     {
         Intent intent = new Intent(context.getApplicationContext(), AlarmReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, timeAlarm.getAlarmID(), intent, 0);

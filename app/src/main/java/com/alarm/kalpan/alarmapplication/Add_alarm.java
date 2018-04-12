@@ -29,7 +29,7 @@ public class Add_alarm extends AppCompatActivity {
     Uri ringtoneUri;
     boolean edit;
     boolean editGroup;
-    Alarm_object alarm; // the old alarm if we are editting one alarm.
+    TimeAlarm alarm; // the old alarm if we are editting one alarm.
     String text = null; // if we change it, we will make it non-null, which indicates whether it is ready
     // same for the next few variables
     String number = null;
@@ -40,7 +40,7 @@ public class Add_alarm extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_alarm);
         Globals global_arraylist= (Globals) getApplication();
-        final ArrayList<Alarm_object> alarmObjectsList=global_arraylist.alarmObjectsList;
+        final ArrayList<TimeAlarm> alarmObjectsList=global_arraylist.alarmObjectsList;
         TimePicker timePicker= (TimePicker) findViewById(R.id.timePicker);
         Switch textSwitch= (Switch) findViewById(R.id.text_switch);
         Switch callSwitch= (Switch) findViewById(R.id.Call_switch);
@@ -156,15 +156,15 @@ public class Add_alarm extends AppCompatActivity {
                         {
                             ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
                         }
-                        Alarm_object alarm_object = new Alarm_object(timePicker_hour, timePicker_min, textSwitch.isChecked(), callSwitch.isChecked(), name.getText().toString(), true, ringtoneUri);
-                        if(alarm_object.isText())
+                        TimeAlarm timeAlarm = new TimeAlarm(timePicker_hour, timePicker_min, textSwitch.isChecked(), callSwitch.isChecked(), name.getText().toString(), true, ringtoneUri);
+                        if(timeAlarm.isText())
                         {
-                            alarm_object.setTextMessage(text);
+                            timeAlarm.setTextMessage(text);
                         }
                         Globals global_arraylist = (Globals) getApplication();
-                        ArrayList<Alarm_object> alarmObjectsList = global_arraylist.alarmObjectsList;
-                        alarmObjectsList.add(alarm_object);
-                        MyAlarmManager.myCreateTimeAlarm(alarm_object, getApplicationContext());    //second argument to be given as it cannot be obtained directly by the MyAlarmManager class
+                        ArrayList<TimeAlarm> alarmObjectsList = global_arraylist.alarmObjectsList;
+                        alarmObjectsList.add(timeAlarm);
+                        MyAlarmManager.myCreateTimeAlarm(timeAlarm, getApplicationContext());    //second argument to be given as it cannot be obtained directly by the MyAlarmManager class
                 }
 
 

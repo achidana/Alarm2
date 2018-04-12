@@ -5,21 +5,23 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
+import java.sql.Time;
+
 /**
  * Created by kalpanjasani on 4/8/18.
  */
 
 public abstract class TimeAlarmDAO {
     @Insert
-    public abstract void insertAlarms(Alarm_object... alarms);
+    public abstract void insertAlarms(TimeAlarm... alarms);
 
     @Delete
-    public abstract void deleteAlarms(Alarm_object... alarms);
+    public abstract void deleteAlarms(TimeAlarm... alarms);
 
     @Update
-    public abstract void updateAlarms(Alarm_object... alarms);
+    public abstract void updateAlarms(TimeAlarm... alarms);
 
     @Query("SELECT * FROM TimeAlarms")
-    public abstract Alarm_object[] loadAlarm_objects();
+    public abstract TimeAlarm[] loadTimeAlarms();
 
 }
