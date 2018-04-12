@@ -1,43 +1,102 @@
 package com.alarm.kalpan.alarmapplication;
 
-import android.app.IntentService;
-import android.content.Intent;
-import android.support.annotation.Nullable;
-import android.util.Log;
-import android.widget.Toast;
+import android.net.Uri;
 
 import com.google.android.gms.location.Geofence;
-import com.google.android.gms.location.GeofencingEvent;
 
-import java.util.List;
+public class LocationAlarm {
+    private boolean isOn;
+    private Geofence geofence;
+    private Uri RingtoneURI;
+    private String name;
+    private long radius;
 
-public class LocationAlarm extends IntentService {
+
+    private double latitude;
+    private double longitude;
 
 
-    public LocationAlarm() {
-        super("LocationAlarm");
+    private Alarm_object backupTimeAlarm;
 
+
+    public LocationAlarm(String name, boolean isOn, double latitude, double longitude, Alarm_object backupTimeAlarm)
+    {
+        this.name = name;
+        this.isOn = isOn;
+        this.latitude=latitude;
+        this.longitude=longitude;
+        this.backupTimeAlarm=backupTimeAlarm;
     }
 
-    @Override
-    protected void onHandleIntent(@Nullable Intent intent) {
-        GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
 
-        if (geofencingEvent.hasError()) {
-            Toast.makeText(getApplicationContext(), "Error in GEOFENCE ", Toast.LENGTH_LONG).show();
-            return;
-
-        }
-        int geofenceTransition = geofencingEvent.getGeofenceTransition();
-        if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
-            List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
-
-            Toast.makeText(getApplicationContext(), triggeringGeofences.get(0).getRequestId() + "!!!!!", Toast.LENGTH_LONG).show();
-            Log.e("!!!!!", "!!!!!!!@");
-
-
-        }
-
-
+    public Alarm_object getBackupTimeAlarm() {
+        return backupTimeAlarm;
     }
+
+    public void setBackupTimeAlarm(Alarm_object backupTimeAlarm) {
+        this.backupTimeAlarm = backupTimeAlarm;
+    }
+
+
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+
+
+    public boolean isOn() {
+        return isOn;
+    }
+
+    public void setOn(boolean on) {
+        isOn = on;
+    }
+
+    public Geofence getGeofence() {
+        return geofence;
+    }
+
+    public void setGeofence(Geofence geofence) {
+        this.geofence = geofence;
+    }
+
+    public Uri getRingtoneURI() {
+        return RingtoneURI;
+    }
+
+    public void setRingtoneURI(Uri ringtoneURI) {
+        RingtoneURI = ringtoneURI;
+    }
+    
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public long getRadius() {
+        return radius;
+    }
+
+    public void setRadius(long radius) {
+        this.radius = radius;
+    }
+
+
+
 }

@@ -271,7 +271,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (GeofencePendingIntent != null) {
             return GeofencePendingIntent;
         }
-        Intent intent = new Intent(this, LocationAlarm.class);
+        Intent intent = new Intent(this, LocationAlarmIntentService.class);
 
         GeofencePendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
