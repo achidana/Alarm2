@@ -8,7 +8,7 @@ import android.net.Uri;
  */
 
 @Entity
-public class Alarm_object {
+public class TimeAlarm {
 
     private int hour;
     private int min;
@@ -28,7 +28,7 @@ public class Alarm_object {
     private String fileToVoiceMessage;
 
     //TODO: have other constructors that fill in default stuff if not provided (like ringtone and on off and such
-    public Alarm_object(int hour, int min, boolean text, boolean call, String name, boolean onOff, Uri ringtoneUri) {
+    public TimeAlarm(int hour, int min, boolean text, boolean call, String name, boolean onOff, Uri ringtoneUri) {
         this.hour = hour;
         this.min = min;
         this.text = text;
