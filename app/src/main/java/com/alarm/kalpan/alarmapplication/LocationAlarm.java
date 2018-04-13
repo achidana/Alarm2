@@ -16,10 +16,10 @@ public class LocationAlarm {
     private double longitude;
 
 
-    private Alarm_object backupTimeAlarm;
+    private TimeAlarm backupTimeAlarm;
 
 
-    public LocationAlarm(String name, boolean isOn, double latitude, double longitude, Alarm_object backupTimeAlarm)
+    public LocationAlarm(String name, boolean isOn, double latitude, double longitude, TimeAlarm backupTimeAlarm)
     {
         this.name = name;
         this.isOn = isOn;
@@ -29,11 +29,11 @@ public class LocationAlarm {
     }
 
 
-    public Alarm_object getBackupTimeAlarm() {
+    public TimeAlarm getBackupTimeAlarm() {
         return backupTimeAlarm;
     }
 
-    public void setBackupTimeAlarm(Alarm_object backupTimeAlarm) {
+    public void setBackupTimeAlarm(TimeAlarm backupTimeAlarm) {
         this.backupTimeAlarm = backupTimeAlarm;
     }
 
@@ -80,7 +80,7 @@ public class LocationAlarm {
     public void setRingtoneURI(Uri ringtoneURI) {
         RingtoneURI = ringtoneURI;
     }
-    
+
     public String getName() {
         return name;
     }

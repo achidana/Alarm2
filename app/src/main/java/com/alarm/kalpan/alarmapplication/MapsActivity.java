@@ -160,7 +160,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             public void onMapClick(LatLng point) {
-                // TODO Auto-generated method stub
+
                 MarkerOptions marker = new MarkerOptions().position(
                         new LatLng(point.latitude, point.longitude));
 
