@@ -65,6 +65,6 @@ public class MyAlarmManager {
         // extract the lat long
         // generate the geofence
         // add the geofence
-        
+
     }
 }
