@@ -60,17 +60,7 @@ public class AlarmRinger extends AppCompatActivity {
             public void onClick(View view) {
                 thread.interrupt();
                 thread1.interrupt();
-                try {
-                    Thread.sleep(1000);
-                }
-                catch(InterruptedException e)
-                {
-                    //do nothing
-                }
-                finally
-                {
-                    finish();
-                }
+                finish();
             }
         });
     }

@@ -11,16 +11,17 @@ import com.google.android.gms.location.GeofencingEvent;
 
 import java.util.List;
 
-public class LocationAlarm extends IntentService {
+public class LocationAlarmIntentService extends IntentService {
 
 
-    public LocationAlarm() {
+    public LocationAlarmIntentService() {
         super("LocationAlarm");
 
     }
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
+        System.out.println("flag ashwin4");
         GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
 
         if (geofencingEvent.hasError()) {

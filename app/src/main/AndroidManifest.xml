@@ -62,10 +62,15 @@
 
         <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_maps"></activity>
+            android:label="@string/title_activity_maps">
+        </activity>
+
         <service
-            android:name=".LocationAlarm"
-            android:allowBackup="true"></service>
+            android:name=".LocationAlarmIntentService"
+            android:allowBackup="true">
+        </service>
+
+        <receiver android:name=".LocationAlarmReceiver" />
 
 
     </application>
