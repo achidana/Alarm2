@@ -34,10 +34,13 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.google.android.gms.location.Geofence.NEVER_EXPIRE;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -64,14 +67,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mGeofencingClient = LocationServices.getGeofencingClient(this);
 
-
-//        googleApiClient =new GoogleApiClient.Builder(this)
-//                .addApi(LocationServices.API)
-//                .addConnectionCallbacks(this)
-//                .addOnConnectionFailedListener(this)
-//                .build();
-
-
     }
 
 
@@ -95,16 +90,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-            mFusedLocationClient.getLastLocation()
-                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+            mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
                         @Override
                         public void onSuccess(Location location) {
                             moveCameratoLocation(location.getLatitude(), location.getLongitude(), 15);
                             Toast.makeText(getApplicationContext(), "Moving to current location ", Toast.LENGTH_LONG).show();
 
 
-                            if (location != null) {
-                                //Toast.makeText(getApplicationContext(), "Error ", Toast.LENGTH_LONG).show();
+                            if (location == null) {
+                                Toast.makeText(getApplicationContext(), "Error ", Toast.LENGTH_LONG).show();
                             }
                         }
                     });
@@ -112,29 +106,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             mMap.setMyLocationEnabled(true);
             //Toast.makeText(getApplicationContext(), "222222222222222222 ", Toast.LENGTH_LONG).show();
-
-//            mMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
-//                @Override
-//                public boolean onMyLocationButtonClick() {
-//
-//                    fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
-//                    try {
-//                        Task t = fusedLocationProviderClient.getLastLocation();
-//
-//                        if (t.isComplete()) {
-//                            moveCameratoLocation(fusedLocationProviderClient.getLastLocation().getResult().getLatitude(), fusedLocationProviderClient.getLastLocation().getResult().getLongitude(), 15);
-//                            System.out.println(fusedLocationProviderClient.getLastLocation().getResult().getLatitude());
-//                        }
-//
-//
-//                    } catch (SecurityException e) {
-//
-//                    }
-//
-//                    return true;
-//                }
-//            });
-
 
         } else {
 
@@ -160,18 +131,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             public void onMapClick(LatLng point) {
-
+                // TODO Auto-generated method stub
                 MarkerOptions marker = new MarkerOptions().position(
                         new LatLng(point.latitude, point.longitude));
 
                 mMap.addMarker(marker);
-                if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+                {
 
                     String key = point.latitude + "_" + point.longitude;
 
                     makeGeofence(point.latitude, point.longitude, key);
 
-                    mGeofencingClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent());
+                    Task<Void> t = mGeofencingClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent());
+                    t.addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            System.out.println("shout");
+                        }
+                    });
+
 
                 }
 
@@ -213,6 +192,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 try {
                     List<Address> addressList = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+
+                    //add the pin point
                     mMap.addMarker(new MarkerOptions().position(latLng).title(addressList.get(0).getLocality() + "," + addressList.get(0).getCountryName()));
                     moveCameratoLocation(latLng.latitude, latLng.longitude, 10);
 
@@ -228,36 +209,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Log.d("Maps", "An error occurred: " + status);
             }
         });
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-        }
-        // mMap.setMyLocationEnabled(true);
-        //mMap.getUiSettings().setMyLocationButtonEnabled(true);
-
-        // mMap.setOnMyLocationButtonClickListener(this);
-        //mMap.setOnMyLocationClickListener(this);
-
     }
-
-//    @Override
-//    public void onMyLocationClick(@NonNull Location location) {
-//        Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG).show();
-//    }
-//
-//    @Override
-//    public boolean onMyLocationButtonClick() {
-//        Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
-//        // Return false so that we don't consume the event and the default behavior still occurs
-//        // (the camera animates to the user's current position).
-//        return false;
-//    }
 
 
     public void moveCameratoLocation(double lat, double lng, float zoom) {
@@ -271,22 +223,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (GeofencePendingIntent != null) {
             return GeofencePendingIntent;
         }
-        Intent intent = new Intent(this, LocationAlarmIntentService.class);
+        Intent intent = new Intent(getApplicationContext(), LocationAlarmReceiver.class);
 
-        GeofencePendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        GeofencePendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 11, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        System.out.println("flag ashwin3");
 
         return GeofencePendingIntent;
     }
 
     private void makeGeofence(double lat, double lang, String key) {
         geofenceList.add(new Geofence.Builder()
-                .setRequestId(key)
+                .setRequestId(key) //v2 is the raduis
                 .setCircularRegion(
-                        lat, lang, 100
+                        lat, lang, 10000  // the last argument is the radius in metres TODO: change this to dynamic
                 )
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
-                .setExpirationDuration(0)
+                .setExpirationDuration(Geofence.NEVER_EXPIRE)
                 .build());
+        System.out.println("flag ashwin1");
+
     }
 
     private GeofencingRequest getGeofencingRequest() {
@@ -295,10 +250,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
 
 
+        // initial_transition_enter indicates that if user is already in one geofence, trigger the transition_enter move
         builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
 
         builder.addGeofences(geofenceList);
-
+        System.out.println("flag ashwin2");
         return builder.build();
     }
 

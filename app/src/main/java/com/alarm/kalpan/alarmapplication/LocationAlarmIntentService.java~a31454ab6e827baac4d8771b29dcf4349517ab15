@@ -15,13 +15,12 @@ public class LocationAlarmIntentService extends IntentService {
 
 
     public LocationAlarmIntentService() {
-        super("LocationAlarm");
+        super("LocationAlarmIntentService");
 
     }
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        System.out.println("flag ashwin4");
         GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
 
         if (geofencingEvent.hasError()) {

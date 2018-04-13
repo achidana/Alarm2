@@ -59,4 +59,12 @@ public class MyAlarmManager {
         return true;
     }
 
+//    static boolean myCreateLocationAlarm(LocationAlarm locationAlarm, Context context)
+ //   {
+
+        // extract the lat long
+        // generate the geofence
+        // add the geofence
+
+ //   }
 }
