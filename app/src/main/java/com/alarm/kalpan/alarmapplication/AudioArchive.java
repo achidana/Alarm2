@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -67,42 +69,54 @@ public class AudioArchive extends Activity{
 
     //Just adding text item, still working on grabbing audio from dialog vs. opening new activity
     public void addItems(View v) {
-        Intent intent = new Intent(this, TestRecordAudio.class);
-        startActivityForResult(intent, REQUEST_CODE_RECORD);
+        boolean startRecord = true;
+        try {
+            MediaRecorder mediaRecorder = new MediaRecorder();
+            mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        } catch (Exception e) {
+            Toast toast = Toast.makeText(this, "Enable Microphone for Alarm^2 in Apps->Settings", Toast.LENGTH_LONG);
+            toast.show();
+            startRecord = false;
+        }
+        if (startRecord) {
+            Intent intent = new Intent(this, TestRecordAudio.class);
+            startActivityForResult(intent, REQUEST_CODE_RECORD);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("New Voice Message");
 
-        final EditText input = new EditText(this);
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        builder.setView(input);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("New Voice Message");
 
-        //OK is pressed, opens editText and adds to adapter
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                userText = input.getText().toString();
-                try {
-                    mp.setDataSource(audioFileLocation);
-                    //System.out.println("HERE1: " + audioFileLocation);
-                } catch (Exception e) {
-                    e.printStackTrace();
+            final EditText input = new EditText(this);
+            input.setInputType(InputType.TYPE_CLASS_TEXT);
+            builder.setView(input);
+
+            //OK is pressed, opens editText and adds to adapter
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    userText = input.getText().toString();
+                    try {
+                        mp.setDataSource(audioFileLocation);
+                        //System.out.println("HERE1: " + audioFileLocation);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    AudioMessage newAM = new AudioMessage(userText, mp);
+                    amObjects.add(newAM);
+                    audioMessages.add(newAM.getName());
+                    adapter.notifyDataSetChanged();
                 }
-                AudioMessage newAM = new AudioMessage(userText, mp);
-                amObjects.add(newAM);
-                audioMessages.add(newAM.getName());
-                adapter.notifyDataSetChanged();
-            }
-        });
+            });
 
-        //Cancel is pressed, closes the box without updating list
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.cancel();
-            }
-        });
-        builder.show();
+            //Cancel is pressed, closes the box without updating list
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.cancel();
+                }
+            });
+            builder.show();
+        }
     }
 
     //Initilializes onClick functionality of listView

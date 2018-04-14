@@ -23,10 +23,14 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+
+    //Tests
     testImplementation 'junit:junit:4.12'
     testCompile 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    androidTestCompile 'com.android.support.test.espresso:espresso-contrib:3.0.1'
+
 
     // Room
     implementation "android.arch.persistence.room:runtime:1.0.0"
@@ -34,4 +38,16 @@ dependencies {
 
     // Test helpers for Room
     testImplementation "android.arch.persistence.room:testing:1.0.0"
+
+    //Firebase
+    compile 'com.google.firebase:firebase-core:12.0.1'
+    compile 'com.google.firebase:firebase-messaging:12.0.1'
+    compile 'com.google.firebase:firebase-auth:12.0.1'
+    compile 'com.google.code.gson:gson:2.8.2'
+
+    //Verify
+    compile 'com.google.android.gms:play-services-auth:12.0.1'
+
 }
+
+apply plugin: 'com.google.gms.google-services'

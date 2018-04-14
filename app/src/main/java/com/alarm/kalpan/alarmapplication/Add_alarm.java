@@ -165,6 +165,7 @@ public class Add_alarm extends AppCompatActivity {
                         Globals global_arraylist = (Globals) getApplication();
                         ArrayList<Alarm_object> alarmObjectsList = global_arraylist.alarmObjectsList;
                         alarmObjectsList.add(alarm_object);
+                        System.out.println("Added: " + alarmObjectsList.get(0).getHour());
                         MyAlarmManager.myCreateTimeAlarm(alarm_object, getApplicationContext());    //second argument to be given as it cannot be obtained directly by the MyAlarmManager class
                 }
 

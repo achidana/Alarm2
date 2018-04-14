@@ -1,4 +1,5 @@
 package com.alarm.kalpan.alarmapplication;
+import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
@@ -8,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
@@ -187,7 +190,7 @@ public class TestRecordAudio extends AppCompatActivity {
 
     private void initializeMediaRecord(){
         mediaRecorder = new MediaRecorder();
-        //Exception handling
+        //Exception handling for permissions
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);

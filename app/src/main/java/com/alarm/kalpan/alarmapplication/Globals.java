@@ -19,5 +19,10 @@ public class Globals extends Application
     public Map<String, ArrayList<User>> userList = new HashMap<>();
     public Map<String, String> timeList = new HashMap<>();
 
+    //TODO Consider changing to Token
+    public String userID;   //phone number
+    public String firebaseToken;    //id
+
+    public Token userInfo;  //
 }
 
