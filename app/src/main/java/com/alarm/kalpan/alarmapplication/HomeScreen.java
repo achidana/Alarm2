@@ -63,7 +63,7 @@ public class HomeScreen extends AppCompatActivity {
         listView= (ListView) findViewById(R.id.listview);
         //  ArrayList <TimeAlarm> alarmObjectsList= new ArrayList<TimeAlarm>();
         Globals global_arraylist= (Globals) getApplication();
-       ArrayList <TimeAlarm> alarmObjectsList=global_arraylist.alarmObjectsList;
+       ArrayList <TimeAlarm> alarmObjectsList=global_arraylist.timeAlarms;
 
         ListAdapter customAdapter = new CustomAdapter(this, alarmObjectsList);
 
@@ -80,7 +80,7 @@ public class HomeScreen extends AppCompatActivity {
     {
         super.onResume();
         Globals global_arraylist= (Globals) getApplication();
-        ArrayList <TimeAlarm> alarmObjectsList=global_arraylist.alarmObjectsList;
+        ArrayList <TimeAlarm> alarmObjectsList=global_arraylist.timeAlarms;
         ListAdapter customAdapter = new CustomAdapter(this, alarmObjectsList);
 
         listView.setAdapter(customAdapter);

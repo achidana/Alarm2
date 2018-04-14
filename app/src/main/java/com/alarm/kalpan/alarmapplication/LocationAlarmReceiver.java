@@ -12,6 +12,7 @@ public class LocationAlarmReceiver extends BroadcastReceiver {
         System.out.println("flag ashwinkalpan");
         Uri ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         Intent ringer = new Intent(context, AlarmRinger.class);
+        ringer.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         ringer.putExtra("ringtoneUri", ringtoneUri);
         context.startActivity(ringer);
     }

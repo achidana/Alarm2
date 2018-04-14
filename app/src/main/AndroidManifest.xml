@@ -32,7 +32,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Add_alarm" />
+
+        <activity android:name=".Add_alarm"
+            android:windowSoftInputMode="stateHidden"
+        />
+
         <activity android:name=".AlarmRinger" />
 
         <receiver android:name=".AlarmReceiver" />

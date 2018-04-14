@@ -85,9 +85,9 @@ public class GroupAlarm extends Activity{
             usernames = globals.groupList.get(groupToOpen);
             users = globals.userList.get(groupToOpen);
             //toAlarm.setText(globals.timeList.get(groupToOpen));
-            for (int i = 0; i < globals.alarmObjectsList.size(); i++) {
-                if (globals.alarmObjectsList.get(i).getName().equals(groupToOpen)) {
-                    toAlarm.setText(globals.alarmObjectsList.get(i).getTime());
+            for (int i = 0; i < globals.timeAlarms.size(); i++) {
+                if (globals.timeAlarms.get(i).getName().equals(groupToOpen)) {
+                    toAlarm.setText(globals.timeAlarms.get(i).getTime());
                 }
             }
             groupHeader.setText(groupToOpen);

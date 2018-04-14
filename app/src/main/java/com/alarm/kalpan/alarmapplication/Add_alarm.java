@@ -18,6 +18,7 @@ import android.widget.TimePicker;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import static android.provider.Settings.System.DEFAULT_ALARM_ALERT_URI;
 import static android.provider.Settings.System.DEFAULT_NOTIFICATION_URI;
@@ -30,71 +31,103 @@ public class Add_alarm extends AppCompatActivity {
     boolean edit;
     boolean editGroup;
     TimeAlarm alarm; // the old alarm if we are editting one alarm.
-    String text = null; // if we change it, we will make it non-null, which indicates whether it is ready
+    String text; // if we change it, we will make it non-null, which indicates whether it is ready
     // same for the next few variables
-    String number = null;
+    String number;
+    List<TimeAlarm> timeAlarms;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_alarm);
-        Globals global_arraylist= (Globals) getApplication();
-        final ArrayList<TimeAlarm> alarmObjectsList=global_arraylist.alarmObjectsList;
-        TimePicker timePicker= (TimePicker) findViewById(R.id.timePicker);
-        Switch textSwitch= (Switch) findViewById(R.id.text_switch);
-        Switch callSwitch= (Switch) findViewById(R.id.Call_switch);
-        EditText name= (EditText) findViewById(R.id.name);
+
+        // having everything in its correct initial state
+        alarm = null;
+        ringtoneUri = null;
+        edit = false;
+        editGroup = false;
+        number = null;
+        text = null;
+        timeAlarms = null;
+
+        final Globals globals= (Globals) getApplication();
+
+        //retrieve the global list of time alarms and store its reference as a member variable
+        timeAlarms = globals.timeAlarms;
+
+
+        // we make them final as the objects being reference won't be changed in this activity. Now we can use them in classes that we make in callback listeners
+        final TimePicker timePicker= (TimePicker) findViewById(R.id.timePicker);  // the clock
+        final Switch textSwitch= (Switch) findViewById(R.id.text_switch); //the switch to start the text a friend feature
+        final Switch callSwitch= (Switch) findViewById(R.id.Call_switch); // the switch to initiate the call a friend feature
+        final EditText nameView= (EditText) findViewById(R.id.name);  // the thing to get the name of the alarm
+        final Button selectRingtone = (Button) findViewById(R.id.selectRingtone);    /* button that shows that you want to select a ringtone */
+        final Button save=(Button) findViewById(R.id.save);   /* the button for save */
+        final Button deleteButton = (Button) findViewById(R.id.deleteButton);
+
         //Defaults name to Group Alarm name
 
         if (getIntent().getStringExtra("GroupAlarm") != null) {
             String groupAlarmName = getIntent().getStringExtra("defaultName");
-            name.setText(groupAlarmName);
-            for (int i = 0; i < alarmObjectsList.size(); i++) {
-                if(alarmObjectsList.get(i).getName().equals(groupAlarmName)) {
+            nameView.setText(groupAlarmName);
+            for (int i = 0; i < timeAlarms.size(); i++) {
+                if(timeAlarms.get(i).getName().equals(groupAlarmName)) {
                     Log.d("TAG", "Here");
-                    alarm = alarmObjectsList.get(i);
+                    alarm = timeAlarms.get(i);
                     editGroup = true;
-                    timePicker.setHour(alarmObjectsList.get(i).getHour());
-                    timePicker.setMinute(alarmObjectsList.get(i).getMin());
-                    textSwitch.setChecked(alarmObjectsList.get(i).isText());
-                    callSwitch.setChecked(alarmObjectsList.get(i).isCall());
-
-                    name.setText(alarmObjectsList.get(i).getName());
+                    timePicker.setHour(alarm.getHour());
+                    timePicker.setMinute(alarm.getMin());
+                    textSwitch.setChecked(alarm.isText());
+                    callSwitch.setChecked(alarm.isCall());
+                    nameView.setText(alarm.getName());
                 }
             }
         }
-        Button selectRingtone = (Button) findViewById(R.id.button2);    /* button that shows that you want to select a ringtone */
 
         // if edit flag is up... Note that the second argument is the default value that will be there, if the extra is not there
-
-        if( alarmObjectsList.size()>0 && getIntent().getBooleanExtra("edit_flag",false))
+        if(getIntent().getBooleanExtra("edit_flag",false))
         {
             int edit_position = getIntent().getIntExtra("position",0);
-            alarm = alarmObjectsList.get(edit_position);
+            alarm = timeAlarms.get(edit_position);
             edit = true;
-            timePicker.setHour(alarmObjectsList.get(edit_position).getHour());
-            timePicker.setMinute(alarmObjectsList.get(edit_position).getMin());
-            textSwitch.setChecked(alarmObjectsList.get(edit_position).isText());
-            callSwitch.setChecked(alarmObjectsList.get(edit_position).isCall());
+            timePicker.setHour(alarm.getHour());
+            timePicker.setMinute(alarm.getMin());
+            textSwitch.setChecked(alarm.isText());
+            callSwitch.setChecked(alarm.isCall());
             ringtoneUri = alarm.getRingtoneUri();
-            name.setText(alarmObjectsList.get(edit_position).getName());
-
-
+            nameView.setText(alarm.getName());
         }
+
+        // if its a new alarm being created
+        else
+        {
+            deleteButton.setAlpha((float)0.1); // make it less opaque, so transparent  (greying it out)
+            deleteButton.setClickable(false);
+        }
+
+        /* setting call backs for the different widgets:
+        1 the call switch
+        2 the text switch
+        3 the save button
+        4 the red delete button
+         */
 
         textSwitch.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener()
         {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
 
-                //IMPORTANT: We start two activities, both of which are sitting on top of this activity. But we want enter a number to come first, and so we start it last
-                Intent get_a_message = new Intent(getBaseContext(), TextArchive.class);
-                startActivityForResult(get_a_message, 3);
+                if(b)
+                {
+                    //IMPORTANT: We start two activities, both of which are sitting on top of this activity. But we want enter a number to come first, and so we start it last
+                    Intent get_a_message = new Intent(getBaseContext(), TextArchive.class);
+                    startActivityForResult(get_a_message, 3);
 
-                Intent getNumber = new Intent(getBaseContext(), GetInfo.class);
-                startActivityForResult(getNumber, 2);
-
+                    Intent getNumber = new Intent(getBaseContext(), GetInfo.class);
+                    startActivityForResult(getNumber, 2);
+                }
             }
         });
 
@@ -102,12 +135,15 @@ public class Add_alarm extends AppCompatActivity {
         {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                //read comment on textSwitch's listener
-                Intent getVoiceMessage = new Intent(getBaseContext(), AudioArchive.class);
-                startActivityForResult(getVoiceMessage, 4);
+                if(b)
+                {
+                    //read comment on textSwitch's listener
+                    Intent getVoiceMessage = new Intent(getBaseContext(), AudioArchive.class);
+                    startActivityForResult(getVoiceMessage, 4);
 
-                Intent getNumber = new Intent(getBaseContext(), GetInfo.class);
-                startActivityForResult(getNumber, 2);   /* request code 2 indicates get number */
+                    Intent getNumber = new Intent(getBaseContext(), GetInfo.class);
+                    startActivityForResult(getNumber, 2);   /* request code 2 indicates get number */
+                }
             }
         });
 
@@ -118,25 +154,18 @@ public class Add_alarm extends AppCompatActivity {
                 Intent ringtonePickerIntent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
                 ringtonePickerIntent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false);   /* this basically is a mechanism for giving data to the activity where this intent would go. RingtoneManager defines all these constants and handles them approriately from the receiving end. This thing tells that we don't allow one option of silent in the list of sounds */
                 ringtonePickerIntent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALARM);   /*important: we have all sounds, which I believe is more versatile and user friendly for the user. So even non alarm types would show up */
-                startActivityForResult(ringtonePickerIntent, 1);    /*reqeust code is 1 but is more helpful probably with many calls or complex programs, not for this testing purposes scenario */
+                startActivityForResult(ringtonePickerIntent, 1);    /*reqeust code is 1  */
             }
         });
-        Button save=(Button) findViewById(R.id.save);
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                EditText textView = findViewById(R.id.textMessageBox);
 
-                TimePicker timePicker= (TimePicker) findViewById(R.id.timePicker);
-                Switch textSwitch= (Switch) findViewById(R.id.text_switch);
-                Switch callSwitch= (Switch) findViewById(R.id.Call_switch);
-                EditText name= (EditText) findViewById(R.id.name);
-                Log.d("TAG", "Name: " + name.getText().toString());
+                Log.d("TAG", "Name: " + nameView.getText().toString());
 
                 int timePicker_hour= timePicker.getCurrentHour();
                 int timePicker_min= timePicker.getCurrentMinute();
-
-
-
 
                 if (editGroup) {
                     if(ringtoneUri == null)
@@ -147,27 +176,25 @@ public class Add_alarm extends AppCompatActivity {
                     alarm.setMin(timePicker_min);
                     alarm.setText(textSwitch.isChecked());
                     alarm.setCall(callSwitch.isChecked());
-                    alarm.setName(name.getText().toString());
+                    alarm.setName(nameView.getText().toString());
                 }
 
-                else if(getIntent().getBooleanExtra("edit_flag",false) == false)
+                else if(! getIntent().getBooleanExtra("edit_flag",false))
                 {
                         if(ringtoneUri == null)
                         {
                             ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
                         }
-                        TimeAlarm timeAlarm = new TimeAlarm(timePicker_hour, timePicker_min, textSwitch.isChecked(), callSwitch.isChecked(), name.getText().toString(), true, ringtoneUri);
+
+                        TimeAlarm timeAlarm = new TimeAlarm(timePicker_hour, timePicker_min, textSwitch.isChecked(), callSwitch.isChecked(), nameView.getText().toString(), true, ringtoneUri);
                         if(timeAlarm.isText())
                         {
-                            timeAlarm.setTextMessage(text);
+                            // TODO: read from the accompanying text box
+                            timeAlarm.setTextMessage(textView.getText().toString());
                         }
-                        Globals global_arraylist = (Globals) getApplication();
-                        ArrayList<TimeAlarm> alarmObjectsList = global_arraylist.alarmObjectsList;
-                        alarmObjectsList.add(timeAlarm);
+                        timeAlarms.add(timeAlarm);
                         MyAlarmManager.myCreateTimeAlarm(timeAlarm, getApplicationContext());    //second argument to be given as it cannot be obtained directly by the MyAlarmManager class
                 }
-
-
                 else
                 {
                     if(alarm.isOnOff())
@@ -175,11 +202,17 @@ public class Add_alarm extends AppCompatActivity {
                         MyAlarmManager.myCancelTimeAlarm(alarm, getApplicationContext());
                         alarm.setHour(timePicker_hour);
                         alarm.setMin(timePicker_min);
+
                         alarm.setText(textSwitch.isChecked());
+                        alarm.setTextMessage(textView.getText().toString());
+
+                        //TODO: store the file path of the voice message ??
                         alarm.setCall(callSwitch.isChecked());
-                        alarm.setName(name.getText().toString());
+
+                        alarm.setName(nameView.getText().toString());
+
                         alarm.setRingtoneUri(ringtoneUri);
-                        System.out.println("Flag 1");
+
                         MyAlarmManager.myCreateTimeAlarm(alarm, getApplicationContext());
                     }
 
@@ -187,10 +220,15 @@ public class Add_alarm extends AppCompatActivity {
                     {
                         alarm.setHour(timePicker_hour);
                         alarm.setMin(timePicker_min);
+
                         alarm.setText(textSwitch.isChecked());
+                        alarm.setTextMessage(textView.getText().toString());
+
+                        //TODO: store the file path of the voice message ??
                         alarm.setCall(callSwitch.isChecked());
-                        alarm.setName(name.getText().toString());
-                        System.out.println("Flag 2");
+
+                        alarm.setName(nameView.getText().toString());
+
                         alarm.setRingtoneUri(ringtoneUri);
                     }
                 }
@@ -207,6 +245,18 @@ public class Add_alarm extends AppCompatActivity {
             }
         }); //end of listener's call back for save button
 
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MyAlarmManager.myCancelTimeAlarm(alarm, getApplicationContext());
+
+                timeAlarms.remove(alarm);
+
+                //todo: update in databases
+
+                finish();
+            }
+        });
     }   // end of onCreate method
 
     @Override
@@ -228,14 +278,19 @@ public class Add_alarm extends AppCompatActivity {
         super.onStop();
         //can add stuff here if important
     }
+
+
+
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
+        /*
+         we keep 1 as request code for the ringtone picker activity.
+         There are many activities that we start, that can call this call back (the ones we start with startActivityForResult from this activity, will come here
+         */
+
         if(resultCode == Activity.RESULT_CANCELED)  /* user backed out or operation failed for some reason */
         {
-             /*
-             * we keep 1 as request code for the ringtone picker activity.
-             * There are many activities that we start, that can call this call back (the ones we start with startActivityForResult from this activity, will come here
-             */
             if(requestCode == 1)
             {
                 /*this case means that user pressed cancel on selecting the ringtone */
@@ -275,24 +330,31 @@ public class Add_alarm extends AppCompatActivity {
                     break;
 
                 case 2:
+                    // a number choosing activity's return
                     temp = data.getStringExtra("theNumber");
                     number = temp;
 
 
 
                 case 3:
+                    // a text choosing activity's return
                     temp = data.getStringExtra("theText");
-                    text = temp;   /* set object variable to this value */
+                    EditText textView = findViewById(R.id.textMessageBox);
+                    textView.setText(temp);
                     break;
 
                 case 4:
+                    // a voice message choosing activity's return
                     String name = data.getStringExtra("name");
                     String filepath = data.getStringExtra("filepath");
 
-                    //important: todo: setting this as ringtone too, change in future
                     File file = new File(filepath);
-                    ringtoneUri = Uri.fromFile(file);
+
+                    // one way to use is given below
+                    // ringtoneUri = Uri.fromFile(file);
+
                     //put into audio message object
+
                     break;
             }
         }
