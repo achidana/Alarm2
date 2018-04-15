@@ -1,13 +1,16 @@
 package com.alarm.kalpan.alarmapplication;
 
+import android.app.Activity;
 import android.content.Context;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.PowerManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 
 import java.io.BufferedReader;
@@ -22,20 +25,29 @@ import javax.net.ssl.HttpsURLConnection;
 import static android.os.PowerManager.ACQUIRE_CAUSES_WAKEUP;
 import static android.os.PowerManager.FULL_WAKE_LOCK;
 
-public class AlarmRinger extends AppCompatActivity {
+public class AlarmRinger extends Activity {
     Ringtone ringtone;
     Thread thread;
     Thread thread1;
     PowerManager.WakeLock wakeLock;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Uri ringtoneUri;
         Button stopButton;
         super.onCreate(savedInstanceState);
+
+        // this Window can be used to change settings. It has to be set before doing setContentView
+//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
         setContentView(R.layout.activity_alarm_ringer);
+
+
         ringtoneUri = (Uri) getIntent().getParcelableExtra("ringtoneUri");
         ringtone = RingtoneManager.getRingtone(getBaseContext(), ringtoneUri);
         Runnable runnable = new PlayRingtone(ringtone, 10);
+
+
 
         //next lines are to ensure that device screen wakes up
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
