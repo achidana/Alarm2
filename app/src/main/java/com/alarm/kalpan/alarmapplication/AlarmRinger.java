@@ -25,7 +25,7 @@ import javax.net.ssl.HttpsURLConnection;
 import static android.os.PowerManager.ACQUIRE_CAUSES_WAKEUP;
 import static android.os.PowerManager.FULL_WAKE_LOCK;
 
-public class AlarmRinger extends Activity {
+public class AlarmRinger extends AppCompatActivity {
     Ringtone ringtone;
     Thread thread;
     Thread thread1;
@@ -37,8 +37,8 @@ public class AlarmRinger extends Activity {
         Button stopButton;
         super.onCreate(savedInstanceState);
 
-        // this Window can be used to change settings. It has to be set before doing setContentView
-//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        //this Window can be used to change settings. It has to be set before doing setContentView
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         setContentView(R.layout.activity_alarm_ringer);
 
