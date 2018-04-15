@@ -58,9 +58,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private FusedLocationProviderClient mFusedLocationClient;
     PendingIntent GeofencePendingIntent;
     private GeofencingClient mGeofencingClient;
-    float radius = 1;
-    CircleOptions circleOptions;
+    float radius = 200;
+    CircleOptions circleOptions = new CircleOptions();
     ArrayList<LatLng> latLngsList = new ArrayList<>();
+    ArrayList<Float> radiusList = new ArrayList<>();
 
 
 
@@ -148,12 +149,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         new LatLng(point.latitude, point.longitude));
 
                 mMap.addMarker(marker);
+
+
                 circleOptions = new CircleOptions()
                         .center(new LatLng(point.latitude, point.longitude))
                         .radius(radius)
                         .fillColor(0x30ff0000);
                 mMap.addCircle(circleOptions);
                 latLngsList.add(point);
+                radiusList.add(radius);
 
 //                if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
 //                {
@@ -186,6 +190,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onClick(View v) {
                 mMap.clear();
                 latLngsList.clear();
+                radiusList.clear();
             }
         });
 
@@ -205,6 +210,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        if (input.getText().toString() == null || input.getText().toString().isEmpty()) {
+                            return;
+                        }
 
                         radius = Float.parseFloat(input.getText().toString());
                         circleOptions.radius(radius);
@@ -229,18 +237,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onClick(View v) {
 
                 if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    for (int i = 0; i < latLngsList.size() - 1; i++) {
+                    for (int i = 0; i <= latLngsList.size() - 1; i++) {
                         String key = latLngsList.get(i).latitude + ":" + latLngsList.get(i).longitude;
 
-                        makeGeofence(latLngsList.get(i).latitude, latLngsList.get(i).longitude, key);
+                        Geofence g = makeGeofence(latLngsList.get(i).latitude, latLngsList.get(i).longitude, radiusList.get(i), key);
+                        mGeofencingClient.addGeofences(getGeofencingRequest(g), getGeofencePendingIntent(i));
+
 
                     }
 
 
-                    mGeofencingClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent());
 
 
                 }
+                System.out.println("!!!!!!!! ALARM IS ADDED");
             }
         });
 
@@ -249,7 +259,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         placeAutoComplete.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-                mMap.clear();
+                //mMap.clear();
 
 //                 Log.d("Maps", "Place selected: " + place.getName ());
 //                Geocoder geocoder=new Geocoder(getApplicationContext());
@@ -305,32 +315,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.animateCamera(update);
     }
 
-    private PendingIntent getGeofencePendingIntent() {
+    private PendingIntent getGeofencePendingIntent(int requestCode) {
         if (GeofencePendingIntent != null) {
             return GeofencePendingIntent;
         }
         Intent intent = new Intent(getApplicationContext(), LocationAlarmReceiver.class);
 
-        GeofencePendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 11, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        GeofencePendingIntent = PendingIntent.getBroadcast(getApplicationContext(), requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         System.out.println("flag ashwin3");
 
         return GeofencePendingIntent;
     }
 
-    private void makeGeofence(double lat, double lang, String key) {
-        geofenceList.add(new Geofence.Builder()
+    private Geofence makeGeofence(double lat, double lang, Float radius, String key) {
+        Geofence g = new Geofence.Builder()
                 .setRequestId(key) //v2 is the raduis
                 .setCircularRegion(
                         lat, lang, radius   // the last argument is the radius in metres TODO: change this to dynamic
                 )
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
                 .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                .build());
+                .build();
+
         System.out.println("flag ashwin1");
+        return g;
 
     }
 
-    private GeofencingRequest getGeofencingRequest() {
+    private GeofencingRequest getGeofencingRequest(Geofence geofence) {
 
 
         GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
@@ -339,7 +351,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // initial_transition_enter indicates that if user is already in one geofence, trigger the transition_enter move
         builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
 
-        builder.addGeofences(geofenceList);
+        builder.addGeofence(geofence);
         System.out.println("flag ashwin2");
         return builder.build();
     }
