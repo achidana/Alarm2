@@ -3,6 +3,7 @@ package com.alarm.kalpan.alarmapplication;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.InputType;
@@ -41,7 +42,6 @@ public class FirebasePhoneVerify extends Activity{
     private EditText code;
     private Button numberBtn;
     private Button codeBtn;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,6 +144,7 @@ public class FirebasePhoneVerify extends Activity{
                             Log.d("TAG", "signInWithCredential:success");
 
                             FirebaseUser user = task.getResult().getUser();
+                            startApp();
 
                         } else {
                             // Sign in failed, display a message and update the UI
@@ -180,5 +181,10 @@ public class FirebasePhoneVerify extends Activity{
     public void verifyWithCode() {
         //Change this from number to verification id
         signInWithPhoneAuthCode(mVerificationId, code.getText().toString());
+    }
+
+    public void startApp() {
+        Intent intent = new Intent(this, HomeScreen.class);
+        startActivity(intent);
     }
 }

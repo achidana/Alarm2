@@ -5,6 +5,9 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_login">Register</string>
 
+    <!--First Time String-->
+    <string name="firstTime">true</string>
+
     <!-- Strings related to login -->
     <string name="prompt_number">Phone Number</string>
     <string name="prompt_password">Password (optional)</string>
@@ -38,6 +41,10 @@
 
     <!-- Strings related to Verify -->
     <string name="verify">Verify</string>
+    <string name="numberEditTxt">Enter Phone Number</string>
+    <string name="numberBtn">Submit</string>
+    <string name="codeEditTxt">Enter Verification Code</string>
+    <string name="codeBtn">Verify</string>
 
     <!--Strings related to group alarm -->
     <string name="group">Group Admin</string>

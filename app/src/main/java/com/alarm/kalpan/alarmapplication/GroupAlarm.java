@@ -27,6 +27,8 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.view.KeyEvent;
+import android.view.InputEvent;
 
 import java.util.ArrayList;
 
@@ -43,6 +45,7 @@ public class GroupAlarm extends Activity{
     private ListView listView;
     private ArrayList<User> users = new ArrayList<>();
     private ArrayList<String> usernames = new ArrayList<>();
+    private ArrayList<String> phoneNumbers = new ArrayList<>();
     private ArrayAdapter<String> adapter;
     private String userText = "";
     private String userPhoneText = "";
@@ -71,6 +74,7 @@ public class GroupAlarm extends Activity{
             groupName = data.getStringExtra("NewGroupName");
             globals.groupList.put(groupName, usernames);
             globals.userList.put(groupName, users);
+            globals.numberList.put(groupName, phoneNumbers);
             //Sets list to empty usernames
             //Sets first time
             firstTime = true;
@@ -83,6 +87,7 @@ public class GroupAlarm extends Activity{
             String groupToOpen = data.getStringExtra("SendToGroup");
             //Sets list to current usernames
             usernames = globals.groupList.get(groupToOpen);
+            phoneNumbers = globals.numberList.get(groupToOpen);
             users = globals.userList.get(groupToOpen);
             //toAlarm.setText(globals.timeList.get(groupToOpen));
             for (int i = 0; i < globals.alarmObjectsList.size(); i++) {
@@ -114,6 +119,7 @@ public class GroupAlarm extends Activity{
             User admin = new User(username, phoneNumber, true);
             users.add(admin);
             usernames.add(admin.getName());
+            phoneNumbers.add(phoneNumber);
             //Store this in database of group admins(?)
             ga = new GroupAdmin(username, phoneNumber, 1, users);
         }
@@ -207,6 +213,7 @@ public class GroupAlarm extends Activity{
                     usernames.add(userText);
                     adapter.notifyDataSetChanged();
                     updateAlarmCount();
+                    phoneNumbers.add(userPhoneText);
                 }
             }
         });
@@ -262,5 +269,23 @@ public class GroupAlarm extends Activity{
             Globals globals = (Globals) getApplication();
             globals.timeList.put(groupName, alarmName);
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (Integer.parseInt(android.os.Build.VERSION.SDK) > 5
+                && keyCode == KeyEvent.KEYCODE_BACK
+                && event.getRepeatCount() == 0) {
+            Log.d("CDA", "onKeyDown Called");
+            onBackPressed();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.d("TAG", "Back pressed");
+        //Send to server
     }
 }

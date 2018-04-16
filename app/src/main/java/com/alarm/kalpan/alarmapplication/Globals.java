@@ -16,6 +16,7 @@ public class Globals extends Application
     ArrayList<Alarm_object> alarmObjectsList= new ArrayList<Alarm_object>();
 
     public Map<String, ArrayList<String>> groupList = new HashMap<>();
+    public Map<String, ArrayList<String>> numberList = new HashMap<>();
     public Map<String, ArrayList<User>> userList = new HashMap<>();
     public Map<String, String> timeList = new HashMap<>();
 
@@ -24,5 +25,7 @@ public class Globals extends Application
     public String firebaseToken;    //id
 
     public Token userInfo;  //
+
+    public boolean isVerified;
 }
 

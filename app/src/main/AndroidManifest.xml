@@ -41,15 +41,15 @@
         <activity android:name=".GroupAlarm" />
 
         <activity android:name=".GroupAlarmList">
+
+        </activity>
+        <activity android:name=".CustomRingtone"></activity>
+        <activity android:name=".FirebasePhoneVerify">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity android:name=".CustomRingtone"></activity>
-        <activity android:name=".FirebasePhoneVerify">
-
         </activity>
 
         <service android:name=".MyFirebaseMessagingService">
