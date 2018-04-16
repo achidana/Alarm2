@@ -31,7 +31,8 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
         //Get updated token
         Globals globals = (Globals) getApplication();
         globals.firebaseToken = FirebaseInstanceId.getInstance().getToken();
-
+        Log.d(TAG, "New Token: " + globals.firebaseToken);
+        /*
         Thread thread = new Thread(new Runnable() {
 
             @Override
@@ -80,6 +81,7 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
         });
 
         thread.start();
-        //Log.d(TAG, "New Token: " + refreshedToken);
+        */
+
     }
 }

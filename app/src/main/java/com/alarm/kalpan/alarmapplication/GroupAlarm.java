@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -30,6 +31,15 @@ import android.widget.TextView;
 import android.view.KeyEvent;
 import android.view.InputEvent;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.security.acl.Group;
 import java.util.ArrayList;
 
 /**
@@ -287,5 +297,100 @@ public class GroupAlarm extends Activity{
     public void onBackPressed() {
         Log.d("TAG", "Back pressed");
         //Send to server
+        GroupAlarm_object gA;
+        Thread thread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    Globals globals = (Globals) getApplication();
+                    ArrayList<String> members = new ArrayList<String>();
+                    members.add("19374596097");
+                    globals.gA = new GroupAlarm_object(10,10,false,false,null,false, null, members);
+                    Log.d("MainActivity", members.get(0));
+                    Gson gson = new GsonBuilder().create();
+                    StringBuilder result = new StringBuilder();
+                    try {
+
+                        URL url = new URL("http://45.56.125.90:5000/group");
+                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                        conn.setDoOutput(true);
+                        conn.setDoInput(true);
+                        conn.setRequestMethod("POST");
+                        conn.setRequestProperty("Content-Type", "application/json");
+                        OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                        String json = gson.toJson(globals.gA);
+                        wr.write(json);
+                        wr.flush();
+                        BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                        String line = "";
+                        while((line = rd.readLine()) != null) {
+                            result.append(line);
+                        }
+                        String res = result.toString();
+                        globals.gA.esID = res;
+                        conn.disconnect();
+                        Log.d("MainActivity", "Response: " + res);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.start();
+        try {
+            Log.d("MainActivity", "WAITING!!!!!");
+            Thread.sleep(10000);
+        } catch (Exception e) {
+
+        }
+        Thread thread2 = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    Log.d("MainActivity", "11111");
+                    Globals globals = (Globals) getApplication();
+                    GroupAlarm_object gA = globals.gA;
+                    gA.members.remove(0);
+                    String id = gA.esID;
+                    Gson gson = new GsonBuilder().create();
+                    StringBuilder result = new StringBuilder();
+                    Log.d("MainActivity", "22222");
+                    try {
+                        String strUrl = "http://45.56.125.90:5000/group/" + id;
+                        Log.d("MainActivity", "URL: " + strUrl);
+                        URL url = new URL(strUrl);
+                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                        conn.setDoOutput(true);
+                        conn.setDoInput(true);
+                        conn.setRequestMethod("PUT");
+                        conn.setRequestProperty("Content-Type", "application/json");
+                        OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                        String json = gson.toJson(gA);
+                        wr.write(json);
+                        wr.flush();
+                        BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                        String line = "";
+                        while((line = rd.readLine()) != null) {
+                            result.append(line);
+                        }
+                        String res = result.toString();
+                        conn.disconnect();
+                        Log.d("MainActivity", "Response: " + res);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread2.start();
+
+        startActivity(new Intent(this, GroupAlarmList.class));
+
     }
 }

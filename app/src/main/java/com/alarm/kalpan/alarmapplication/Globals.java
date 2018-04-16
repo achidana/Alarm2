@@ -2,6 +2,7 @@ package com.alarm.kalpan.alarmapplication;
 
 import android.app.Application;
 
+import java.security.acl.Group;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -23,6 +24,8 @@ public class Globals extends Application
     //TODO Consider changing to Token
     public String userID;   //phone number
     public String firebaseToken;    //id
+    public GroupAlarm_object gA;
+    public String eID;
 
     public Token userInfo;  //
 
