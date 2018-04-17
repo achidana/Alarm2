@@ -29,8 +29,18 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.view.KeyEvent;
 import android.view.InputEvent;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * Created by JohnRedmon on 3/4/18.
@@ -57,6 +67,7 @@ public class GroupAlarm extends Activity{
     private String alarmName;
     private String groupName;
 
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_alarm);
@@ -66,6 +77,7 @@ public class GroupAlarm extends Activity{
         Globals globals = (Globals) getApplication();
         groupAdmin = findViewById(R.id.displayName);
         groupHeader = findViewById(R.id.groupName);
+
 
         Intent data = getIntent();
         //New group
@@ -104,14 +116,11 @@ public class GroupAlarm extends Activity{
     }
 
     public void initialize() {
-        //String username = data.getStringExtra("Username");
-        //String phoneNumber = data.getStringExtra("PhoneNumber");
-        //String isUser = data.getStringExtra("isUser");
 
-        //username and phoneNumber will be scraped from phone owner's login info
-        //Dummy values for now
-        String username = "John Redmon";
-        String phoneNumber = "81274733";
+        //Admin is always the information input at the creation of the app
+        Globals globals = (Globals) getApplication();
+        String username = globals.userName;
+        String phoneNumber = globals.userID;
 
         activeAlarms = findViewById(R.id.activeAlarms);
 
@@ -205,15 +214,21 @@ public class GroupAlarm extends Activity{
                 //User accepts request
                 else {
                     //TODO: add verification of valid name/number
-                    userText = inputName.getText().toString();
-                    userPhoneText = inputNumber.getText().toString();
-                    User u = new User(userText, userPhoneText, false);
-                    users.add(u);
-                    adapter.notifyDataSetChanged();
-                    usernames.add(userText);
-                    adapter.notifyDataSetChanged();
-                    updateAlarmCount();
-                    phoneNumbers.add(userPhoneText);
+                    if (usernames.contains(userText)) {
+                        Toast toast = Toast.makeText(GroupAlarm.this, "User Already Exists", Toast.LENGTH_LONG);
+                        toast.show();
+                    }
+                    else {
+                        userText = inputName.getText().toString();
+                        userPhoneText = inputNumber.getText().toString();
+                        User u = new User(userText, userPhoneText, false);
+                        users.add(u);
+                        adapter.notifyDataSetChanged();
+                        usernames.add(userText);
+                        adapter.notifyDataSetChanged();
+                        updateAlarmCount();
+                        phoneNumbers.add(userPhoneText);
+                    }
                 }
             }
         });
@@ -227,6 +242,7 @@ public class GroupAlarm extends Activity{
             @Override
             public void onItemClick(final AdapterView<?> adapterView, final View view, int i, long l) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(GroupAlarm.this);
+                final int pressed = i;
                 String alarmStatus = "Alarm Ignored";
                 if (users.get(i).getStopAlarm()) {
                     alarmStatus = "Alarm Acknowledged";
@@ -243,9 +259,46 @@ public class GroupAlarm extends Activity{
                     }
                 });
 
+                builder.setNegativeButton("Delete", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if (users.get(pressed).isAdmin()) {
+                            Toast toast = Toast.makeText(GroupAlarm.this, "User Admin cannot be deleted", Toast.LENGTH_LONG);
+                            toast.show();
+                        }
+                        else {
+                            String uName = users.get(pressed).getName();
+                            String uNumber = users.get(pressed).getPhoneNumber();
+                            users.remove(pressed);
+                            adapter.notifyDataSetChanged();
+                            usernames.remove(uName);
+                            adapter.notifyDataSetChanged();
+                            updateAlarmCount();
+                            phoneNumbers.add(uNumber);
+                        }
+                    }
+                });
+
                 builder.show();
             }
         });
+    }
+
+    public void deleteGroup(View v) {
+        Log.d("TAG", "Here");
+        Globals globals = (Globals) getApplication();
+
+        globals.groupList.remove(groupName);
+        globals.numberList.get(groupName).clear();
+        globals.userList.get(groupName).clear();
+        for (int i = 0; i < globals.alarmObjectsList.size(); i++) {
+            if (globals.alarmObjectsList.get(i).getName().equals(groupName)) {
+                globals.alarmObjectsList.remove(i);
+            }
+        }
+        Log.d("TAG", globals.groupList.toString());
+        Intent intent = new Intent(this, GroupAlarmList.class);
+        startActivity(intent);
     }
 
     public void updateAlarmCount() {
@@ -287,5 +340,66 @@ public class GroupAlarm extends Activity{
     public void onBackPressed() {
         Log.d("TAG", "Back pressed");
         //Send to server
+        Thread thread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                Globals globals = (Globals) getApplication();
+                ArrayList<Alarm_object> gAlarms = globals.alarmObjectsList;
+                Map<String, ArrayList<String>> numList = globals.numberList;
+                ArrayList<String> members = numList.get(groupName);
+                for (int i = 0; i < gAlarms.size(); i++) {
+                    if (gAlarms.get(i).getName().equals(groupName)) {
+                        Alarm_object gAlarm = gAlarms.get(i);
+                        gAlarm.clearMembers();
+                        ArrayList<String> mems = gAlarm.getMembers();
+                        for (int j = 0; j < members.size(); j++) {
+                            mems.add(members.get(j));
+                        }
+                        String reqMeth;
+                        String strURL;
+                        if (gAlarm.getEsID().equals("")) {
+                            reqMeth = "POST";
+                            strURL = "http://45.56.125.90:5000/group";
+                            Log.d("TAG", "POSTPOSTPOSTPOST");
+                        } else {
+                            reqMeth = "PUT";
+                            strURL = "http://45.56.125.90:5000/group/" + gAlarm.getEsID();
+                            Log.d("TAG", "PUTPUTPUTPUTPUT");
+                        }
+                        Gson gson = new GsonBuilder().create();
+                        StringBuilder result = new StringBuilder();
+                        try {
+                            URL url = new URL(strURL);
+                            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                            conn.setDoOutput(true);
+                            conn.setDoInput(true);
+                            conn.setRequestMethod(reqMeth);
+                            conn.setRequestProperty("Content-Type", "application/json");
+                            OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                            String json = gson.toJson(gAlarm);
+                            wr.write(json);
+                            Log.d("TAG", json);
+                            wr.flush();
+                            BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                            String line = "";
+                            while ((line = rd.readLine()) != null) {
+                                result.append(line);
+                            }
+                            String res = result.toString();
+                            Log.d("MainActivity", "Response: " + res);
+                            if (reqMeth.equals("POST")) {
+                                gAlarm.setEsID(res);
+                            }
+                            conn.disconnect();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        });
+        thread.start();
+        //Start intent of previous activity
     }
 }

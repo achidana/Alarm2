@@ -6,6 +6,8 @@ import android.media.Ringtone;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -52,6 +54,18 @@ public class Add_alarm extends AppCompatActivity {
         if (getIntent().getStringExtra("GroupAlarm") != null) {
             String groupAlarmName = getIntent().getStringExtra("defaultName");
             name.setText(groupAlarmName);
+            /*
+            name.setFilters(new InputFilter[] {
+               new InputFilter() {
+                   @Override
+                   public CharSequence filter(CharSequence src, int start, int end, Spanned dst, int dstart, int dend) {
+                       return src.length() < 1 ? dst.subSequence(dstart, dend) : "";
+                   }
+               }
+            });
+            */
+            name.setFocusable(false);
+            name.setClickable(false);
             for (int i = 0; i < alarmObjectsList.size(); i++) {
                 if(alarmObjectsList.get(i).getName().equals(groupAlarmName)) {
                     Log.d("TAG", "Here");

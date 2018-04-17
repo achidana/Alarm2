@@ -2,10 +2,12 @@ package com.alarm.kalpan.alarmapplication;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.telephony.TelephonyManager;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
@@ -24,7 +26,15 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -40,8 +50,10 @@ public class FirebasePhoneVerify extends Activity{
     private FirebaseAuth mAuth;
     private EditText number;
     private EditText code;
+    private EditText name;
     private Button numberBtn;
     private Button codeBtn;
+    private Button nameBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,11 +67,17 @@ public class FirebasePhoneVerify extends Activity{
 //After first        verify();
 
         code = findViewById(R.id.editCode);
+        name = findViewById(R.id.editName);
 
         numberBtn = findViewById(R.id.verifyBtn);
         codeBtn = findViewById(R.id.verifyCodeBtn);
+        nameBtn = findViewById(R.id.verifyNameBtn);
+
         codeBtn.setEnabled(false);
         code.setEnabled(false);
+
+        nameBtn.setEnabled(false);
+        name.setEnabled(false);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -77,6 +95,13 @@ public class FirebasePhoneVerify extends Activity{
             }
         });
 
+        nameBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                createUsername();
+            }
+        });
+
     }
 
     public void setMCallback() {
@@ -91,8 +116,6 @@ public class FirebasePhoneVerify extends Activity{
                 //     detect the incoming verification SMS and perform verification without
                 //     user action.
                 Log.d("TAG", "onVerificationCompleted:" + credential);
-                codeBtn.setEnabled(true);
-                numberBtn.setEnabled(false);
             }
 
             @Override
@@ -123,6 +146,9 @@ public class FirebasePhoneVerify extends Activity{
                 // now need to ask the user to enter the code and then construct a credential
                 // by combining the code with a verification ID.
                 Log.d("TAG", "onCodeSent:" + verificationId);
+                codeBtn.setEnabled(true);
+                code.setEnabled(true);
+                numberBtn.setEnabled(false);
 
                 // Save verification ID and resending token so we can use them later
                 mVerificationId = verificationId;
@@ -144,7 +170,10 @@ public class FirebasePhoneVerify extends Activity{
                             Log.d("TAG", "signInWithCredential:success");
 
                             FirebaseUser user = task.getResult().getUser();
-                            startApp();
+                            codeBtn.setEnabled(false);
+                            nameBtn.setEnabled(true);
+                            name.setEnabled(true);
+                            //startApp();
 
                         } else {
                             // Sign in failed, display a message and update the UI
@@ -183,7 +212,66 @@ public class FirebasePhoneVerify extends Activity{
         signInWithPhoneAuthCode(mVerificationId, code.getText().toString());
     }
 
+    public void createUsername() {
+        String username = name.getText().toString();
+        Globals globals = (Globals) getApplication();
+        globals.userName = username;
+        startApp();
+    }
+
     public void startApp() {
+        Globals globals = (Globals) getApplication();
+        globals.firebaseToken = FirebaseInstanceId.getInstance().getToken();
+        Thread thread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    Globals globals = (Globals) getApplication();
+                    Token tok = new Token();
+                    tok.token = globals.firebaseToken;
+                    tok.userId = globals.userID;
+                    String pNum;
+                    TelephonyManager tMgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+                    pNum = globals.userID;
+                    Log.d("MainActivity", pNum);
+                    Gson gson = new GsonBuilder().create();
+                    StringBuilder result = new StringBuilder();
+                    try {
+
+                        URL url = new URL("http://45.56.125.90:5000/token");
+                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                        conn.setDoOutput(true);
+                        conn.setDoInput(true);
+                        conn.setRequestMethod("POST");
+                        conn.setRequestProperty("Content-Type", "application/json");
+                        Log.d("MainActivity", "!!!!!!!!!!!!!");
+                        OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                        String json = gson.toJson(tok);
+                        Log.d("MainActivity", "%%%%%%%%%%%%%%%%");
+                        wr.write(json);
+                        wr.flush();
+                        Log.d("MainActivity", "$$$$$$$$$$$$$$");
+                        BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                        String line = "";
+                        while((line = rd.readLine()) != null) {
+                            result.append(line);
+                        }
+                        Log.d("MainActivity", "@@@@@@@@@@@@@@@@");
+                        String res = result.toString();
+                        conn.disconnect();
+                        Log.d("MainActivity", "Response: " + res);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        thread.start();
+
         Intent intent = new Intent(this, HomeScreen.class);
         startActivity(intent);
     }

@@ -37,5 +37,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/codeBtn" />
+        <EditText
+            android:id="@+id/editName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/codeEditTxt"
+            android:inputType="text" />
+
+        <Button
+            android:id="@+id/verifyNameBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Username"/>
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

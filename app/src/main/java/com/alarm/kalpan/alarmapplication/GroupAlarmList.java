@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -13,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.security.acl.Group;
 import java.util.ArrayList;
@@ -46,6 +48,7 @@ public class GroupAlarmList extends Activity {
                     android.R.layout.simple_list_item_1, groupAlarms);
             listView.setAdapter(adapter);
         }
+        /*
         else {
             Iterator iterator = globals.userList.entrySet().iterator();
             while(iterator.hasNext()) {
@@ -56,8 +59,32 @@ public class GroupAlarmList extends Activity {
             adapter = new ArrayAdapter<String>(this,
                     android.R.layout.simple_list_item_1, groupAlarms);
             listView.setAdapter(adapter);
+            //adapter.notifyDataSetChanged();
         }
+        */
         initializeListener();
+    }
+
+    @Override
+    public void onResume() {
+        Log.d("TAG", "HERE");
+        super.onResume();
+        Globals globals = (Globals) getApplication();
+        Iterator iterator = globals.userList.entrySet().iterator();
+        while(iterator.hasNext()) {
+            Map.Entry pair = (Map.Entry) iterator.next();
+            //System.out.println(adapter.add(pair.getKey()));
+            if (!groupAlarms.contains(pair.getKey().toString())) {
+                groupAlarms.add(pair.getKey().toString());
+            }
+            if (!globals.groupList.containsKey(pair.getKey().toString())) {
+                groupAlarms.remove(pair.getKey().toString());
+            }
+        }
+        adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, groupAlarms);
+        listView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 
     public void addGroup(View v) {
@@ -74,7 +101,8 @@ public class GroupAlarmList extends Activity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 userText = input.getText().toString();
                 if (groupAlarms.contains(userText)) {
-                    input.setError("Group Already Exists");
+                    Toast toast = Toast.makeText(GroupAlarmList.this , "Name already exists", Toast.LENGTH_LONG);
+                    toast.show();
                 } else {
                     groupAlarms.add(userText);
                     adapter.notifyDataSetChanged();
@@ -110,3 +138,4 @@ public class GroupAlarmList extends Activity {
         });
     }
 }
+
