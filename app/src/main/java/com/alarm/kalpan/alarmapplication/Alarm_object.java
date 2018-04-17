@@ -2,6 +2,8 @@ package com.alarm.kalpan.alarmapplication;
 
 import android.net.Uri;
 
+import java.util.ArrayList;
+
 /**
  * Created by ashwin on 2/22/18.
  */
@@ -17,6 +19,8 @@ public class Alarm_object {
     boolean onOff;
     Uri ringtoneUri;
     int alarmID;
+    ArrayList<String> members = new ArrayList<String>();
+    String esID;
     public static int alarmIDGenerator = 0;
 
     String numberToCall;
@@ -35,6 +39,7 @@ public class Alarm_object {
         }
         this.onOff=onOff;
         this.ringtoneUri = ringtoneUri;
+        this.esID = "";
         alarmID = alarmIDGenerator++;
     }
 
@@ -83,6 +88,10 @@ public class Alarm_object {
         this.ringtoneUri = ringtoneUri;
     }
 
+    public void setEsID(String esID) { this.esID = esID; }
+
+    public void clearMembers() { this.members.clear(); }
+
 
     public boolean isOnOff() {
         return onOff;
@@ -122,6 +131,10 @@ public class Alarm_object {
         }
         return tempHour + ":" + min_temp + " " + ampm;
     }
+
+    public ArrayList<String> getMembers() {return members;}
+
+    public String getEsID() {return esID;}
 
 
 }

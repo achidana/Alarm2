@@ -35,6 +35,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -183,6 +184,7 @@ public class FirebasePhoneVerify extends Activity{
         Log.d("TAG", phoneNumber);
         numberBtn.setEnabled(true);
         code.setEnabled(true);
+        codeBtn.setEnabled(true);
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 phoneNumber,        // Phone number to verify
                 60,                 // Timeout duration
@@ -200,7 +202,6 @@ public class FirebasePhoneVerify extends Activity{
     public void startApp() {
         Globals globals = (Globals) getApplication();
         globals.firebaseToken = FirebaseInstanceId.getInstance().getToken();
-
         Thread thread = new Thread(new Runnable() {
 
             @Override

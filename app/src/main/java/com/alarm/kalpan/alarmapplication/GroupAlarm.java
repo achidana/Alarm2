@@ -41,6 +41,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.acl.Group;
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * Created by JohnRedmon on 3/4/18.
@@ -297,6 +298,69 @@ public class GroupAlarm extends Activity{
     public void onBackPressed() {
         Log.d("TAG", "Back pressed");
         //Send to server
+        Thread thread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                Globals globals = (Globals) getApplication();
+                ArrayList<Alarm_object> gAlarms = globals.alarmObjectsList;
+                Map<String, ArrayList<String>> numList = globals.numberList;
+                ArrayList<String> members = numList.get(groupName);
+                for (int i = 0; i < gAlarms.size(); i++) {
+                    if (gAlarms.get(i).getName().equals(groupName)) {
+                        Alarm_object gAlarm = gAlarms.get(i);
+                        gAlarm.clearMembers();
+                        ArrayList<String> mems = gAlarm.getMembers();
+                        for (int j = 0; j < members.size(); j++) {
+                            mems.add(members.get(j));
+                        }
+                        String reqMeth;
+                        String strURL;
+                        if (gAlarm.getEsID().equals("")) {
+                            reqMeth = "POST";
+                            strURL = "http://45.56.125.90:5000/group";
+                            Log.d("TAG", "POSTPOSTPOSTPOST");
+                        } else {
+                            reqMeth = "PUT";
+                            strURL = "http://45.56.125.90:5000/group/" + gAlarm.getEsID();
+                            Log.d("TAG", "PUTPUTPUTPUTPUT");
+                        }
+                        Gson gson = new GsonBuilder().create();
+                        StringBuilder result = new StringBuilder();
+                        try {
+                            URL url = new URL(strURL);
+                            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                            conn.setDoOutput(true);
+                            conn.setDoInput(true);
+                            conn.setRequestMethod(reqMeth);
+                            conn.setRequestProperty("Content-Type", "application/json");
+                            OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                            String json = gson.toJson(gAlarm);
+                            wr.write(json);
+                            Log.d("TAG", json);
+                            wr.flush();
+                            BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                            String line = "";
+                            while ((line = rd.readLine()) != null) {
+                                result.append(line);
+                            }
+                            String res = result.toString();
+                            globals.gA.esID = res;
+                            Log.d("MainActivity", "Response: " + res);
+                            if (reqMeth.equals("POST")) {
+                                gAlarm.setEsID(res);
+                            }
+                            conn.disconnect();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        });
+        thread.start();
+
+        /*
         GroupAlarm_object gA;
         Thread thread = new Thread(new Runnable() {
 
@@ -389,7 +453,7 @@ public class GroupAlarm extends Activity{
             }
         });
         thread2.start();
-
+        */
         startActivity(new Intent(this, GroupAlarmList.class));
 
     }
