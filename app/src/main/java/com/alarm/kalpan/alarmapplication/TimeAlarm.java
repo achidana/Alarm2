@@ -1,7 +1,11 @@
 package com.alarm.kalpan.alarmapplication;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
 import android.net.Uri;
+
+import java.util.Random;
 
 /**
  * Created by ashwin on 2/22/18.
@@ -12,34 +16,65 @@ public class TimeAlarm {
 
     private int hour;
     private int min;
-    private boolean text;
-    private boolean call;
+    private boolean isText;
+    private boolean isCall;
     private String name;
-    private String ampm;
-    private boolean onOff;
-
-
-
+    private boolean isOn;
     private Uri ringtoneUri;
 
+    @PrimaryKey
     private int alarmID;
-    private String numberToCall;
+    private String numberToNotify;
     private String textMessage;
-    private String fileToVoiceMessage;
+    private String voiceMessage;
+    private int day;
 
+    @Ignore
+    private String ampm;
     //TODO: have other constructors that fill in default stuff if not provided (like ringtone and on off and such
-    public TimeAlarm(int hour, int min, boolean text, boolean call, String name, boolean onOff, Uri ringtoneUri) {
+
+    @Ignore
+    public TimeAlarm(int hour, int min, boolean isText, boolean isCall, String name, boolean isOn, Uri ringtoneUri) {
         this.hour = hour;
         this.min = min;
-        this.text = text;
-        this.call = call;
+        this.isText = isText;
+        this.isCall = isCall;
         this.name = name;
         this.ampm = "AM";
         if(this.hour >= 12) {
             ampm = "PM";
         }
-        this.onOff=onOff;
+        this.isOn=isOn;
         this.ringtoneUri = ringtoneUri;
+
+        Random r = new Random();
+        alarmID = r.nextInt();
+    }
+
+    public TimeAlarm(int hour, int min, int day, boolean isText, boolean isCall, String name, boolean isOn, Uri ringtoneUri, String numberToNotify, String textMessage, String voiceMessage, int alarmID)
+    {
+        this.hour = hour;
+        this.min = min;
+        this.isText = isText;
+        this.isCall = isCall;
+        this.name = name;
+        this.isOn = isOn;
+        this.ringtoneUri = ringtoneUri;
+        this.numberToNotify = numberToNotify;
+        this.textMessage = textMessage;
+        this.voiceMessage = voiceMessage;
+        this.alarmID = alarmID;
+        this.day = day;
+
+        if(hour >= 12)
+        {
+            ampm = "PM";
+        }
+
+        else
+        {
+            ampm = "AM";
+        }
     }
 
 
@@ -61,13 +96,21 @@ public class TimeAlarm {
         this.textMessage = textMessage;
     }
 
-    public void setNumberToCall(String numberToCall)
+    public String getTextMessage()
     {
-        this.numberToCall = numberToCall;
+        return textMessage;
+    }
+    public void setNumberToNotify(String numberToNotify)
+    {
+        this.numberToNotify = numberToNotify;
     }
 
-    public void setOnOff(boolean onOff) {
-        this.onOff = onOff;
+    public String getNumberToNotify()
+    {
+        return numberToNotify;
+    }
+    public void setIsOn(boolean isOn) {
+        this.isOn = isOn;
     }
 
     public void setHour(int hour) {
@@ -84,12 +127,12 @@ public class TimeAlarm {
         this.min = min;
     }
 
-    public void setText(boolean text) {
-        this.text = text;
+    public void setIsText(boolean isText) {
+        this.isText = isText;
     }
 
-    public void setCall(boolean call) {
-        this.call = call;
+    public void setIsCall(boolean isCall) {
+        this.isCall = isCall;
     }
 
     public void setName(String name) {
@@ -102,8 +145,8 @@ public class TimeAlarm {
     }
 
 
-    public boolean isOnOff() {
-        return onOff;
+    public boolean getIsOn() {
+        return isOn;
     }
 
     public int getHour() {
@@ -114,12 +157,12 @@ public class TimeAlarm {
         return min;
     }
 
-    public boolean isText() {
-        return text;
+    public boolean getIsText() {
+        return isText;
     }
 
-    public boolean isCall() {
-        return call;
+    public boolean getIsCall() {
+        return isCall;
     }
 
     public String getName() {
@@ -141,5 +184,23 @@ public class TimeAlarm {
         return tempHour + ":" + min_temp + " " + ampm;
     }
 
+    public String getVoiceMessage()
+    {
+        return voiceMessage;
+    }
 
+    public void setVoiceMessage(String voiceMessage)
+    {
+        this.voiceMessage = voiceMessage;
+    }
+
+    public int getDay()
+    {
+        return day;
+    }
+
+    public void setDay(int day)
+    {
+        this.day = day;
+    }
 }

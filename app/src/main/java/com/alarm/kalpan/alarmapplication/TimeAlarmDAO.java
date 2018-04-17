@@ -1,5 +1,6 @@
 package com.alarm.kalpan.alarmapplication;
 
+import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
@@ -10,7 +11,7 @@ import java.sql.Time;
 /**
  * Created by kalpanjasani on 4/8/18.
  */
-
+@Dao
 public abstract class TimeAlarmDAO {
     @Insert
     public abstract void insertAlarms(TimeAlarm... alarms);
@@ -21,7 +22,7 @@ public abstract class TimeAlarmDAO {
     @Update
     public abstract void updateAlarms(TimeAlarm... alarms);
 
-    @Query("SELECT * FROM TimeAlarms")
+    @Query("SELECT * FROM TimeAlarm")
     public abstract TimeAlarm[] loadTimeAlarms();
 
 }

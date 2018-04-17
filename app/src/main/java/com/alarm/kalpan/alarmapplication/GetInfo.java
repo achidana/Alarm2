@@ -1,6 +1,9 @@
 package com.alarm.kalpan.alarmapplication;
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.view.View;
@@ -52,13 +55,24 @@ public class GetInfo extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == RESULT_OK)
+        if(resultCode == RESULT_OK)
         {
-            if(resultCode == 1)
+            if(requestCode == 1)
             {
 
                 String n = "7656378554";
                 phoneNumberText.setText(n.toCharArray(), 0, n.length());
+                ContentResolver contentResolver = getContentResolver();
+
+                Uri uri = data.getData();
+                Cursor cursor = contentResolver.query(data.getData(), null, null, null, null);
+
+                //mvocing cursor to the first and only row in the table (but we still need to move it there)
+                cursor.moveToFirst();
+                phoneNumber = cursor.getString(cursor.getColumnIndexOrThrow("data1"));
+                System.out.println("Phone number is " + phoneNumber);
+                phoneNumberText.setText(phoneNumber);
+                cursor.close();
             }
         }
     }

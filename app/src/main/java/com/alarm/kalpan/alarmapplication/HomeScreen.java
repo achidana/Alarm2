@@ -1,5 +1,6 @@
 package com.alarm.kalpan.alarmapplication;
 
+import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -16,6 +17,9 @@ import java.util.Map;
 
 public class HomeScreen extends AppCompatActivity {
     ListView listView;
+    ApplicationDatabase db;
+    TimeAlarmDAO timeAlarmDAO;
+    ArrayList<TimeAlarm> timeAlarms;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -57,16 +61,27 @@ public class HomeScreen extends AppCompatActivity {
         user.setName(name);
         User.setUser(user); // the user of this application
 
-        //loading the database
 
+        Globals globals = (Globals) getApplication();
+
+        timeAlarms = globals.timeAlarms;
+
+        //loading the database
+        db = globals.db;
+        timeAlarmDAO = db.timeAlarmDAO();
+
+        Thread loadFromDatabaseThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                loadFromDataBase();
+            }
+        });
+
+        loadFromDatabaseThread.start();
 
         listView= (ListView) findViewById(R.id.listview);
-        //  ArrayList <TimeAlarm> alarmObjectsList= new ArrayList<TimeAlarm>();
-        Globals global_arraylist= (Globals) getApplication();
-       ArrayList <TimeAlarm> alarmObjectsList=global_arraylist.timeAlarms;
-
-        ListAdapter customAdapter = new CustomAdapter(this, alarmObjectsList);
-
+        ArrayList <TimeAlarm> timeAlarms = globals.timeAlarms;
+        ListAdapter customAdapter = new CustomAdapter(this, timeAlarms);
         listView.setAdapter(customAdapter);
 
 
@@ -154,6 +169,8 @@ public class HomeScreen extends AppCompatActivity {
 
     public void loadFromDataBase()
     {
+        TimeAlarm[] timeAlarmArr = timeAlarmDAO.loadTimeAlarms();
+        System.out.println("Flag 3: Size = " + timeAlarmArr.length);
 
     }
 

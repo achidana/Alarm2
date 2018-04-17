@@ -17,7 +17,6 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
 
-
     <application
         android:name=".Globals"
         android:allowBackup="true"
@@ -33,11 +32,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".Add_alarm"
-            android:windowSoftInputMode="stateHidden"
-        />
-
+        <activity
+            android:name=".Add_alarm"
+            android:windowSoftInputMode="stateHidden" />
         <activity android:name=".AlarmRinger" />
 
         <receiver android:name=".AlarmReceiver" />
@@ -51,8 +48,8 @@
                 android:value=".AudioArchive" />
         </activity>
         <activity android:name=".GroupAlarm" />
-        <activity android:name=".GroupAlarmList"></activity>
-        <activity android:name=".CustomRingtone"></activity>
+        <activity android:name=".GroupAlarmList" />
+        <activity android:name=".CustomRingtone" />
         <!--
                      The API key for Google Maps-based APIs is defined as a string resource.
                      (See the file "res/values/google_maps_api.xml").
@@ -60,24 +57,22 @@
                      You need a different API key for each encryption key, including the release key that is used to
                      sign the APK for publishing.
                      You can define the keys for the debug and release targets in src/debug/ and src/release/.
-                -->
+        -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
         <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_maps">
-        </activity>
+            android:label="@string/title_activity_maps" />
 
         <service
             android:name=".LocationAlarmIntentService"
-            android:allowBackup="true">
-        </service>
+            android:allowBackup="true" />
 
         <receiver android:name=".LocationAlarmReceiver" />
 
-
+        <activity android:name=".AddGroupAlarm"></activity>
     </application>
 
 </manifest>

@@ -3,6 +3,7 @@ package com.alarm.kalpan.alarmapplication;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.arch.persistence.room.Entity;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -34,7 +35,7 @@ import java.util.ArrayList;
  * Created by JohnRedmon on 3/4/18.
  * d
  */
-
+//@Entity
 public class GroupAlarm extends Activity{
     private GroupAdmin ga;
     private TextView groupAdmin;

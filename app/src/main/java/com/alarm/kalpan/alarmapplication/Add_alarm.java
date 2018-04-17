@@ -35,7 +35,7 @@ public class Add_alarm extends AppCompatActivity {
     // same for the next few variables
     String number;
     List<TimeAlarm> timeAlarms;
-
+    ApplicationDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +67,7 @@ public class Add_alarm extends AppCompatActivity {
         final Button save=(Button) findViewById(R.id.save);   /* the button for save */
         final Button deleteButton = (Button) findViewById(R.id.deleteButton);
 
+        db = globals.db;
         //Defaults name to Group Alarm name
 
         if (getIntent().getStringExtra("GroupAlarm") != null) {
@@ -79,8 +80,8 @@ public class Add_alarm extends AppCompatActivity {
                     editGroup = true;
                     timePicker.setHour(alarm.getHour());
                     timePicker.setMinute(alarm.getMin());
-                    textSwitch.setChecked(alarm.isText());
-                    callSwitch.setChecked(alarm.isCall());
+                    textSwitch.setChecked(alarm.getIsText());
+                    callSwitch.setChecked(alarm.getIsCall());
                     nameView.setText(alarm.getName());
                 }
             }
@@ -94,8 +95,8 @@ public class Add_alarm extends AppCompatActivity {
             edit = true;
             timePicker.setHour(alarm.getHour());
             timePicker.setMinute(alarm.getMin());
-            textSwitch.setChecked(alarm.isText());
-            callSwitch.setChecked(alarm.isCall());
+            textSwitch.setChecked(alarm.getIsText());
+            callSwitch.setChecked(alarm.getIsCall());
             ringtoneUri = alarm.getRingtoneUri();
             nameView.setText(alarm.getName());
         }
@@ -103,8 +104,7 @@ public class Add_alarm extends AppCompatActivity {
         // if its a new alarm being created
         else
         {
-            deleteButton.setAlpha((float)0.1); // make it less opaque, so transparent  (greying it out)
-            deleteButton.setClickable(false);
+            deleteButton.setVisibility(View.GONE);
         }
 
         /* setting call backs for the different widgets:
@@ -161,7 +161,6 @@ public class Add_alarm extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 EditText textView = findViewById(R.id.textMessageBox);
-
                 Log.d("TAG", "Name: " + nameView.getText().toString());
 
                 int timePicker_hour= timePicker.getCurrentHour();
@@ -174,8 +173,8 @@ public class Add_alarm extends AppCompatActivity {
                     }
                     alarm.setHour(timePicker_hour);
                     alarm.setMin(timePicker_min);
-                    alarm.setText(textSwitch.isChecked());
-                    alarm.setCall(callSwitch.isChecked());
+                    alarm.setIsText(textSwitch.isChecked());
+                    alarm.setIsCall(callSwitch.isChecked());
                     alarm.setName(nameView.getText().toString());
                 }
 
@@ -186,28 +185,39 @@ public class Add_alarm extends AppCompatActivity {
                             ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
                         }
 
-                        TimeAlarm timeAlarm = new TimeAlarm(timePicker_hour, timePicker_min, textSwitch.isChecked(), callSwitch.isChecked(), nameView.getText().toString(), true, ringtoneUri);
-                        if(timeAlarm.isText())
+                        final TimeAlarm timeAlarm = new TimeAlarm(timePicker_hour, timePicker_min, textSwitch.isChecked(), callSwitch.isChecked(), nameView.getText().toString(), true, ringtoneUri);
+                        if(timeAlarm.getIsText())
                         {
                             // TODO: read from the accompanying text box
                             timeAlarm.setTextMessage(textView.getText().toString());
                         }
                         timeAlarms.add(timeAlarm);
+
+                        // inserting alarm over to the database
+                        Thread insertToDatabaseThread = new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                addToDatabase(timeAlarm);
+                            }
+                        });
+
+                        // starting that thread for database things (TODO: have better design  in terms of placement of this thread start)
+                        insertToDatabaseThread.start();
                         MyAlarmManager.myCreateTimeAlarm(timeAlarm, getApplicationContext());    //second argument to be given as it cannot be obtained directly by the MyAlarmManager class
                 }
                 else
                 {
-                    if(alarm.isOnOff())
+                    if(alarm.getIsOn())
                     {
                         MyAlarmManager.myCancelTimeAlarm(alarm, getApplicationContext());
                         alarm.setHour(timePicker_hour);
                         alarm.setMin(timePicker_min);
 
-                        alarm.setText(textSwitch.isChecked());
+                        alarm.setIsText(textSwitch.isChecked());
                         alarm.setTextMessage(textView.getText().toString());
 
                         //TODO: store the file path of the voice message ??
-                        alarm.setCall(callSwitch.isChecked());
+                        alarm.setIsCall(callSwitch.isChecked());
 
                         alarm.setName(nameView.getText().toString());
 
@@ -221,16 +231,27 @@ public class Add_alarm extends AppCompatActivity {
                         alarm.setHour(timePicker_hour);
                         alarm.setMin(timePicker_min);
 
-                        alarm.setText(textSwitch.isChecked());
+                        alarm.setIsText(textSwitch.isChecked());
                         alarm.setTextMessage(textView.getText().toString());
 
                         //TODO: store the file path of the voice message ??
-                        alarm.setCall(callSwitch.isChecked());
+                        alarm.setIsCall(callSwitch.isChecked());
 
                         alarm.setName(nameView.getText().toString());
 
                         alarm.setRingtoneUri(ringtoneUri);
                     }
+
+                    //updating the alarm in the database
+                    //TODO: have better design for placement of this thread
+                    Thread updateDatabaseThread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            updateDatabase(alarm);
+                        }
+                    });
+
+                    updateDatabaseThread.start();
                 }
 
 
@@ -371,6 +392,16 @@ public class Add_alarm extends AppCompatActivity {
         startIntent.putExtra("AlarmName", displayTime);
         setResult(RESULT_OK, startIntent);
         finish();
+    }
+
+    public void addToDatabase(TimeAlarm... timeAlarms)
+    {
+        db.timeAlarmDAO().insertAlarms(timeAlarms);
+    }
+
+    public void updateDatabase(TimeAlarm... timeAlarms)
+    {
+        db.timeAlarmDAO().updateAlarms(timeAlarms);
     }
 }
 

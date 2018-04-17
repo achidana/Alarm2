@@ -48,7 +48,7 @@ class CustomAdapter extends ArrayAdapter<TimeAlarm>  {
         name_display.setText(a.getName());
 
 
-        if(a.isOnOff())
+        if(a.getIsOn())
         {
             homescrn_toggle.setChecked(true);
         }
@@ -58,13 +58,13 @@ class CustomAdapter extends ArrayAdapter<TimeAlarm>  {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
-                    a.setOnOff(true);
+                    a.setIsOn(true);
                     MyAlarmManager.myCreateTimeAlarm(a, context.getApplicationContext());
                     //debug line
                     System.out.println("ON");
                 }
                 else {
-                    a.setOnOff(false);
+                    a.setIsOn(false);
                     MyAlarmManager.myCancelTimeAlarm(a, context.getApplicationContext());
                     //System.out.println("OFF");
                 }
