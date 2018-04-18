@@ -5,6 +5,7 @@ import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.net.Uri;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -24,7 +25,7 @@ public class TimeAlarm {
 
     @PrimaryKey
     private int alarmID;
-    private String numberToNotify;
+    private ArrayList<String> numbersToNotify;
     private String textMessage;
     private String voiceMessage;
     private int day;
@@ -51,7 +52,7 @@ public class TimeAlarm {
         alarmID = r.nextInt();
     }
 
-    public TimeAlarm(int hour, int min, int day, boolean isText, boolean isCall, String name, boolean isOn, Uri ringtoneUri, String numberToNotify, String textMessage, String voiceMessage, int alarmID)
+    public TimeAlarm(int hour, int min, int day, boolean isText, boolean isCall, String name, boolean isOn, Uri ringtoneUri, ArrayList<String> numbersToNotify, String textMessage, String voiceMessage, int alarmID)
     {
         this.hour = hour;
         this.min = min;
@@ -60,7 +61,7 @@ public class TimeAlarm {
         this.name = name;
         this.isOn = isOn;
         this.ringtoneUri = ringtoneUri;
-        this.numberToNotify = numberToNotify;
+        this.numbersToNotify = numbersToNotify;
         this.textMessage = textMessage;
         this.voiceMessage = voiceMessage;
         this.alarmID = alarmID;
@@ -100,14 +101,14 @@ public class TimeAlarm {
     {
         return textMessage;
     }
-    public void setNumberToNotify(String numberToNotify)
+    public void setNumbersToNotify(ArrayList<String> numbersToNotify)
     {
-        this.numberToNotify = numberToNotify;
+        this.numbersToNotify = numbersToNotify;
     }
 
-    public String getNumberToNotify()
+    public ArrayList<String> getNumbersToNotify()
     {
-        return numberToNotify;
+        return numbersToNotify;
     }
     public void setIsOn(boolean isOn) {
         this.isOn = isOn;

@@ -33,7 +33,7 @@ public class Add_alarm extends AppCompatActivity {
     TimeAlarm alarm; // the old alarm if we are editting one alarm.
     String text; // if we change it, we will make it non-null, which indicates whether it is ready
     // same for the next few variables
-    String number;
+    ArrayList<String> phoneNumbers;
     List<TimeAlarm> timeAlarms;
     ApplicationDatabase db;
 
@@ -48,7 +48,7 @@ public class Add_alarm extends AppCompatActivity {
         ringtoneUri = null;
         edit = false;
         editGroup = false;
-        number = null;
+        phoneNumbers = new ArrayList<String>();
         text = null;
         timeAlarms = null;
 
@@ -186,13 +186,21 @@ public class Add_alarm extends AppCompatActivity {
                         }
 
                         final TimeAlarm timeAlarm = new TimeAlarm(timePicker_hour, timePicker_min, textSwitch.isChecked(), callSwitch.isChecked(), nameView.getText().toString(), true, ringtoneUri);
+
+                        //TODO: have option of different set of numbers to be notified for text and call
                         if(timeAlarm.getIsText())
                         {
-                            // TODO: read from the accompanying text box
                             timeAlarm.setTextMessage(textView.getText().toString());
+                            timeAlarm.setNumbersToNotify(phoneNumbers);
                         }
-                        timeAlarms.add(timeAlarm);
 
+                        if(timeAlarm.getIsCall())
+                        {
+                            //add file path of voice message
+                            timeAlarm.setNumbersToNotify(phoneNumbers);
+                        }
+
+                        timeAlarms.add(timeAlarm);
                         // inserting alarm over to the database
                         Thread insertToDatabaseThread = new Thread(new Runnable() {
                             @Override
@@ -352,9 +360,9 @@ public class Add_alarm extends AppCompatActivity {
 
                 case 2:
                     // a number choosing activity's return
-                    temp = data.getStringExtra("theNumber");
-                    number = temp;
-
+                    Bundle bundle = data.getBundleExtra(getString(R.string.app_name) + ".PhoneNumbers");
+                    phoneNumbers = bundle.getStringArrayList("PhoneNumbers");
+                    break;
 
 
                 case 3:

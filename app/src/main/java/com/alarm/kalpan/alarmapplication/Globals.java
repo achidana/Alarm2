@@ -22,6 +22,9 @@ public class Globals extends Application
     public ApplicationDatabase db;      // the single db for the whole application
     User theUser;
 
+    // the maximum number of backup numbers allowed for one call
+    int maxBackupNumbers;
+
     @Override
     public void onCreate()
     {
@@ -31,6 +34,7 @@ public class Globals extends Application
         userList = new HashMap<>();
         timeList = new HashMap<>();
         db = Room.databaseBuilder(getApplicationContext(), ApplicationDatabase.class, "AppDatabase").build();
+        maxBackupNumbers = 5;
     }
 }
 
