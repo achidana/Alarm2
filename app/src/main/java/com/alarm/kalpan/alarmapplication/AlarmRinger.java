@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.PowerManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -15,6 +16,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -29,12 +32,17 @@ public class AlarmRinger extends AppCompatActivity {
     PowerManager.WakeLock wakeLock;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        String strUri;
         Uri ringtoneUri;
         Button stopButton;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_ringer);
-        ringtoneUri = (Uri) getIntent().getParcelableExtra("ringtoneUri");
+        strUri = getIntent().getExtras().getString("ringtoneUri");
+        Log.d("AlarmRinger", strUri);
+        ringtoneUri = Uri.parse(strUri);
+        Log.d("AlarmRinger", "12345");
         ringtone = RingtoneManager.getRingtone(getBaseContext(), ringtoneUri);
+        Log.d("AlarmRinger", "67891");
         Runnable runnable = new PlayRingtone(ringtone, 10);
 
         //next lines are to ensure that device screen wakes up

@@ -6,6 +6,8 @@ import android.media.Ringtone;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -28,7 +30,8 @@ import static android.provider.Settings.System.DEFAULT_RINGTONE_URI;
 
 public class Add_alarm extends AppCompatActivity {
 
-    Uri ringtoneUri;
+    //Uri ringtoneUri;
+    String ringtoneUri;
     boolean edit;
     boolean editGroup;
     Alarm_object alarm; // the old alarm if we are editting one alarm.
@@ -52,6 +55,18 @@ public class Add_alarm extends AppCompatActivity {
         if (getIntent().getStringExtra("GroupAlarm") != null) {
             String groupAlarmName = getIntent().getStringExtra("defaultName");
             name.setText(groupAlarmName);
+            /*
+            name.setFilters(new InputFilter[] {
+               new InputFilter() {
+                   @Override
+                   public CharSequence filter(CharSequence src, int start, int end, Spanned dst, int dstart, int dend) {
+                       return src.length() < 1 ? dst.subSequence(dstart, dend) : "";
+                   }
+               }
+            });
+            */
+            name.setFocusable(false);
+            name.setClickable(false);
             for (int i = 0; i < alarmObjectsList.size(); i++) {
                 if(alarmObjectsList.get(i).getName().equals(groupAlarmName)) {
                     Log.d("TAG", "Here");
@@ -142,7 +157,7 @@ public class Add_alarm extends AppCompatActivity {
                 if (editGroup) {
                     if(ringtoneUri == null)
                     {
-                        ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+                        ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString();
                     }
                     alarm.setHour(timePicker_hour);
                     alarm.setMin(timePicker_min);
@@ -155,7 +170,7 @@ public class Add_alarm extends AppCompatActivity {
                 {
                         if(ringtoneUri == null)
                         {
-                            ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+                            ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString();
                         }
                         Alarm_object alarm_object = new Alarm_object(timePicker_hour, timePicker_min, textSwitch.isChecked(), callSwitch.isChecked(), name.getText().toString(), true, ringtoneUri);
                         if(alarm_object.isText())
@@ -272,15 +287,13 @@ public class Add_alarm extends AppCompatActivity {
                     {
                         //handle
                     }
-                    ringtoneUri = uri;
+                    ringtoneUri = uri.toString();
 
                     break;
 
                 case 2:
                     temp = data.getStringExtra("theNumber");
                     number = temp;
-
-
 
                 case 3:
                     temp = data.getStringExtra("theText");
@@ -293,7 +306,7 @@ public class Add_alarm extends AppCompatActivity {
 
                     //important: todo: setting this as ringtone too, change in future
                     File file = new File(filepath);
-                    ringtoneUri = Uri.fromFile(file);
+                    ringtoneUri = Uri.fromFile(file).toString();
                     //put into audio message object
                     break;
             }

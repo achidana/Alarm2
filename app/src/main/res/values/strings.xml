@@ -57,6 +57,7 @@
     <string name="menu_alarm">Not Acknowledged</string>
     <string name="list_header">Group Alarms</string>
     <string name="add_group_btn">Add Group Alarm</string>
+    <string name="deleteGroup">Delete Alarm</string>
 
 
     <string name="title_activity_home_screen">HomeScreen</string>

@@ -50,8 +50,10 @@ public class FirebasePhoneVerify extends Activity{
     private FirebaseAuth mAuth;
     private EditText number;
     private EditText code;
+    private EditText name;
     private Button numberBtn;
     private Button codeBtn;
+    private Button nameBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,11 +67,21 @@ public class FirebasePhoneVerify extends Activity{
 //After first        verify();
 
         code = findViewById(R.id.editCode);
+        name = findViewById(R.id.editName);
 
         numberBtn = findViewById(R.id.verifyBtn);
         codeBtn = findViewById(R.id.verifyCodeBtn);
+        nameBtn = findViewById(R.id.verifyNameBtn);
+
+        nameBtn.setEnabled(true);
+        name.setEnabled(true);
+
+        number.setEnabled(false);
+        numberBtn.setEnabled(false);
+
         codeBtn.setEnabled(false);
         code.setEnabled(false);
+
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -84,6 +96,13 @@ public class FirebasePhoneVerify extends Activity{
             @Override
             public void onClick(View v) {
                 verifyWithCode();
+            }
+        });
+
+        nameBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                createUsername();
             }
         });
 
@@ -102,8 +121,6 @@ public class FirebasePhoneVerify extends Activity{
                 //     user action.
                 Log.d("TAG", "onVerificationCompleted:" + credential);
                 startApp();
-                codeBtn.setEnabled(true);
-                numberBtn.setEnabled(false);
             }
 
             @Override
@@ -134,6 +151,9 @@ public class FirebasePhoneVerify extends Activity{
                 // now need to ask the user to enter the code and then construct a credential
                 // by combining the code with a verification ID.
                 Log.d("TAG", "onCodeSent:" + verificationId);
+                codeBtn.setEnabled(true);
+                code.setEnabled(true);
+                numberBtn.setEnabled(false);
 
                 // Save verification ID and resending token so we can use them later
                 mVerificationId = verificationId;
@@ -155,6 +175,9 @@ public class FirebasePhoneVerify extends Activity{
                             Log.d("TAG", "signInWithCredential:success");
 
                             FirebaseUser user = task.getResult().getUser();
+                            codeBtn.setEnabled(false);
+                            nameBtn.setEnabled(true);
+                            name.setEnabled(true);
                             startApp();
 
                         } else {
@@ -181,8 +204,9 @@ public class FirebasePhoneVerify extends Activity{
             phoneNumber = plus.concat(phoneNumber);
         }
         Log.d("TAG", phoneNumber);
-        numberBtn.setEnabled(true);
+        codeBtn.setEnabled(true);
         code.setEnabled(true);
+
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 phoneNumber,        // Phone number to verify
                 60,                 // Timeout duration
@@ -197,23 +221,28 @@ public class FirebasePhoneVerify extends Activity{
         signInWithPhoneAuthCode(mVerificationId, code.getText().toString());
     }
 
+    public void createUsername() {
+        String username = name.getText().toString();
+        Globals globals = (Globals) getApplication();
+        globals.userName = username;
+        number.setEnabled(true);
+        numberBtn.setEnabled(true);
+    }
+
     public void startApp() {
         Globals globals = (Globals) getApplication();
         globals.firebaseToken = FirebaseInstanceId.getInstance().getToken();
-
+        Log.d("MainActivity", "BEFORE THREAD");
         Thread thread = new Thread(new Runnable() {
 
             @Override
             public void run() {
                 try {
+                    Log.d("MainActivity", "ENTER THREAD");
                     Globals globals = (Globals) getApplication();
                     Token tok = new Token();
                     tok.token = globals.firebaseToken;
                     tok.userId = globals.userID;
-                    String pNum;
-                    TelephonyManager tMgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-                    pNum = globals.userID;
-                    Log.d("MainActivity", pNum);
                     Gson gson = new GsonBuilder().create();
                     StringBuilder result = new StringBuilder();
                     try {
@@ -250,6 +279,7 @@ public class FirebasePhoneVerify extends Activity{
         });
 
         thread.start();
+
         Intent intent = new Intent(this, HomeScreen.class);
         startActivity(intent);
     }

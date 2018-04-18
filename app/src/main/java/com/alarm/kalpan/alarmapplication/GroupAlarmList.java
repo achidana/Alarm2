@@ -4,16 +4,27 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.security.acl.Group;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -46,6 +57,7 @@ public class GroupAlarmList extends Activity {
                     android.R.layout.simple_list_item_1, groupAlarms);
             listView.setAdapter(adapter);
         }
+        /*
         else {
             Iterator iterator = globals.userList.entrySet().iterator();
             while(iterator.hasNext()) {
@@ -56,8 +68,32 @@ public class GroupAlarmList extends Activity {
             adapter = new ArrayAdapter<String>(this,
                     android.R.layout.simple_list_item_1, groupAlarms);
             listView.setAdapter(adapter);
+            //adapter.notifyDataSetChanged();
         }
+        */
         initializeListener();
+    }
+
+    @Override
+    public void onResume() {
+        Log.d("TAG", "HERE");
+        super.onResume();
+        Globals globals = (Globals) getApplication();
+        Iterator iterator = globals.userList.entrySet().iterator();
+        while(iterator.hasNext()) {
+            Map.Entry pair = (Map.Entry) iterator.next();
+            //System.out.println(adapter.add(pair.getKey()));
+            if (!groupAlarms.contains(pair.getKey().toString())) {
+                groupAlarms.add(pair.getKey().toString());
+            }
+            if (!globals.groupList.containsKey(pair.getKey().toString())) {
+                groupAlarms.remove(pair.getKey().toString());
+            }
+        }
+        adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, groupAlarms);
+        listView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 
     public void addGroup(View v) {
@@ -74,7 +110,8 @@ public class GroupAlarmList extends Activity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 userText = input.getText().toString();
                 if (groupAlarms.contains(userText)) {
-                    input.setError("Group Already Exists");
+                    Toast toast = Toast.makeText(GroupAlarmList.this , "Name already exists", Toast.LENGTH_LONG);
+                    toast.show();
                 } else {
                     groupAlarms.add(userText);
                     adapter.notifyDataSetChanged();
@@ -109,4 +146,25 @@ public class GroupAlarmList extends Activity {
             }
         });
     }
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (Integer.parseInt(android.os.Build.VERSION.SDK) > 5
+                && keyCode == KeyEvent.KEYCODE_BACK
+                && event.getRepeatCount() == 0) {
+            Log.d("CDA", "onKeyDown Called");
+            onBackPressed();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.d("TAG", "Back pressed");
+        //Send to server
+        //Start intent of previous activity
+        Intent intent = new Intent(this, HomeScreen.class);
+        startActivity(intent);
+    }
 }
+

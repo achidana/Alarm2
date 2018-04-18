@@ -2,6 +2,9 @@ package com.alarm.kalpan.alarmapplication;
 
 import android.net.Uri;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 /**
  * Created by ashwin on 2/22/18.
  */
@@ -15,15 +18,18 @@ public class Alarm_object {
     String name;
     String ampm;
     boolean onOff;
-    Uri ringtoneUri;
+    String ringtoneUri;
+    //Uri ringtoneUri;
     int alarmID;
+    ArrayList<String> members = new ArrayList<String>();
+    String esID;
     public static int alarmIDGenerator = 0;
 
     String numberToCall;
     String textMessage;
     String fileToVoiceMessage;
 
-    public Alarm_object(int hour, int min, boolean text, boolean call, String name, boolean onOff, Uri ringtoneUri) {
+    public Alarm_object(int hour, int min, boolean text, boolean call, String name, boolean onOff, String ringtoneUri) {
         this.hour = hour;
         this.min = min;
         this.text = text;
@@ -35,6 +41,22 @@ public class Alarm_object {
         }
         this.onOff=onOff;
         this.ringtoneUri = ringtoneUri;
+        this.esID = "";
+        alarmID = alarmIDGenerator++;
+    }
+    public Alarm_object(Map<String, String> map) {
+        this.hour = Integer.parseInt(map.get("hour"));
+        this.min = Integer.parseInt(map.get("min"));
+        this.text = Boolean.parseBoolean(map.get("text"));
+        this.call = Boolean.parseBoolean(map.get("call"));
+        this.name = map.get("name");
+        this.ampm = "AM";
+        if(this.hour >= 12) {
+            ampm = "PM";
+        }
+        this.onOff = Boolean.parseBoolean(map.get("onOff"));
+        this.ringtoneUri = map.get("ringtoneURI");
+        this.esID = map.get("esID");
         alarmID = alarmIDGenerator++;
     }
 
@@ -78,11 +100,14 @@ public class Alarm_object {
         this.name = name;
     }
 
-    public void setRingtoneUri(Uri ringtoneUri )
+    public void setRingtoneUri(String ringtoneUri )
     {
         this.ringtoneUri = ringtoneUri;
     }
 
+    public void setEsID(String esID) { this.esID = esID; }
+
+    public void clearMembers() { this.members.clear(); }
 
     public boolean isOnOff() {
         return onOff;
@@ -122,6 +147,10 @@ public class Alarm_object {
         }
         return tempHour + ":" + min_temp + " " + ampm;
     }
+
+    public ArrayList<String> getMembers() {return members;}
+
+    public String getEsID() {return esID;}
 
 
 }

@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Alarm2.iml" filepath="$PROJECT_DIR$/Alarm2.iml" />
-      <module fileurl="file://$PROJECT_DIR$/JohnSprint3.iml" filepath="$PROJECT_DIR$/JohnSprint3.iml" />
+      <module fileurl="file://C:\Users\swalters23\AndroidStudioProjects\John3Alarm2\Alarm2.iml" filepath="C:\Users\swalters23\AndroidStudioProjects\John3Alarm2\Alarm2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/John3Alarm2.iml" filepath="$PROJECT_DIR$/John3Alarm2.iml" />
+      <module fileurl="file://C:\Users\swalters23\AndroidStudioProjects\John3Alarm2\JohnSprint3.iml" filepath="C:\Users\swalters23\AndroidStudioProjects\John3Alarm2\JohnSprint3.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

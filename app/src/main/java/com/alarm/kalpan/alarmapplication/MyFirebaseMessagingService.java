@@ -12,6 +12,11 @@ import android.widget.Toast;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+
+import java.util.ArrayList;
 
 /**
  * Created by swalters23 on 3/14/2018.
@@ -24,11 +29,29 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         Log.d(TAG, "From:" + remoteMessage.getFrom());
 
+        //Check if the message contains title
+        if (remoteMessage.getNotification() != null) {
+            Log.d(TAG, "Message title: " + remoteMessage.getNotification().getTitle());
+            String title = remoteMessage.getNotification().getTitle();
+            //MainActivity.displayData(remoteMessage.getData().toString());
+            Globals globals = (Globals) getApplication();
+            ArrayList<Alarm_object> alarmList = globals.alarmObjectsList;
+            Gson gson = new GsonBuilder().create();
+            Log.d(TAG, "JSON: " + remoteMessage.getData());
+            Log.d(TAG, "JSON: " + remoteMessage.getData().toString());
+            Log.d(TAG, "TYPE: " + remoteMessage.getMessageType());
+            //Alarm_object alarm = gson.fromJson(remoteMessage.getData().toString(), Alarm_object.class);
+            Alarm_object alarm = new Alarm_object(remoteMessage.getData());
+            alarm.setName("Group: " + alarm.getName());
+            if (title.equals("NEW")) {
+                alarmList.add(alarm);
+            }
+        }
         //Check if the message contains data
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data: " + remoteMessage.getData());
             //MainActivity.displayData(remoteMessage.getData().toString());
-            sendNotification("Message data: " + remoteMessage.getData());
+            //sendNotification("Message data: " + remoteMessage.getData());
         }
 
         //Check if the message contains notification
@@ -50,7 +73,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         NotificationCompat.Builder notifiBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("Firebase Cloud Messaging")
+                .setContentTitle("Alarm 2")
                 .setContentText(body)
                 .setAutoCancel(true)
                 .setSound(notificationSound)
