@@ -7,8 +7,11 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
+import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -22,12 +25,16 @@ import java.util.ArrayList;
 class CustomAdapter extends ArrayAdapter<TimeAlarm>  {
     TimeAlarm a;
     public Context context;
+    private AdapterView.OnItemClickListener listCallback;
+
+    private int selectedCellBackroundColorResourceID;
 
 
-
-    CustomAdapter(Context context, ArrayList < TimeAlarm> alarmObjectsList) {
+    CustomAdapter(Context context, ArrayList < TimeAlarm> alarmObjectsList, AdapterView.OnItemClickListener listCallback, int drawableResourceID) {
         super(context,R.layout.custom_row_homescreen,alarmObjectsList);
         this.context = context;
+        this.listCallback = listCallback;
+        this.selectedCellBackroundColorResourceID = drawableResourceID;
     }
 
 
@@ -35,8 +42,12 @@ class CustomAdapter extends ArrayAdapter<TimeAlarm>  {
     @Override
     public View getView(final int position, @Nullable final View convertView, @NonNull final ViewGroup parent) {
 
+        //efficiency
+        if(convertView != null)
+            return convertView;
+
         LayoutInflater inflater = LayoutInflater.from(getContext());
-        View customView = inflater.inflate(R.layout.custom_row_homescreen,parent,false);
+        final View customView = inflater.inflate(R.layout.custom_row_homescreen,parent,false);
 
         a=getItem(position);
 
@@ -54,6 +65,10 @@ class CustomAdapter extends ArrayAdapter<TimeAlarm>  {
         }
 
 
+        if(((ListView) parent).getSelectedItemPosition() == position)
+        {
+            customView.setBackgroundResource(selectedCellBackroundColorResourceID);
+        }
         homescrn_toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -71,26 +86,13 @@ class CustomAdapter extends ArrayAdapter<TimeAlarm>  {
             }
         });
 
-
-
+        customView.setTag(position);
         customView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-
-                Intent startIntent= new Intent(context, Add_alarm.class);
-                startIntent.putExtra("position", position);
-                startIntent.putExtra("edit_flag", true);
-                context.startActivity(startIntent);
-
-
-
+            public void onClick(View view) {
+                listCallback.onItemClick((AdapterView) parent, customView, position, customView.getId());
             }
         });
-
-
-
-
-
         return customView;
     }
 }

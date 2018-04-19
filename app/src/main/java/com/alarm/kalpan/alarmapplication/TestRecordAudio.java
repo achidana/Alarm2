@@ -107,10 +107,7 @@ public class TestRecordAudio extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+        //kalpan removed some useless over here
 
         return super.onOptionsItemSelected(item);
     }

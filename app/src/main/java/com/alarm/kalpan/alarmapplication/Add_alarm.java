@@ -155,6 +155,13 @@ public class Add_alarm extends AppCompatActivity {
                 ringtonePickerIntent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false);   /* this basically is a mechanism for giving data to the activity where this intent would go. RingtoneManager defines all these constants and handles them approriately from the receiving end. This thing tells that we don't allow one option of silent in the list of sounds */
                 ringtonePickerIntent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALARM);   /*important: we have all sounds, which I believe is more versatile and user friendly for the user. So even non alarm types would show up */
                 startActivityForResult(ringtonePickerIntent, 1);    /*reqeust code is 1  */
+
+                Intent pickSongIntent = new Intent();
+                pickSongIntent.setAction(Intent.ACTION_GET_CONTENT);
+                pickSongIntent.setType("*/*");
+                pickSongIntent.addCategory(Intent.CATEGORY_OPENABLE);
+                startActivity(pickSongIntent);
+
             }
         });
         save.setOnClickListener(new View.OnClickListener() {
