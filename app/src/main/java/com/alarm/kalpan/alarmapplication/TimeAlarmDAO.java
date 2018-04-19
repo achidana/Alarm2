@@ -25,4 +25,7 @@ public abstract class TimeAlarmDAO {
     @Query("SELECT * FROM TimeAlarm")
     public abstract TimeAlarm[] loadTimeAlarms();
 
+    @Query("SELECT * FROM TimeAlarm WHERE alarmID = :id")
+    public abstract TimeAlarm getAlarm(int id);
+
 }

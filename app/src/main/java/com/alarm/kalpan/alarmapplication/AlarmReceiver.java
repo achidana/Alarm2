@@ -11,9 +11,16 @@ import android.content.Intent;
 public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        Intent intent2 = new Intent(context, AlarmRinger.class);
-        intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent2.putExtra("ringtoneUri", intent.getParcelableExtra("ringtoneUri"));  /* pass on the correct uri forward */
-        context.startActivity(intent2);
+        Intent ringerIntent;
+
+        ringerIntent = new Intent(context, AlarmRinger.class);
+
+        //setting up the stuff in the intent. This is to give the state of the alarm that rang.
+        ringerIntent.setAction(intent.getAction());
+        ringerIntent.putExtra("AlarmType", intent.getStringExtra("AlarmType"));
+        ringerIntent.putExtra("AlarmID", intent.getIntExtra("AlarmID", -1));
+        ringerIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        context.startActivity(ringerIntent);
     }
 }

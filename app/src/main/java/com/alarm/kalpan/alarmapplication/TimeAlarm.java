@@ -49,6 +49,8 @@ public class TimeAlarm {
         this.ringtoneUri = ringtoneUri;
 
         Random r = new Random();
+
+        //todo: have correct id
         alarmID = r.nextInt();
     }
 

@@ -42,9 +42,6 @@ class CustomAdapter extends ArrayAdapter<TimeAlarm>  {
     @Override
     public View getView(final int position, @Nullable final View convertView, @NonNull final ViewGroup parent) {
 
-        //efficiency
-        if(convertView != null)
-            return convertView;
 
         LayoutInflater inflater = LayoutInflater.from(getContext());
         final View customView = inflater.inflate(R.layout.custom_row_homescreen,parent,false);
@@ -67,6 +64,7 @@ class CustomAdapter extends ArrayAdapter<TimeAlarm>  {
 
         if(((ListView) parent).getSelectedItemPosition() == position)
         {
+            System.out.println("Kalpan2");
             customView.setBackgroundResource(selectedCellBackroundColorResourceID);
         }
         homescrn_toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
