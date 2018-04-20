@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.telephony.PhoneNumberUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
@@ -38,131 +39,58 @@ import java.util.concurrent.TimeUnit;
  */
 
 //I think this can't connect because there's no attached phone number
-public class VerifyActivity extends Activity implements
-        GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
-    public static final int RESOLVE_HINT = 1010;
+public class VerifyActivity  {
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_verify);
-        /* To be done in homescreen
-        SharedPreferences.Editor editor = getSharedPreferences("Verify bool", MODE_PRIVATE).edit();
-        editor.putBoolean("Verified", false);
-        editor.apply();
-        */
-        requestHint();
-    }
-
-    private void requestHint() {
-        Log.d("TAG", "In request");
-        HintRequest hintRequest = new HintRequest.Builder().setPhoneNumberIdentifierSupported(true).build();
-        GoogleApiClient apiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(Auth.CREDENTIALS_API)
-                .build();
-        apiClient.connect();
-        Log.d("TAG", "Connected");
-        PendingIntent intent = Auth.CredentialsApi.getHintPickerIntent(apiClient, hintRequest);
-        try {
-            startIntentSenderForResult(intent.getIntentSender(), RESOLVE_HINT, null, 0, 0, 0);
-        } catch (IntentSender.SendIntentException e){
-            Log.d("TAG", "Failed to send");
-            e.printStackTrace();
-        }
-        Log.d("TAG", "Finished request");
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.d("TAG", "result");
-        Integer rc = requestCode;
-        Integer rc2 = resultCode;
-        Log.d("TAG", rc.toString());
-        Log.d("TAG", rc2.toString());
-        if (requestCode == RESOLVE_HINT) {
-            if (resultCode == RESULT_OK) {
-                Credential cred = data.getParcelableExtra(Credential.EXTRA_KEY);
-                    final String unformattedPhone = cred.getId(); //Put this in server
-                    Log.d("TAG", unformattedPhone);
-                    sendToServer(unformattedPhone);
-                    /*
-                    if(PhoneNumberUtils.isGlobalPhoneNumber(unformattedPhone)) {
-                        //Phone number is real, allow entry
-                        //Built in variable will be moved to homescreen,
-                        //Left here for now
-                        SharedPreferences.Editor editor = getSharedPreferences("Verify bool", MODE_PRIVATE).edit();
-                        editor.putBoolean("Verified", true);
-                        editor.apply();
-                        //switch intent
-                    }
-                    else {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                        builder.setTitle("Invalid Phone Number");
-                        //Do not switch intent, lock at screen
-                    }
-                    */
-                }
+    public boolean validateNumber(String phoneNumber) {
+        String plus = "+";
+        phoneNumber = phoneNumber.replaceAll(" ", "");
+        //First checks to add + sign
+        if (!phoneNumber.startsWith(plus)) {
+            //Checks that all input is numeric
+            if (phoneNumber.matches(".*[0-9].*")) {
+                phoneNumber = plus.concat(phoneNumber);
+                System.out.println("With plus: " + phoneNumber);
             }
-
-    }
-
-    public void sendToServer(String number) {
-        SmsRetrieverClient client = SmsRetriever.getClient(this /* context */);
-
-        Task<Void> task = client.startSmsRetriever();
-
-        task.addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                // successfully started an SMS Retriever for one SMS message
-                //Format number?
-                //Send phone number to server
-            }
-        });
-
-        task.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                //Failed
-            }
-        });
-    }
-
-    public class MySMSBroadcastReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (SmsRetriever.SMS_RETRIEVED_ACTION.equals(intent.getAction())) {
-                Bundle extras = intent.getExtras();
-                Status status = (Status) extras.get(SmsRetriever.EXTRA_STATUS);
-
-                switch(status.getStatusCode()) {
-                    case CommonStatusCodes.SUCCESS:
-                        String message = (String) extras.get(SmsRetriever.EXTRA_SMS_MESSAGE);
-                        break;
-                    case CommonStatusCodes.TIMEOUT:
-                        break;
-                }
+            else {
+                System.out.println("Nonnumeric " + phoneNumber);
+                return false;
             }
         }
+        //Number starts with +, check for all numeric value after +
+        else {
+            //Creates new string removing the plus
+            String numberNoPlus = phoneNumber.replace(plus, "");
+            numberNoPlus = numberNoPlus.replaceAll(" ", "");
+            if (!numberNoPlus.matches(".*[0-9].*")) {
+                System.out.println("No plus, nonnumeric: " + numberNoPlus);
+                return false;
+            }
+        }
+        //Number should be formatted +1(123)456-7890
+        if (phoneNumber.length() != 12) {
+            System.out.println("Bad length: " + phoneNumber);
+            //Toast toast = Toast.makeText("Make sure you add 1 to the beginning of your ten digit number", this, Toast.LENGTH_LONG);
+            //toast.show();
+            return false;
+        }
+        System.out.println("Success: " + phoneNumber);
+        return true;
+
     }
 
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        Log.d("Connect Success", "Success");
-    }
+    public static void main(String args[]) {
+        VerifyActivity va = new VerifyActivity();
+        boolean test;
+        test = va.validateNumber("11234567890");
+        System.out.println(test);
+        test = va.validateNumber("+11234567890");
+        System.out.println(test);
+        test = va.validateNumber("abcdefg");
+        System.out.println(test);
+        test = va.validateNumber("+abcdefg");
+        System.out.println(test);
+        test = va.validateNumber("123456789012345667");
+        System.out.println(test);
 
-    @Override
-    public void onConnectionSuspended(int i) {
-        Log.d("Connect Suspend", "Suspend");
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.d("Connect Fail", "Fail");
     }
 }

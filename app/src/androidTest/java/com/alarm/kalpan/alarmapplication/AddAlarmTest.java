@@ -46,8 +46,8 @@ public class AddAlarmTest{
     @Before
     public void initialize() {
         mAlarmName = "Gym";
-        hour = 10;
-        minutes = 12;
+        hour = 2;
+        minutes = 45;
     }
 
     @Test
@@ -63,9 +63,24 @@ public class AddAlarmTest{
 
     }
 
-    //This is just normal ringtone(?)
+    @Test
+    public void addSecAlarm() {
+        mAlarmName = "Work";
+        hour = 3;
+        minutes = 24;
+
+        onView(withId(R.id.name)).perform(replaceText(mAlarmName));
+        onView(withClassName(Matchers.equalTo(TimePicker.class.getName()))).perform(PickerActions.setTime(hour, minutes));
+        onView(withId(R.id.save)).perform(click());
+
+    }
+
+    /*
+    //Checks for dialog box to appear
     @Test
     public void customRingtone() {
         onView(withId(R.id.button2)).perform(click());
+        //onView(withText("Alarm Sounds")).check(matches(isDisplayed()));
     }
+    */
 }

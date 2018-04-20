@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.content.Intent;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListAdapter;
@@ -80,14 +81,17 @@ public class HomeScreen extends AppCompatActivity {
     public void onResume()
     {
         super.onResume();
-
         //First time usage
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        boolean previouslyStarted = prefs.getBoolean(getString(R.string.firstTime), false);
-        if(!previouslyStarted) {
-            SharedPreferences.Editor edit = prefs.edit();
-            edit.putBoolean(getString(R.string.firstTime), Boolean.TRUE);
-            edit.apply();
+        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        //boolean previouslyStarted = prefs.getBoolean(getString(R.string.firstTime), false);
+        Globals globals = (Globals) getApplication();
+        Log.d("TAG", String.valueOf(globals.isVerified));
+        if (!globals.isVerified) {
+        //if(!previouslyStarted) {
+            //SharedPreferences.Editor edit = prefs.edit();
+            //edit.putBoolean(getString(R.string.firstTime), Boolean.TRUE);
+            //edit.apply();
+            globals.isVerified = true;
             //Intent to start FirebasePhoneVerify
             Intent intent = new Intent(this, FirebasePhoneVerify.class);
             startActivity(intent);

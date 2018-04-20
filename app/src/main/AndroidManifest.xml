@@ -23,7 +23,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".HomeScreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity android:name=".Add_alarm" />
         <activity android:name=".AlarmRinger" />
@@ -32,24 +36,25 @@
 
         <activity android:name=".TextArchive" />
         <activity android:name=".GetInfo" />
-        <activity android:name=".AudioArchive" />
+        <activity android:name=".AudioArchive" >
+
+        </activity>
+
         <activity android:name=".TestRecordAudio">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".AudioArchive" />
         </activity>
-        <activity android:name=".GroupAlarm" />
+        <activity android:name=".GroupAlarm" >
+
+        </activity>
 
         <activity android:name=".GroupAlarmList">
 
         </activity>
         <activity android:name=".CustomRingtone"></activity>
         <activity android:name=".FirebasePhoneVerify">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <service android:name=".MyFirebaseMessagingService">

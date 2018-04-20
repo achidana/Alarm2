@@ -213,13 +213,14 @@ public class GroupAlarm extends Activity{
 
                 //User accepts request
                 else {
-                    //TODO: add verification of valid name/number
+                    userText = inputName.getText().toString();
                     if (usernames.contains(userText)) {
+                        Log.d("TAG", userText);
+                        Log.d("TAG", usernames.toString());
                         Toast toast = Toast.makeText(GroupAlarm.this, "User Already Exists", Toast.LENGTH_LONG);
                         toast.show();
                     }
                     else {
-                        userText = inputName.getText().toString();
                         userPhoneText = inputNumber.getText().toString();
                         User u = new User(userText, userPhoneText, false);
                         users.add(u);

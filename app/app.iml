@@ -143,6 +143,7 @@
     <orderEntry type="library" name="com.android.support:support-compat-26.1.0" level="project" />
     <orderEntry type="library" name="com.google.firebase:firebase-analytics-impl-12.0.1" level="project" />
     <orderEntry type="library" name="com.google.firebase:firebase-core-12.0.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="com.jayway.android.robotium:robotium-solo:5.6.0@jar" level="project" />
     <orderEntry type="library" name="com.google.firebase:firebase-iid-12.0.1" level="project" />
     <orderEntry type="library" name="android.arch.core:common:1.0.0@jar" level="project" />
     <orderEntry type="library" name="android.arch.persistence:db-framework-1.0.0" level="project" />
