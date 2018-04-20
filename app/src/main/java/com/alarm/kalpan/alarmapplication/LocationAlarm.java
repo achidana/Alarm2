@@ -1,16 +1,18 @@
 package com.alarm.kalpan.alarmapplication;
 
+import android.arch.persistence.room.Entity;
 import android.net.Uri;
 
 import com.google.android.gms.location.Geofence;
 
+//@Entity
 public class LocationAlarm {
     private boolean isOn;
     private Geofence geofence;
     private Uri RingtoneURI;
     private String name;
     private long radius;
-
+    private int alarmID;
 
     private double latitude;
     private double longitude;

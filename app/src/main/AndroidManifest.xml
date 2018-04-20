@@ -15,6 +15,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
 
     <application
         android:name=".Globals"
@@ -23,7 +24,9 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        >
+
         <activity android:name=".HomeScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,7 +34,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Add_alarm" />
+        <activity
+            android:name=".Add_alarm"
+            android:windowSoftInputMode="stateHidden" />
         <activity android:name=".AlarmRinger" />
 
         <receiver android:name=".AlarmReceiver" />
@@ -80,7 +85,7 @@
             </intent-filter>
         </receiver>
 
-
+        <activity android:name=".AddGroupAlarm"></activity>
     </application>
 
 </manifest>

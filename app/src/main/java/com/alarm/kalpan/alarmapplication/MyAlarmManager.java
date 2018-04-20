@@ -20,10 +20,15 @@ public class MyAlarmManager {
         int minutes;
         alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context.getApplicationContext(), AlarmReceiver.class);
-        intent.putExtra("ringtoneUri", timeAlarm.getRingtoneUri());
-        //important: always use the above method to make an intent... To retrieve the PendingIntent we make next, which disappears in to the system, we actually need to have the same Intent things of the underlying intent
-        alarmIntent = PendingIntent.getBroadcast(context.getApplicationContext(), timeAlarm.getAlarmID(), intent, 0);
 
+        intent.setAction("Ring time alarm");    //this makes intents of time alarms unique
+        intent.putExtra("AlarmType", "TimeAlarm");
+        intent.putExtra("AlarmID", timeAlarm.getAlarmID());
+
+        //important: always use the above method to make an intent... To retrieve the PendingIntent we make next, which disappears in to the system, we actually need to have the same Intent things of the underlying intent
+        // but put extra doesn't make the intent different.
+        // in our app, we differentiate two alarms' pending intent using the alarm id
+        alarmIntent = PendingIntent.getBroadcast(context.getApplicationContext(), timeAlarm.getAlarmID(), intent, 0);
         hour = timeAlarm.getHour();
         minutes = timeAlarm.getMin();
 
@@ -50,6 +55,7 @@ public class MyAlarmManager {
     static boolean myCancelTimeAlarm(TimeAlarm timeAlarm, Context context)
     {
         Intent intent = new Intent(context.getApplicationContext(), AlarmReceiver.class);
+        intent.setAction("Ring time alarm");
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, timeAlarm.getAlarmID(), intent, 0);
         AlarmManager alarmManager;
 

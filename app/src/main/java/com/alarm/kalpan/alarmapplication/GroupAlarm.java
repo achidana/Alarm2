@@ -3,6 +3,7 @@ package com.alarm.kalpan.alarmapplication;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.arch.persistence.room.Entity;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -34,7 +35,7 @@ import java.util.ArrayList;
  * Created by JohnRedmon on 3/4/18.
  * d
  */
-
+//@Entity
 public class GroupAlarm extends Activity{
     private GroupAdmin ga;
     private TextView groupAdmin;
@@ -85,9 +86,9 @@ public class GroupAlarm extends Activity{
             usernames = globals.groupList.get(groupToOpen);
             users = globals.userList.get(groupToOpen);
             //toAlarm.setText(globals.timeList.get(groupToOpen));
-            for (int i = 0; i < globals.alarmObjectsList.size(); i++) {
-                if (globals.alarmObjectsList.get(i).getName().equals(groupToOpen)) {
-                    toAlarm.setText(globals.alarmObjectsList.get(i).getTime());
+            for (int i = 0; i < globals.timeAlarms.size(); i++) {
+                if (globals.timeAlarms.get(i).getName().equals(groupToOpen)) {
+                    toAlarm.setText(globals.timeAlarms.get(i).getTime());
                 }
             }
             groupHeader.setText(groupToOpen);

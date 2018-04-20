@@ -1,12 +1,18 @@
 package com.alarm.kalpan.alarmapplication;
 
+import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -16,11 +22,20 @@ import java.util.Map;
 
 public class HomeScreen extends AppCompatActivity {
     ListView listView;
+    ApplicationDatabase db;
+    TimeAlarmDAO timeAlarmDAO;
+    ArrayList<TimeAlarm> timeAlarms;
+    Button addButton;
+    Button deleteButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
+
+        Toolbar toolbar = findViewById(R.id.my_toolbar);
+        setSupportActionBar(toolbar);
 
         String name = "Ashwin";
         String number = "7736839870";
@@ -57,21 +72,84 @@ public class HomeScreen extends AppCompatActivity {
         user.setName(name);
         User.setUser(user); // the user of this application
 
-        //loading the database
 
+        Globals globals = (Globals) getApplication();
+
+        timeAlarms = globals.timeAlarms;
+
+        //loading the database
+        db = globals.db;
+        timeAlarmDAO = db.timeAlarmDAO();
+
+        Thread loadFromDatabaseThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                loadFromDataBase();
+            }
+        });
+
+        loadFromDatabaseThread.start();
 
         listView= (ListView) findViewById(R.id.listview);
-        //  ArrayList <TimeAlarm> alarmObjectsList= new ArrayList<TimeAlarm>();
-        Globals global_arraylist= (Globals) getApplication();
-       ArrayList <TimeAlarm> alarmObjectsList=global_arraylist.alarmObjectsList;
 
-        ListAdapter customAdapter = new CustomAdapter(this, alarmObjectsList);
 
+
+        addButton = findViewById(R.id.addButton);
+        deleteButton = findViewById(R.id.deleteButton3);
+
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                    AddAlarmMenu addAlarmMenu = new AddAlarmMenu();
+                    addAlarmMenu.show(getSupportFragmentManager(), "addAlarmMenu");
+            }
+        });
+
+        AdapterView.OnItemClickListener listViewCallback = new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                if(addButton.getVisibility() == View.VISIBLE)
+                {
+                    Intent startIntent= new Intent(getBaseContext(), Add_alarm.class);
+                    startIntent.putExtra("position", position);
+                    startIntent.putExtra("edit_flag", true);
+                    startActivity(startIntent);
+                }
+
+                else if(deleteButton.getVisibility() == View.VISIBLE)
+                {
+                    listView.setItemChecked(position, true);
+                    listView.setSelection(position);
+                    ((ArrayAdapter)(adapterView.getAdapter())).notifyDataSetChanged();
+                    System.out.println("Kalpan");
+                }
+            }
+        };
+
+        listView.setOnItemClickListener(listViewCallback);
+
+
+        final ArrayList <TimeAlarm> timeAlarms = globals.timeAlarms;
+        final ArrayAdapter customAdapter = new CustomAdapter(this, timeAlarms, listViewCallback, R.drawable.common_google_signin_btn_icon_dark_normal_background);
         listView.setAdapter(customAdapter);
 
+        //deleting a selected alarm
+        //todo: change from time alarm to list of alarms (all extend alarm!!)
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int position = listView.getCheckedItemPosition();
+                if(position < 0)
+                {
+                    return;
+                }
 
-
-
+                timeAlarms.remove(position);
+                listView.setSelection(-1);
+                listView.setItemChecked(position, false);
+                customAdapter.notifyDataSetChanged();
+            }
+        });
 
     }
 
@@ -79,11 +157,8 @@ public class HomeScreen extends AppCompatActivity {
     public void onResume()
     {
         super.onResume();
-        Globals global_arraylist= (Globals) getApplication();
-        ArrayList <TimeAlarm> alarmObjectsList=global_arraylist.alarmObjectsList;
-        ListAdapter customAdapter = new CustomAdapter(this, alarmObjectsList);
+        ((ArrayAdapter) listView.getAdapter()).notifyDataSetChanged();
 
-        listView.setAdapter(customAdapter);
     }
 
     @Override
@@ -98,43 +173,23 @@ public class HomeScreen extends AppCompatActivity {
     {
         switch (item.getItemId())
         {
+            case R.id.action_edit:
 
-            case R.id.add_alarm_action:
-                startActivity(new Intent(this, Add_alarm.class));
-                return true;
+                //changing which button is on the bottom of the screen
+                addButton.setVisibility(View.GONE);
+                deleteButton.setVisibility(View.VISIBLE);
 
-            case R.id.add_group_alarm:
-                startActivity(new Intent(this, GroupAlarmList.class));
-                return true;
+                break;
 
-            case R.id.location_alarm:
-                startActivity(new Intent(this, MapsActivity.class));
-                return true;
-
-
-
-            case R.id.update_database:
-                Toast.makeText(getApplicationContext(), "starting", Toast.LENGTH_SHORT).show();
-                Thread t = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try{Thread.sleep(1500);} catch(InterruptedException e){}    // pause for 2 seconds to let toast finish on ui thread (main thread is UI thread, and it is not this one, but the default thread)
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(getApplicationContext(), "in progress", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                        updateDatabase();   // the payload of this thread is this line. Also, this thread also makes a toast of saved on completion, and hence it needs the looper queing and stuff
-                    }
-                }, "database");
-
-                t.start();
-
-                return true;
-
-
+            case R.id.action_ok:
+                addButton.setVisibility(View.VISIBLE);
+                deleteButton.setVisibility(View.GONE);
+                break;
+            default:
+                super.onOptionsItemSelected(item);
         }
+
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -154,6 +209,8 @@ public class HomeScreen extends AppCompatActivity {
 
     public void loadFromDataBase()
     {
+        TimeAlarm[] timeAlarmArr = timeAlarmDAO.loadTimeAlarms();
+        System.out.println("Flag 3: Size = " + timeAlarmArr.length);
 
     }
 
