@@ -43,6 +43,23 @@ public class AddAlarmMenu extends DialogFragment {
                 dismiss();
             }
         });
+
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), AddLocationAlarm.class);
+                intent.putExtra("edit_flag", false);
+                startActivity(intent);
+                dismiss();
+            }
+        });
+
+        button3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // connect with john's stuff
+            }
+        });
         return builder.create();
     }
 }

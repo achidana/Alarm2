@@ -131,22 +131,6 @@ public class Add_alarm extends AppCompatActivity {
             }
         });
 
-        callSwitch.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener()
-        {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b)
-                {
-                    //read comment on textSwitch's listener
-                    Intent getVoiceMessage = new Intent(getBaseContext(), AudioArchive.class);
-                    startActivityForResult(getVoiceMessage, 4);
-
-                    Intent getNumber = new Intent(getBaseContext(), GetInfo.class);
-                    startActivityForResult(getNumber, 2);   /* request code 2 indicates get number */
-                }
-            }
-        });
-
         selectRingtone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -155,12 +139,6 @@ public class Add_alarm extends AppCompatActivity {
                 ringtonePickerIntent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false);   /* this basically is a mechanism for giving data to the activity where this intent would go. RingtoneManager defines all these constants and handles them approriately from the receiving end. This thing tells that we don't allow one option of silent in the list of sounds */
                 ringtonePickerIntent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALARM);   /*important: we have all sounds, which I believe is more versatile and user friendly for the user. So even non alarm types would show up */
                 startActivityForResult(ringtonePickerIntent, 1);    /*reqeust code is 1  */
-
-                Intent pickSongIntent = new Intent();
-                pickSongIntent.setAction(Intent.ACTION_GET_CONTENT);
-                pickSongIntent.setType("*/*");
-                pickSongIntent.addCategory(Intent.CATEGORY_OPENABLE);
-                startActivity(pickSongIntent);
 
             }
         });
@@ -314,8 +292,6 @@ public class Add_alarm extends AppCompatActivity {
         super.onStop();
         //can add stuff here if important
     }
-
-
 
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
