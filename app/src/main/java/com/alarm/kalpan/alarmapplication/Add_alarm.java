@@ -97,7 +97,7 @@ public class Add_alarm extends AppCompatActivity {
             timePicker.setMinute(alarm.getMin());
             textSwitch.setChecked(alarm.getIsText());
             callSwitch.setChecked(alarm.getIsCall());
-            ringtoneUri = alarm.getRingtoneUri();
+            ringtoneUri = Uri.parse(alarm.getRingtoneUri());
             nameView.setText(alarm.getName());
         }
 
@@ -170,7 +170,7 @@ public class Add_alarm extends AppCompatActivity {
                             ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
                         }
 
-                        final TimeAlarm timeAlarm = new TimeAlarm(timePicker_hour, timePicker_min, textSwitch.isChecked(), callSwitch.isChecked(), nameView.getText().toString(), true, ringtoneUri);
+                        final TimeAlarm timeAlarm = new TimeAlarm(timePicker_hour, timePicker_min, textSwitch.isChecked(), callSwitch.isChecked(), nameView.getText().toString(), true, ringtoneUri.toString());
 
                         //TODO: have option of different set of numbers to be notified for text and call
                         if(timeAlarm.getIsText())
@@ -214,7 +214,7 @@ public class Add_alarm extends AppCompatActivity {
 
                         alarm.setName(nameView.getText().toString());
 
-                        alarm.setRingtoneUri(ringtoneUri);
+                        alarm.setRingtoneUri(ringtoneUri.toString());
 
                         MyAlarmManager.myCreateTimeAlarm(alarm, getApplicationContext());
                     }
@@ -232,7 +232,7 @@ public class Add_alarm extends AppCompatActivity {
 
                         alarm.setName(nameView.getText().toString());
 
-                        alarm.setRingtoneUri(ringtoneUri);
+                        alarm.setRingtoneUri(ringtoneUri.toString());
                     }
 
                     //updating the alarm in the database
@@ -338,7 +338,6 @@ public class Add_alarm extends AppCompatActivity {
                         //handle
                     }
                     ringtoneUri = uri;
-
                     break;
 
                 case 2:

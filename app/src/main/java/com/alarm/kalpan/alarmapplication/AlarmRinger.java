@@ -80,7 +80,7 @@ public class AlarmRinger extends AppCompatActivity {
         if(timeAlarm.getRingtoneUri() == null)
             ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         else
-            ringtoneUri = timeAlarm.getRingtoneUri();
+            ringtoneUri = Uri.parse(timeAlarm.getRingtoneUri());
         ringtone = RingtoneManager.getRingtone(getBaseContext(), ringtoneUri);
 
         Runnable runnable = new PlayRingtone(ringtone, 10);

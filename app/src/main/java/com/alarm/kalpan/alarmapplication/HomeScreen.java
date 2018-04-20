@@ -53,6 +53,7 @@ public class HomeScreen extends AppCompatActivity {
             editor.apply(); //important: editor.apply will do in background (so gui freeze)
 
             System.out.println("flag 1");
+            Intent verify = new Intent(this, FirebasePhoneVerify.class);
             // TODO: in connect with the login screen: load the variables name, user and userToken
         }
 
