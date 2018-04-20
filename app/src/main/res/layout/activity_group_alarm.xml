@@ -86,14 +86,6 @@
         </LinearLayout>
 
         <!-- When pressed, will pull up list of users that have not used alarm -->
-        <Button
-            android:id="@+id/activeAlarms"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/user_count"
-            android:textAlignment="center"
-            android:onClick="showAlarmStatus"
-            />
 
         <LinearLayout
             android:layout_width="wrap_content"

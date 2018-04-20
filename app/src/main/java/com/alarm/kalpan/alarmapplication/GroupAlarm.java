@@ -86,6 +86,7 @@ public class GroupAlarm extends Activity{
         if (data.getStringExtra("NewGroupName") != null) {
             //Adds to global list
             groupName = data.getStringExtra("NewGroupName");
+            groupName = "Group: " + groupName;
             globals.groupList.put(groupName, usernames);
             globals.userList.put(groupName, users);
             globals.numberList.put(groupName, phoneNumbers);
@@ -124,7 +125,6 @@ public class GroupAlarm extends Activity{
         String username = globals.userName;
         String phoneNumber = globals.userID;
 
-        activeAlarms = findViewById(R.id.activeAlarms);
 
         if (firstTime) {
             User admin = new User(username, phoneNumber, true);
@@ -134,7 +134,6 @@ public class GroupAlarm extends Activity{
             //Store this in database of group admins(?)
             ga = new GroupAdmin(username, phoneNumber, 1, users);
         }
-        updateAlarmCount();
 
 
         adapter = new ArrayAdapter<String>(this,
@@ -217,19 +216,18 @@ public class GroupAlarm extends Activity{
                 //User accepts request
                 else {
                     //TODO: add verification of valid name/number
+                    userText = inputName.getText().toString();
                     if (usernames.contains(userText)) {
                         Toast toast = Toast.makeText(GroupAlarm.this, "User Already Exists", Toast.LENGTH_LONG);
                         toast.show();
                     }
                     else {
-                        userText = inputName.getText().toString();
                         userPhoneText = inputNumber.getText().toString();
                         User u = new User(userText, userPhoneText, false);
                         users.add(u);
                         adapter.notifyDataSetChanged();
                         usernames.add(userText);
                         adapter.notifyDataSetChanged();
-                        updateAlarmCount();
                         phoneNumbers.add(userPhoneText);
                     }
                 }
@@ -251,8 +249,7 @@ public class GroupAlarm extends Activity{
                     alarmStatus = "Alarm Acknowledged";
                 }
 
-                String toShow = "Phone Number: " + users.get(i).getPhoneNumber() +
-                        "\nAlarm Status: " + alarmStatus;
+                String toShow = "Phone Number: " + users.get(i).getPhoneNumber();
                 builder.setTitle(toShow);
 
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -276,8 +273,7 @@ public class GroupAlarm extends Activity{
                             adapter.notifyDataSetChanged();
                             usernames.remove(uName);
                             adapter.notifyDataSetChanged();
-                            updateAlarmCount();
-                            phoneNumbers.add(uNumber);
+                            phoneNumbers.remove(uNumber);
                         }
                     }
                 });
@@ -302,18 +298,6 @@ public class GroupAlarm extends Activity{
         Log.d("TAG", globals.groupList.toString());
         Intent intent = new Intent(this, GroupAlarmList.class);
         startActivity(intent);
-    }
-
-    public void updateAlarmCount() {
-        int alarmcount = 0;
-        if (users == null) totalAlarms = 0;
-        else totalAlarms = users.size();
-        for (int i = 0; i < totalAlarms; i++) {
-            if (users.get(i).getStopAlarm()) alarmcount++;
-        }
-        acknowledgedAlarms = alarmcount;
-        String testS = getString((R.string.user_count), acknowledgedAlarms, totalAlarms);
-        activeAlarms.setText(testS);
     }
 
     @Override
@@ -356,18 +340,17 @@ public class GroupAlarm extends Activity{
                     if (gAlarms.get(i).getName().equals(groupName)) {
                         Log.d("TAG", "2222222");
                         Alarm_object gAlarm = gAlarms.get(i);
-                        Log.d("TAG", "URI: " + gAlarm.ringtoneUri.toString());
 
                         Log.d("TAG", "URI: " + gAlarm.ringtoneUri);
-                        try {
-                            Log.d("TAG", "URI: " + (new URI(gAlarm.ringtoneUri.toString())));
-                        } catch (URISyntaxException e) {
-                            e.printStackTrace();
-                        }
                         gAlarm.clearMembers();
                         ArrayList<String> mems = gAlarm.getMembers();
                         for (int j = 0; j < members.size(); j++) {
-                            mems.add(members.get(j));
+                            Log.d("TAG", "member: " + members.get(j));
+                            if (globals.userID.equals(members.get(j))) {
+                                gAlarm.setGAdmin(globals.userID);
+                            } else {
+                                mems.add(members.get(j));
+                            }
                         }
                         String reqMeth;
                         String strURL;
@@ -400,7 +383,6 @@ public class GroupAlarm extends Activity{
                                 result.append(line);
                             }
                             String res = result.toString();
-                            Alarm_object alarm = gson.fromJson(res, Alarm_object.class);
                             Log.d("MainActivity", "Response: " + res);
                             if (reqMeth.equals("POST")) {
                                 gAlarm.setEsID(res);

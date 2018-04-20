@@ -82,12 +82,9 @@ public class HomeScreen extends AppCompatActivity {
         super.onResume();
 
         //First time usage
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        boolean previouslyStarted = prefs.getBoolean(getString(R.string.firstTime), false);
-        if(!previouslyStarted) {
-            SharedPreferences.Editor edit = prefs.edit();
-            edit.putBoolean(getString(R.string.firstTime), Boolean.TRUE);
-            edit.apply();
+        Globals globals = (Globals) getApplication();
+        if(!globals.isVerified) {
+            globals.isVerified = true;
             //Intent to start FirebasePhoneVerify
             Intent intent = new Intent(this, FirebasePhoneVerify.class);
             startActivity(intent);

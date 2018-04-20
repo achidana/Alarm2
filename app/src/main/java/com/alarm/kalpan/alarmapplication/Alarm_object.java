@@ -23,6 +23,7 @@ public class Alarm_object {
     int alarmID;
     ArrayList<String> members = new ArrayList<String>();
     String esID;
+    String gAdmin;
     public static int alarmIDGenerator = 0;
 
     String numberToCall;
@@ -57,6 +58,7 @@ public class Alarm_object {
         this.onOff = Boolean.parseBoolean(map.get("onOff"));
         this.ringtoneUri = map.get("ringtoneURI");
         this.esID = map.get("esID");
+        this.gAdmin = map.get("gAdmin");
         alarmID = alarmIDGenerator++;
     }
 
@@ -109,6 +111,8 @@ public class Alarm_object {
 
     public void clearMembers() { this.members.clear(); }
 
+    public void setGAdmin(String gAdmin) {this.gAdmin = gAdmin;}
+
     public boolean isOnOff() {
         return onOff;
     }
@@ -152,5 +156,5 @@ public class Alarm_object {
 
     public String getEsID() {return esID;}
 
-
+    public String getGAdmin() {return gAdmin;}
 }

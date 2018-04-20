@@ -32,19 +32,38 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         //Check if the message contains title
         if (remoteMessage.getNotification() != null) {
             Log.d(TAG, "Message title: " + remoteMessage.getNotification().getTitle());
-            String title = remoteMessage.getNotification().getTitle();
-            //MainActivity.displayData(remoteMessage.getData().toString());
             Globals globals = (Globals) getApplication();
             ArrayList<Alarm_object> alarmList = globals.alarmObjectsList;
+            String title = remoteMessage.getNotification().getTitle();
             Gson gson = new GsonBuilder().create();
             Log.d(TAG, "JSON: " + remoteMessage.getData());
             Log.d(TAG, "JSON: " + remoteMessage.getData().toString());
-            Log.d(TAG, "TYPE: " + remoteMessage.getMessageType());
+            Log.d(TAG, "members: " + remoteMessage.getData().get("members"));
             //Alarm_object alarm = gson.fromJson(remoteMessage.getData().toString(), Alarm_object.class);
             Alarm_object alarm = new Alarm_object(remoteMessage.getData());
-            alarm.setName("Group: " + alarm.getName());
             if (title.equals("NEW")) {
                 alarmList.add(alarm);
+            } else if (title.equals("UPDATE")){
+                boolean hasAlarm = false;
+                for (int i = 0; i < alarmList.size(); i++) {
+                    Log.d(TAG, "name: " + alarmList.get(i).getName());
+                    if (alarmList.get(i).getName().equals(alarm.getName()) && !alarmList.get(i).getGAdmin().equals("")) {
+                        hasAlarm = true;
+                        alarmList.remove(i);
+                        alarmList.add(alarm);
+                    }
+                }
+                if (!hasAlarm) {
+                    alarmList.add(alarm);
+                }
+            } else if (title.equals("DELETE")) {
+                for (int i = 0; i < alarmList.size(); i++) {
+                    Log.d(TAG, "name: " + alarmList.get(i).getName());
+                    if (alarmList.get(i).getName().equals(alarm.getName()) && !alarmList.get(i).getGAdmin().equals("")) {
+                        alarmList.remove(i);
+                    }
+                }
+
             }
         }
         //Check if the message contains data
