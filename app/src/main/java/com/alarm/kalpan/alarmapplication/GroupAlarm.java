@@ -135,6 +135,9 @@ public class GroupAlarm extends Activity{
         //Goes to new Alarm from sprint 1
         Intent intent = new Intent(this, Add_alarm.class);
         intent.putExtra("GroupAlarm", "GroupAlarm");
+
+        intent.putExtra("edit_flag", true);
+
         intent.putExtra("defaultName", groupName);
         System.out.println("flag " + groupName);
         startActivityForResult(intent, REQUEST_GROUP_ALARM);

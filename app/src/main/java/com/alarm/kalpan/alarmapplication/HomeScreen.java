@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -40,6 +42,11 @@ public class HomeScreen extends AppCompatActivity {
         String name = "Ashwin";
         String number = "7736839870";
         String userToken = "23423423";
+
+        //MenuItem menuEdit= findViewById(R.id.action_edit);
+        //Menu menu = findViewById(R.id.my_toolbar);
+        //MenuItem menuOk = menu.findItem(R.id.action_ok);
+        //Log.d("TAG", menuOk.toString());
 
         SharedPreferences preferencesFile = getSharedPreferences(getString(R.string.preference_file_key) + ".prefs", Context.MODE_PRIVATE);
         if(preferencesFile.getBoolean("firstTime", true))
@@ -73,7 +80,7 @@ public class HomeScreen extends AppCompatActivity {
         User.setUser(user); // the user of this application
 
 
-        Globals globals = (Globals) getApplication();
+        final Globals globals = (Globals) getApplication();
 
         timeAlarms = globals.timeAlarms;
 
@@ -91,7 +98,6 @@ public class HomeScreen extends AppCompatActivity {
         loadFromDatabaseThread.start();
 
         listView= (ListView) findViewById(R.id.listview);
-
 
 
         addButton = findViewById(R.id.addButton);
@@ -120,6 +126,7 @@ public class HomeScreen extends AppCompatActivity {
                 {
                     listView.setItemChecked(position, true);
                     listView.setSelection(position);
+                    setPos(position);
                     ((ArrayAdapter)(adapterView.getAdapter())).notifyDataSetChanged();
                     System.out.println("Kalpan");
                 }
@@ -130,7 +137,8 @@ public class HomeScreen extends AppCompatActivity {
 
 
         final ArrayList <TimeAlarm> timeAlarms = globals.timeAlarms;
-        final ArrayAdapter customAdapter = new CustomAdapter(this, timeAlarms, listViewCallback, R.drawable.common_google_signin_btn_icon_dark_normal_background);
+        //final ArrayAdapter customAdapter = new CustomAdapter(this, timeAlarms, listViewCallback, R.drawable.common_google_signin_btn_icon_dark_normal_background);
+        final CustomAdapter customAdapter = new CustomAdapter(this, timeAlarms, listViewCallback, R.drawable.common_google_signin_btn_icon_dark_normal_background);
         listView.setAdapter(customAdapter);
 
         //deleting a selected alarm
@@ -143,7 +151,7 @@ public class HomeScreen extends AppCompatActivity {
                 {
                     return;
                 }
-
+                setPos(-1);
                 timeAlarms.remove(position);
                 listView.setSelection(-1);
                 listView.setItemChecked(position, false);
@@ -158,7 +166,6 @@ public class HomeScreen extends AppCompatActivity {
     {
         super.onResume();
         ((ArrayAdapter) listView.getAdapter()).notifyDataSetChanged();
-
     }
 
     @Override
@@ -184,6 +191,7 @@ public class HomeScreen extends AppCompatActivity {
             case R.id.action_ok:
                 addButton.setVisibility(View.VISIBLE);
                 deleteButton.setVisibility(View.GONE);
+                setPos(-1);
                 break;
             default:
                 super.onOptionsItemSelected(item);
@@ -214,6 +222,9 @@ public class HomeScreen extends AppCompatActivity {
 
     }
 
+    public void setPos(int i) {
+        ((CustomAdapter) listView.getAdapter()).setTest(i);
+    }
 }
 
 

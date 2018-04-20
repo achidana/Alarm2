@@ -63,12 +63,17 @@ public class Add_alarm extends AppCompatActivity {
         final Switch textSwitch= (Switch) findViewById(R.id.text_switch); //the switch to start the text a friend feature
         final Switch callSwitch= (Switch) findViewById(R.id.Call_switch); // the switch to initiate the call a friend feature
         final EditText nameView= (EditText) findViewById(R.id.name);  // the thing to get the name of the alarm
+        final EditText textView = (EditText) findViewById(R.id.textMessageBox);
         final Button selectRingtone = (Button) findViewById(R.id.selectRingtone);    /* button that shows that you want to select a ringtone */
         final Button save=(Button) findViewById(R.id.save);   /* the button for save */
         final Button deleteButton = (Button) findViewById(R.id.deleteButton);
+        final Button chooseContact = (Button) findViewById(R.id.chooseContactButton);
+        final Button choosePremade = (Button) findViewById(R.id.choosePremadeButton);
 
         db = globals.db;
         //Defaults name to Group Alarm name
+
+        textView.setEnabled(false);
 
         if (getIntent().getStringExtra("GroupAlarm") != null) {
             String groupAlarmName = getIntent().getStringExtra("defaultName");
@@ -118,18 +123,56 @@ public class Add_alarm extends AppCompatActivity {
         {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (!callSwitch.isChecked()) {
+                    if (b) {
+                        if (!textView.isEnabled()) {
+                            textView.setEnabled(true);
+                        } else {
+                            textView.setEnabled(false);
+                        }
+                        //John
+                        //IMPORTANT: We start two activities, both of which are sitting on top of this activity. But we want enter a number to come first, and so we start it last
+                        //Intent get_a_message = new Intent(getBaseContext(), TextArchive.class);
+                        //startActivityForResult(get_a_message, 3);
 
-                if(b)
-                {
-                    //IMPORTANT: We start two activities, both of which are sitting on top of this activity. But we want enter a number to come first, and so we start it last
-                    Intent get_a_message = new Intent(getBaseContext(), TextArchive.class);
-                    startActivityForResult(get_a_message, 3);
-
-                    Intent getNumber = new Intent(getBaseContext(), GetInfo.class);
-                    startActivityForResult(getNumber, 2);
+                        //Intent getNumber = new Intent(getBaseContext(), GetInfo.class);
+                        //startActivityForResult(getNumber, 2);
+                        //End John
+                    } else {
+                        if (!textView.isEnabled()) {
+                            textView.setEnabled(true);
+                        } else {
+                            textView.setEnabled(false);
+                        }
+                    }
                 }
             }
         });
+
+        //John
+        callSwitch.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+                if (!textSwitch.isChecked()) {
+                    if (b) {
+                        if (!textView.isEnabled()) {
+                            textView.setEnabled(true);
+                        } else {
+                            textView.setEnabled(false);
+                        }
+                    } else {
+                        if (!textView.isEnabled()) {
+                            textView.setEnabled(true);
+                        } else {
+                            textView.setEnabled(false);
+                        }
+                    }
+                }
+            }
+        });
+        //End John
 
         selectRingtone.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,7 +188,7 @@ public class Add_alarm extends AppCompatActivity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText textView = findViewById(R.id.textMessageBox);
+                //EditText textView = findViewById(R.id.textMessageBox);
                 Log.d("TAG", "Name: " + nameView.getText().toString());
 
                 int timePicker_hour= timePicker.getCurrentHour();
@@ -271,6 +314,26 @@ public class Add_alarm extends AppCompatActivity {
                 finish();
             }
         });
+
+        //John
+        //Choose contact starts contact activity
+        chooseContact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent getNumber = new Intent(getBaseContext(), GetInfo.class);
+                startActivityForResult(getNumber, 2);
+            }
+        });
+
+        //Choose premade starts TextArchive activity
+        choosePremade.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent get_a_message = new Intent(getBaseContext(), TextArchive.class);
+                startActivityForResult(get_a_message, 3);
+            }
+        });
+        //End John
     }   // end of onCreate method
 
     @Override
@@ -395,6 +458,3 @@ public class Add_alarm extends AppCompatActivity {
         db.timeAlarmDAO().updateAlarms(timeAlarms);
     }
 }
-
-
-

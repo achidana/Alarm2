@@ -51,6 +51,9 @@
     <string name="list_header">Group Alarms</string>
     <string name="add_group_btn">Add Group Alarm</string>
 
+    <!-- String for position for selection -->
+    <string name="position">-1</string>
+
 
     <string name="title_activity_home_screen">HomeScreen</string>
 

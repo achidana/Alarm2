@@ -6,6 +6,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,7 +40,7 @@ public class AddLocationAlarm extends AppCompatActivity {
         onOffSwitch = findViewById(R.id.onOffSwitch2);
         selectLocation = findViewById(R.id.selectLocationButton);
 
-        if(getIntent().getBooleanExtra("edit_flag", false))
+        if(getIntent().getBooleanExtra("edit_flag", true))
         {
             deleteButton.setVisibility(View.VISIBLE);
 
@@ -55,6 +56,9 @@ public class AddLocationAlarm extends AppCompatActivity {
         else
         {
             locationAlarm = new LocationAlarm();
+            //John
+            deleteButton.setVisibility(View.GONE);
+            //End John
             radiusText.setText("200");
         }
 
