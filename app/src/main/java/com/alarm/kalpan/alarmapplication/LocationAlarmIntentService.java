@@ -2,14 +2,9 @@ package com.alarm.kalpan.alarmapplication;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.support.annotation.Nullable;
-import android.util.Log;
-import android.widget.Toast;
-
-import com.google.android.gms.location.Geofence;
-import com.google.android.gms.location.GeofencingEvent;
-
-import java.util.List;
 
 public class LocationAlarmIntentService extends IntentService {
 
@@ -21,23 +16,12 @@ public class LocationAlarmIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        System.out.println("flag ashwin4");
-        GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
-
-        if (geofencingEvent.hasError()) {
-            Toast.makeText(getApplicationContext(), "Error in GEOFENCE ", Toast.LENGTH_LONG).show();
-            return;
-
-        }
-        int geofenceTransition = geofencingEvent.getGeofenceTransition();
-        if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
-            List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
-
-            Toast.makeText(getApplicationContext(), triggeringGeofences.get(0).getRequestId() + "!!!!!", Toast.LENGTH_LONG).show();
-            Log.e("!!!!!", "!!!!!!!@");
-
-
-        }
+        System.out.println("flag ashwinkalpan");
+        Uri ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+        Intent ringer = new Intent(getApplicationContext(), AlarmRinger.class);
+        ringer.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        ringer.putExtra("ringtoneUri", ringtoneUri);
+        getApplicationContext().startActivity(ringer);
 
 
     }

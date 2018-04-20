@@ -1,27 +1,30 @@
 package com.alarm.kalpan.alarmapplication;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.text.InputType;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingClient;
 import com.google.android.gms.location.GeofencingRequest;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
@@ -31,29 +34,30 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.google.android.gms.location.Geofence.NEVER_EXPIRE;
-
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    LocationManager locationManager;
-    private GoogleApiClient googleApiClient;
-    private LocationRequest locationRequest;
-    ArrayList<Geofence> geofenceList = new ArrayList<>();
+
     private final static int MY_PERMISSION_FINE = 101;
-    //private FusedLocationProviderClient fusedLocationProviderClient;
     private FusedLocationProviderClient mFusedLocationClient;
     PendingIntent GeofencePendingIntent;
     private GeofencingClient mGeofencingClient;
+    float radius = 200;
+    CircleOptions circleOptions = new CircleOptions();
+    ArrayList<LatLng> latLngsList = new ArrayList<>();
+    ArrayList<Float> radiusList = new ArrayList<>();
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +70,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mGeofencingClient = LocationServices.getGeofencingClient(this);
+
+
 
     }
 
@@ -131,30 +137,109 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             public void onMapClick(LatLng point) {
+
                 // TODO Auto-generated method stub
+
                 MarkerOptions marker = new MarkerOptions().position(
                         new LatLng(point.latitude, point.longitude));
 
                 mMap.addMarker(marker);
-                if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-                {
 
-                    String key = point.latitude + "_" + point.longitude;
 
-                    makeGeofence(point.latitude, point.longitude, key);
+                circleOptions = new CircleOptions()
+                        .center(new LatLng(point.latitude, point.longitude))
+                        .radius(radius)
+                        .fillColor(0x30ff0000);
+                mMap.addCircle(circleOptions);
+                latLngsList.add(point);
+                radiusList.add(radius);
 
-                    Task<Void> t = mGeofencingClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent());
-                    t.addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            System.out.println("shout");
+
+
+
+            }
+        });
+
+
+        /////////////////  CLEAR BUTTON
+
+        Button clear_button = findViewById(R.id.map_clear);
+        clear_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMap.clear();
+                latLngsList.clear();
+                radiusList.clear();
+            }
+        });
+
+
+/////////////////   SET RADIUS BUTTON
+        Button radius_button = findViewById(R.id.map_radius);
+        radius_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
+                builder.setTitle("Set Radius in meters");
+                final EditText input = new EditText(MapsActivity.this);
+                input.setInputType(InputType.TYPE_CLASS_NUMBER);
+                input.setText(radius+"");
+                builder.setView(input);
+
+
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if (input.getText().toString() == null || input.getText().toString().isEmpty()) {
+                            return;
                         }
-                    });
+
+                        radius = Float.parseFloat(input.getText().toString());
+                        circleOptions.radius(radius);
+                    }
+                });
+
+
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                });
+                builder.show();
+            }
+        });
+
+        ///////////// ADD ALARM BUTTON
+        Button add_button = findViewById(R.id.map_addAlarm);
+        add_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+
+
+
+                    for (int i = 0; i <= latLngsList.size() - 1; i++) {
+
+
+
+                        String key = latLngsList.get(i).latitude + ":" + latLngsList.get(i).longitude;
+
+                        Geofence g = makeGeofence(latLngsList.get(i).latitude, latLngsList.get(i).longitude, radiusList.get(i), key);
+                        mGeofencingClient.addGeofences(getGeofencingRequest(g), getGeofencePendingIntent(i));
+
+
+                    }
+
+
 
 
                 }
+                Toast.makeText(getApplicationContext(),"Alarm is added",Toast.LENGTH_LONG).show();
 
-
+                System.out.println("!!!!!!!! ALARM IS ADDED");
             }
         });
 
@@ -163,27 +248,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         placeAutoComplete.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-                mMap.clear();
-
-//                 Log.d("Maps", "Place selected: " + place.getName ());
-//                Geocoder geocoder=new Geocoder(getApplicationContext());
-//                List <Address> addressList;
-//                Address goToaddress;
-//                try {
-//
-//
-//                    addressList= geocoder.getFromLocationName(place.getName().toString(),1);
-//                    if(addressList.size()==0)
-//                    {
-//                                Toast.makeText(getApplicationContext(),"TRY AGAIN ",Toast.LENGTH_LONG).show();
-//                                return;
-//                    }
-//                    goToaddress=addressList.get(0);
-//                    mMap.addMarker(new MarkerOptions().position(latLng).title("My location"));
-//                    moveCameratoLocation(goToaddress.getLatitude(),goToaddress.getLongitude(),15);
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
 
 
                 LatLng latLng = place.getLatLng();
@@ -195,7 +259,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     //add the pin point
                     mMap.addMarker(new MarkerOptions().position(latLng).title(addressList.get(0).getLocality() + "," + addressList.get(0).getCountryName()));
-                    moveCameratoLocation(latLng.latitude, latLng.longitude, 10);
+                    moveCameratoLocation(latLng.latitude, latLng.longitude, 15);
 
 
                 } catch (IOException e) {
@@ -219,32 +283,46 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.animateCamera(update);
     }
 
-    private PendingIntent getGeofencePendingIntent() {
+    private PendingIntent getGeofencePendingIntent(int requestCode) {
         if (GeofencePendingIntent != null) {
+            System.out.println("FLAG REUSE");
             return GeofencePendingIntent;
         }
         Intent intent = new Intent(getApplicationContext(), LocationAlarmReceiver.class);
 
-        GeofencePendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 11, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            GeofencePendingIntent = PendingIntent.getBroadcast(getApplicationContext(), requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            startForegroundService(intent);
+
+
+        }
+
         System.out.println("flag ashwin3");
 
         return GeofencePendingIntent;
     }
 
-    private void makeGeofence(double lat, double lang, String key) {
-        geofenceList.add(new Geofence.Builder()
+    private Geofence makeGeofence(double lat, double lang, Float radius, String key) {
+        Geofence g = new Geofence.Builder()
                 .setRequestId(key) //v2 is the raduis
                 .setCircularRegion(
-                        lat, lang, 10000  // the last argument is the radius in metres TODO: change this to dynamic
+                        lat, lang, radius   // the last argument is the radius in metres TODO: change this to dynamic
                 )
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
                 .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                .build());
+                .build();
+
         System.out.println("flag ashwin1");
+        return g;
 
     }
 
-    private GeofencingRequest getGeofencingRequest() {
+    private GeofencingRequest getGeofencingRequest(Geofence geofence) {
 
 
         GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
@@ -253,7 +331,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // initial_transition_enter indicates that if user is already in one geofence, trigger the transition_enter move
         builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
 
-        builder.addGeofences(geofenceList);
+        builder.addGeofence(geofence);
         System.out.println("flag ashwin2");
         return builder.build();
     }
