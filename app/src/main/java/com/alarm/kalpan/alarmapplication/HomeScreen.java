@@ -100,9 +100,8 @@ public class HomeScreen extends AppCompatActivity {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent startIntent= new Intent(getBaseContext(), Add_alarm.class);
-                startIntent.putExtra("edit_flag", false);
-                startActivity(startIntent);
+                    AddAlarmMenu addAlarmMenu = new AddAlarmMenu();
+                    addAlarmMenu.show(getSupportFragmentManager(), "addAlarmMenu");
             }
         });
 
