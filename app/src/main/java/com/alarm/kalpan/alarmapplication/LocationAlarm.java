@@ -11,35 +11,36 @@ public class LocationAlarm {
     private Geofence geofence;
     private Uri RingtoneURI;
     private String name;
-    private long radius;
+    private float radius;
+
+
+
     private int alarmID;
 
     private double latitude;
     private double longitude;
 
 
-    private TimeAlarm backupTimeAlarm;
 
-
-    public LocationAlarm(String name, boolean isOn, double latitude, double longitude, TimeAlarm backupTimeAlarm)
+    public LocationAlarm()
+    {
+        alarmID = 5;
+    }
+    public LocationAlarm(String name, boolean isOn, double latitude, double longitude)
     {
         this.name = name;
         this.isOn = isOn;
         this.latitude=latitude;
         this.longitude=longitude;
-        this.backupTimeAlarm=backupTimeAlarm;
     }
 
-
-    public TimeAlarm getBackupTimeAlarm() {
-        return backupTimeAlarm;
+    public int getAlarmID() {
+        return alarmID;
     }
 
-    public void setBackupTimeAlarm(TimeAlarm backupTimeAlarm) {
-        this.backupTimeAlarm = backupTimeAlarm;
+    public void setAlarmID(int alarmID) {
+        this.alarmID = alarmID;
     }
-
-
 
     public double getLatitude() {
         return latitude;
@@ -91,11 +92,11 @@ public class LocationAlarm {
         this.name = name;
     }
 
-    public long getRadius() {
+    public float getRadius() {
         return radius;
     }
 
-    public void setRadius(long radius) {
+    public void setRadius(float radius) {
         this.radius = radius;
     }
 

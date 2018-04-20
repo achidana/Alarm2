@@ -24,9 +24,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-        >
-
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity android:name=".HomeScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -66,26 +64,26 @@
 
         <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_maps"></activity>
+            android:label="@string/title_activity_maps" />
 
         <service
             android:name=".LocationAlarmIntentService"
             android:allowBackup="true">
-
             <intent-filter>
-            <action android:name="com.aol.android.geofence.ACTION_RECEIVE_GEOFENCE"/>
-        </intent-filter>
-
+                <action android:name="com.aol.android.geofence.ACTION_RECEIVE_GEOFENCE" />
+            </intent-filter>
         </service>
 
-        <receiver android:name=".LocationAlarmReceiver"
+        <receiver
+            android:name=".LocationAlarmReceiver"
             android:exported="false">
             <intent-filter>
-        <action android:name="com.aol.android.geofence.ACTION_RECEIVE_GEOFENCE"/>
+                <action android:name="com.aol.android.geofence.ACTION_RECEIVE_GEOFENCE" />
             </intent-filter>
         </receiver>
 
-        <activity android:name=".AddGroupAlarm"></activity>
+        <activity android:name=".AddGroupAlarm" />
+        <activity android:name=".AddLocationAlarm"></activity>
     </application>
 
 </manifest>

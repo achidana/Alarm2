@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AddLocationAlarm">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+    <EditText
+        android:id="@+id/name2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginBottom="5dp"
+        android:ems="10"
+        android:hint="Name"
+        android:inputType="text"
+        />
+
+    <EditText
+        android:id="@+id/radius_map"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginBottom="5dp"
+        android:ems="10"
+        android:hint="Radius (meter)"
+        android:inputType="number"
+        />
+
+    <Switch
+        android:id="@+id/onOffSwitch2"
+        android:layout_width="match_parent"
+        android:layout_height="27dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginBottom="5dp"
+        android:text="Toggle on/off"
+        />
+
+    <TextView
+        android:id="@+id/lat_long_display"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:text="0, 0"
+        android:textSize="18sp"
+        android:visibility="visible"
+        />
+
+        <Button
+        android:id="@+id/selectRingtone2"
+        android:layout_width="110dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginBottom="5dp"
+        android:text="Ringtone"
+        android:textSize="14sp" />
+
+    <Button
+        android:id="@+id/selectLocationButton"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:text="Select Location"
+        android:textSize="14sp"
+        android:visibility="visible" />
+
+        <Button
+        android:id="@+id/save2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginBottom="5dp"
+        android:layout_gravity="center"
+        android:text="SAVE"
+        />
+
+    <Button
+        android:id="@+id/deleteButton4"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@android:color/holo_red_light"
+        android:text="Delete"
+        android:textColor="@android:color/background_light"
+        android:textSize="14sp"
+        android:visibility="visible" />
+
+
+    </LinearLayout>
+</ScrollView>

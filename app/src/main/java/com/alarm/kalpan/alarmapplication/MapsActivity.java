@@ -1,6 +1,7 @@
 package com.alarm.kalpan.alarmapplication;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
@@ -49,12 +50,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private final static int MY_PERMISSION_FINE = 101;
     private FusedLocationProviderClient mFusedLocationClient;
-    PendingIntent GeofencePendingIntent;
-    private GeofencingClient mGeofencingClient;
+//    PendingIntent GeofencePendingIntent;
+//    private GeofencingClient mGeofencingClient;
     float radius = 200;
     CircleOptions circleOptions = new CircleOptions();
-    ArrayList<LatLng> latLngsList = new ArrayList<>();
-    ArrayList<Float> radiusList = new ArrayList<>();
+    //ArrayList<LatLng> latLngsList = new ArrayList<>();
+    //ArrayList<Float> radiusList = new ArrayList<>();
+    LatLng latLng;
 
 
 
@@ -64,15 +66,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
+        radius = getIntent().getFloatExtra("Radius", 200);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        mGeofencingClient = LocationServices.getGeofencingClient(this);
-
-
-
     }
 
 
@@ -139,6 +138,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onMapClick(LatLng point) {
 
                 // TODO Auto-generated method stub
+                mMap.clear();
 
                 MarkerOptions marker = new MarkerOptions().position(
                         new LatLng(point.latitude, point.longitude));
@@ -151,12 +151,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         .radius(radius)
                         .fillColor(0x30ff0000);
                 mMap.addCircle(circleOptions);
-                latLngsList.add(point);
-                radiusList.add(radius);
-
-
-
-
+                latLng=point;
+                //radiusList.add(radius);
             }
         });
 
@@ -168,8 +164,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
                 mMap.clear();
-                latLngsList.clear();
-                radiusList.clear();
+                latLng=null;
+
             }
         });
 
@@ -218,28 +214,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-
-
-
-                    for (int i = 0; i <= latLngsList.size() - 1; i++) {
-
-
-
-                        String key = latLngsList.get(i).latitude + ":" + latLngsList.get(i).longitude;
-
-                        Geofence g = makeGeofence(latLngsList.get(i).latitude, latLngsList.get(i).longitude, radiusList.get(i), key);
-                        mGeofencingClient.addGeofences(getGeofencingRequest(g), getGeofencePendingIntent(i));
-
-
+                    if(latLng==null)
+                    {
+                        Toast.makeText(getApplicationContext(),"Please select location",Toast.LENGTH_SHORT).show();
+                        return;
                     }
 
-
-
-
+//                        String key = latLng.latitude + ":" + latLng.longitude;
+//
+//                        Geofence g = makeGeofence(latLng.latitude, latLng.longitude, radius,key);
+//                        mGeofencingClient.addGeofences(getGeofencingRequest(g), getGeofencePendingIntent(getIntent().getIntExtra("AlarmID",-1)));
                 }
                 Toast.makeText(getApplicationContext(),"Alarm is added",Toast.LENGTH_LONG).show();
 
                 System.out.println("!!!!!!!! ALARM IS ADDED");
+                Intent data = new Intent();
+                data.putExtra("Radius",radius);
+                data.putExtra("Latitude",latLng.latitude);
+                data.putExtra("Longitude",latLng.longitude);
+                setResult(Activity.RESULT_OK, data);
+                finish();
             }
         });
 
@@ -283,58 +277,58 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.animateCamera(update);
     }
 
-    private PendingIntent getGeofencePendingIntent(int requestCode) {
-        if (GeofencePendingIntent != null) {
-            System.out.println("FLAG REUSE");
-            return GeofencePendingIntent;
-        }
-        Intent intent = new Intent(getApplicationContext(), LocationAlarmReceiver.class);
-
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            GeofencePendingIntent = PendingIntent.getBroadcast(getApplicationContext(), requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
-            startForegroundService(intent);
-
-
-        }
-
-        System.out.println("flag ashwin3");
-
-        return GeofencePendingIntent;
-    }
-
-    private Geofence makeGeofence(double lat, double lang, Float radius, String key) {
-        Geofence g = new Geofence.Builder()
-                .setRequestId(key) //v2 is the raduis
-                .setCircularRegion(
-                        lat, lang, radius   // the last argument is the radius in metres TODO: change this to dynamic
-                )
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
-                .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                .build();
-
-        System.out.println("flag ashwin1");
-        return g;
-
-    }
-
-    private GeofencingRequest getGeofencingRequest(Geofence geofence) {
-
-
-        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
-
-
-        // initial_transition_enter indicates that if user is already in one geofence, trigger the transition_enter move
-        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
-
-        builder.addGeofence(geofence);
-        System.out.println("flag ashwin2");
-        return builder.build();
-    }
+//    private PendingIntent getGeofencePendingIntent(int requestCode) {
+//        if (GeofencePendingIntent != null) {
+//            System.out.println("FLAG REUSE");
+//            return GeofencePendingIntent;
+//        }
+//        Intent intent = new Intent(getApplicationContext(), LocationAlarmReceiver.class);
+//
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            GeofencePendingIntent = PendingIntent.getBroadcast(getApplicationContext(), requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//        }
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//
+//            startForegroundService(intent);
+//
+//
+//        }
+//
+//        System.out.println("flag ashwin3");
+//
+//        return GeofencePendingIntent;
+//    }
+//
+//    private Geofence makeGeofence(double lat, double lang, Float radius, String key) {
+//        Geofence g = new Geofence.Builder()
+//                .setRequestId(key) //v2 is the raduis
+//                .setCircularRegion(
+//                        lat, lang, radius   // the last argument is the radius in metres TODO: change this to dynamic
+//                )
+//                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
+//                .setExpirationDuration(Geofence.NEVER_EXPIRE)
+//                .build();
+//
+//        System.out.println("flag ashwin1");
+//        return g;
+//
+//    }
+//
+//    private GeofencingRequest getGeofencingRequest(Geofence geofence) {
+//
+//
+//        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
+//
+//
+//        // initial_transition_enter indicates that if user is already in one geofence, trigger the transition_enter move
+//        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
+//
+//        builder.addGeofence(geofence);
+//        System.out.println("flag ashwin2");
+//        return builder.build();
+//    }
 
 }
 
