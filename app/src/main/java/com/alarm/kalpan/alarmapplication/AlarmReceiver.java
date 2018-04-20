@@ -15,5 +15,6 @@ public class AlarmReceiver extends BroadcastReceiver {
         intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent2.putExtra("ringtoneUri", intent.getParcelableExtra("ringtoneUri"));  /* pass on the correct uri forward */
         context.startActivity(intent2);
+
     }
 }
