@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.content.Intent;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListAdapter;
@@ -80,10 +81,10 @@ public class HomeScreen extends AppCompatActivity {
     public void onResume()
     {
         super.onResume();
-
         //First time usage
         Globals globals = (Globals) getApplication();
-        if(!globals.isVerified) {
+        Log.d("TAG", String.valueOf(globals.isVerified));
+        if (!globals.isVerified) {
             globals.isVerified = true;
             //Intent to start FirebasePhoneVerify
             Intent intent = new Intent(this, FirebasePhoneVerify.class);

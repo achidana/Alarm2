@@ -218,6 +218,8 @@ public class GroupAlarm extends Activity{
                     //TODO: add verification of valid name/number
                     userText = inputName.getText().toString();
                     if (usernames.contains(userText)) {
+                        Log.d("TAG", userText);
+                        Log.d("TAG", usernames.toString());
                         Toast toast = Toast.makeText(GroupAlarm.this, "User Already Exists", Toast.LENGTH_LONG);
                         toast.show();
                     }

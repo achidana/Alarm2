@@ -8,6 +8,7 @@ import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -97,8 +98,9 @@ public class AudioArchive extends Activity{
                     userText = input.getText().toString();
                     try {
                         mp.setDataSource(audioFileLocation);
-                        //System.out.println("HERE1: " + audioFileLocation);
+                        Log.d("TAG", audioFileLocation);
                     } catch (Exception e) {
+                        Log.d("TAG", "failure");
                         e.printStackTrace();
                     }
                     AudioMessage newAM = new AudioMessage(userText, mp);
@@ -184,6 +186,7 @@ public class AudioArchive extends Activity{
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_RECORD) {
             audioFileLocation = data.getStringExtra("SavedLocation");
+            Log.d("TAG", audioFileLocation);
         }
     }
 

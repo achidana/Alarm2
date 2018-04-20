@@ -28,8 +28,7 @@ import static org.hamcrest.Matchers.endsWith;
 @LargeTest
 public class ListViewUpdateTest {
     private String mStringToBeTyped;
-    private String mUser;
-    private String mUser2;
+    private String mNextStringToBeTyped;
 
     @Rule
     public ActivityTestRule<GroupAlarmList> mActivityRule =
@@ -39,8 +38,7 @@ public class ListViewUpdateTest {
     public void initValidInputs() {
         //Tests for correct behavior with valid string/number
         mStringToBeTyped = "Bus Leaves";
-        mUser ="Mark Russell";
-        mUser2 = "Jerry Kincaid";
+        mNextStringToBeTyped = "Game Starts";
     }
 
     @Test
@@ -63,6 +61,12 @@ public class ListViewUpdateTest {
 
     @Test
     public void addUserUI() {
-     //   Globals globals =
+        onView(withId(R.id.addGroup)).perform(click());
+        //onView(withText("New Group Name")).perform(typeText(mStringToBeTyped));
+
+        onView(withClassName(endsWith("EditText"))).perform(replaceText(mNextStringToBeTyped));
+
+        onView(withText("New Group Name")).perform(click());
+        onView(withText(mNextStringToBeTyped)).check(matches(withText(mNextStringToBeTyped)));
     }
 }

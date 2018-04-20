@@ -61,7 +61,7 @@ public class FirebasePhoneVerify extends Activity{
         setContentView(R.layout.firbase_verify_activity);
 
         //PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, code);
-        setMCallback();
+        //setMCallback();
 
         number = findViewById(R.id.editPhoneNumber);
 //After first        verify();
@@ -85,12 +85,14 @@ public class FirebasePhoneVerify extends Activity{
 
         mAuth = FirebaseAuth.getInstance();
 
+
         numberBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 verify();
             }
         });
+
 
         codeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,6 +109,8 @@ public class FirebasePhoneVerify extends Activity{
         });
 
     }
+
+
 
     public void setMCallback() {
         mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
