@@ -3,9 +3,16 @@ package com.alarm.kalpan.alarmapplication;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.content.Context;
 import android.net.Uri;
+import android.widget.ArrayAdapter;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -13,7 +20,7 @@ import java.util.Random;
  */
 
 @Entity
-public class TimeAlarm {
+public class TimeAlarm implements AlarmDisplayable {
 
     private int hour;
     private int min;
@@ -21,7 +28,7 @@ public class TimeAlarm {
     private boolean isCall;
     private String name;
     private boolean isOn;
-    private Uri ringtoneUri;
+    private String ringtoneUri;
 
     @PrimaryKey
     private int alarmID;
@@ -34,8 +41,13 @@ public class TimeAlarm {
     private String ampm;
     //TODO: have other constructors that fill in default stuff if not provided (like ringtone and on off and such
 
+    private ArrayList<String> members = new ArrayList<String>();
+    private String esID;
+    private String gAdmin;
+
+
     @Ignore
-    public TimeAlarm(int hour, int min, boolean isText, boolean isCall, String name, boolean isOn, Uri ringtoneUri) {
+    public TimeAlarm(int hour, int min, boolean isText, boolean isCall, String name, boolean isOn, String ringtoneUri) {
         this.hour = hour;
         this.min = min;
         this.isText = isText;
@@ -52,9 +64,36 @@ public class TimeAlarm {
 
         //todo: have correct id
         alarmID = r.nextInt();
+        members = new ArrayList<>(0);
+
+        esID = "";
+        gAdmin = "";
     }
 
-    public TimeAlarm(int hour, int min, int day, boolean isText, boolean isCall, String name, boolean isOn, Uri ringtoneUri, ArrayList<String> numbersToNotify, String textMessage, String voiceMessage, int alarmID)
+    public TimeAlarm(Context context)
+    {
+        ArrayList<TimeAlarm> timeAlarms = ((Globals)context.getApplicationContext()).timeAlarms;
+        boolean availableFlag = true;
+        for(int i = 0;; i++)
+        {
+            availableFlag = true;
+            for(TimeAlarm timeAlarm : timeAlarms)
+            {
+                if(i == timeAlarm.getAlarmID())
+                {
+                    availableFlag = false;
+                    break;
+                }
+            }
+
+            if(availableFlag)
+            {
+                this.alarmID = i;
+                break;
+            }
+        }
+    }
+    public TimeAlarm(int hour, int min, int day, boolean isText, boolean isCall, String name, boolean isOn, String ringtoneUri, ArrayList<String> numbersToNotify, String textMessage, String voiceMessage, int alarmID, String esID, String gAdmin, ArrayList<String> members)
     {
         this.hour = hour;
         this.min = min;
@@ -78,6 +117,38 @@ public class TimeAlarm {
         {
             ampm = "AM";
         }
+
+        this.esID = esID;
+        this.gAdmin = gAdmin;
+        this.members = members;
+    }
+
+    @Ignore
+    public TimeAlarm(Map<String, String> map) {
+
+        Gson gson = new Gson();
+        Type type = new TypeToken<ArrayList<String>>() {}.getType();
+
+
+        this.hour = Integer.parseInt(map.get("hour"));
+        this.min = Integer.parseInt(map.get("min"));
+        this.isText = Boolean.parseBoolean(map.get("isText"));
+        this.isCall = Boolean.parseBoolean(map.get("isCall"));
+        this.name = map.get("name");
+        this.ampm = "AM";
+        if(this.hour >= 12) {
+            ampm = "PM";
+        }
+        this.isOn = Boolean.parseBoolean(map.get("isOn"));
+        this.ringtoneUri = map.get("ringtoneUri");
+        this.esID = map.get("esID");
+        this.gAdmin = map.get("gAdmin");
+        //todo: check this
+        numbersToNotify = gson.fromJson(map.get("numbersToNotify"), type);
+        members = gson.fromJson(map.get("members"), type);
+
+        //todo: scheme for setting id
+        alarmID = 100 + Integer.parseInt(map.get("alarmID"));
     }
 
 
@@ -90,7 +161,7 @@ public class TimeAlarm {
     }
 
 
-    public Uri getRingtoneUri() {
+    public String getRingtoneUri() {
         return ringtoneUri;
     }
 
@@ -142,7 +213,7 @@ public class TimeAlarm {
         this.name = name;
     }
 
-    public void setRingtoneUri(Uri ringtoneUri )
+    public void setRingtoneUri(String ringtoneUri )
     {
         this.ringtoneUri = ringtoneUri;
     }
@@ -205,5 +276,27 @@ public class TimeAlarm {
     public void setDay(int day)
     {
         this.day = day;
+    }
+
+    public ArrayList<String> getMembers() {return members;}
+
+    public String getEsID() {return esID;}
+
+    public String getGAdmin() {return gAdmin;}
+
+    public void setEsID(String esID) { this.esID = esID; }
+
+    public void clearMembers() { this.members.clear(); }
+
+    public void setMembers(ArrayList<String> members)
+    {
+        this.members = members;
+    }
+
+    public void setGAdmin(String gAdmin) {this.gAdmin = gAdmin;}
+
+    public String getShortDetail()
+    {
+        return getTime();
     }
 }

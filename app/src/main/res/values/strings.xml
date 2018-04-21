@@ -36,20 +36,6 @@
     <string name="record">Record</string>
     <!-- audio message uses same text_hint -->
 
-    <!-- Strings related to Verify -->
-    <string name="verify">Verify</string>
-
-    <!--Strings related to group alarm -->
-    <string name="group">Group Admin</string>
-    <string name="phone_hint">Enter Number</string>
-    <string name="enter_name">Enter name</string>
-    <string name="user_button">Add User</string>
-    <string name="user_count">Alarms Rung: %d/%d</string>
-    <string name="menu_name">Username</string>
-    <string name="menu_phone">Phone Number</string>
-    <string name="menu_alarm">Not Acknowledged</string>
-    <string name="list_header">Group Alarms</string>
-    <string name="add_group_btn">Add Group Alarm</string>
 
 
     <string name="title_activity_home_screen">HomeScreen</string>
@@ -65,5 +51,24 @@
     <string name="tab_text_3">Tab 3</string>
     <string name="section_format">Hello World from section: %1$d</string>
 
+    <!-- Strings related to Verify -->
+    <string name="verify">Verify</string>
+    <string name="numberEditTxt">Enter Phone Number</string>
+    <string name="numberBtn">Submit</string>
+    <string name="codeEditTxt">Enter Verification Code</string>
+    <string name="codeBtn">Verify</string>
+
+    <!--Strings related to group alarm -->
+    <string name="group">Group Admin</string>
+    <string name="phone_hint">Enter Number</string>
+    <string name="enter_name">Enter name</string>
+    <string name="user_button">Add User</string>
+    <string name="user_count">Alarms Rung: %d/%d</string>
+    <string name="menu_name">Username</string>
+    <string name="menu_phone">Phone Number</string>
+    <string name="menu_alarm">Not Acknowledged</string>
+    <string name="list_header">Group Alarms</string>
+    <string name="add_group_btn">Add Group Alarm</string>
+    <string name="deleteGroup">Delete Alarm</string>
 
 </resources>

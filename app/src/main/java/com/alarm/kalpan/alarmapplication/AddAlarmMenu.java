@@ -57,7 +57,10 @@ public class AddAlarmMenu extends DialogFragment {
         button3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // connect with john's stuff
+                Intent intent = new Intent(getActivity(), GroupAlarmList.class);
+                intent.putExtra("edit_flag", false);
+                startActivity(intent);
+                dismiss();
             }
         });
         return builder.create();

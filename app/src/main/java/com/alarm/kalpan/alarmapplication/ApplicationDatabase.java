@@ -9,11 +9,10 @@ import android.arch.persistence.room.TypeConverters;
  */
 
 // TODO: add GroupAlarm class and LocationAlarmClass too
-@Database(version = 1, entities = {TimeAlarm.class})
+@Database(version = 1, entities = {TimeAlarm.class, LocationAlarm.class})
 @TypeConverters({Converters.class})
 public abstract class ApplicationDatabase extends RoomDatabase {
     public abstract TimeAlarmDAO timeAlarmDAO();
-    //public abstract LocationAlarmDAO locationAlarmDAO();
-    //public abstract GroupAlarmDAO groupAlarmDAO();
+    public abstract LocationAlarmDAO locationAlarmDAO();
 
 }

@@ -12,6 +12,8 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class AddLocationAlarm extends AppCompatActivity {
 
     LocationAlarm locationAlarm;
@@ -27,7 +29,7 @@ public class AddLocationAlarm extends AppCompatActivity {
         EditText nameText;
         final EditText radiusText;
         TextView latLongTextView;
-        Switch onOffSwitch;
+        final Switch onOffSwitch;
         Button selectLocation;
 
         deleteButton = findViewById(R.id.deleteButton4);
@@ -43,18 +45,27 @@ public class AddLocationAlarm extends AppCompatActivity {
         {
             deleteButton.setVisibility(View.VISIBLE);
 
-            locationAlarm = getAlarmFromDatabase(getIntent().getIntExtra("AlarmID", -1));
+            int alarmID = (getIntent().getIntExtra("AlarmID", -1));
+            ArrayList<LocationAlarm> locationAlarms = ((Globals)getApplication()).locationAlarms;
+            for(LocationAlarm locationAlarm1 : locationAlarms )
+            {
+                if(locationAlarm1.getAlarmID() == alarmID)
+                    locationAlarm = locationAlarm1;
+            }
+
+            MyAlarmManager.myCancelLocationAlarm(locationAlarm, getApplicationContext());
 
             nameText.setText(locationAlarm.getName());
             latLongTextView.setText(locationAlarm.getLatitude() + ":" + locationAlarm.getLongitude());
             radiusText.setText(locationAlarm.getRadius() + "");
-            onOffSwitch.setChecked(locationAlarm.isOn());
+            onOffSwitch.setChecked(locationAlarm.getIsOn());
+            deleteButton.setVisibility(View.VISIBLE);
 
         }
 
         else
         {
-            locationAlarm = new LocationAlarm();
+            locationAlarm = new LocationAlarm(getApplicationContext());
             radiusText.setText("200");
         }
 
@@ -85,8 +96,40 @@ public class AddLocationAlarm extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MyAlarmManager.myCreateLocationAlarm(locationAlarm, getApplicationContext());
-                //save to database
+
+                if(onOffSwitch.isChecked())
+                {
+                    MyAlarmManager.myCreateLocationAlarm(locationAlarm, getApplicationContext());
+                    locationAlarm.setIsOn(true);
+                }
+                else
+                    locationAlarm.setIsOn(false);
+
+                if(getIntent().getBooleanExtra("edit_flag", false))
+                {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            updateDatabase(locationAlarm);
+                        }
+                    }).start();
+                }
+
+                else
+                {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            addToDatabase(locationAlarm);
+                        }
+                    }).start();
+
+                    ArrayList<LocationAlarm> locationAlarms = ((Globals)getApplication()).locationAlarms;
+                    locationAlarms.add(locationAlarm);
+                }
+
+                finish();
+                //todo: save to database
             }
         });
 
@@ -105,17 +148,20 @@ public class AddLocationAlarm extends AppCompatActivity {
 
     public void deleteFromDatebase(LocationAlarm locationAlarm)
     {
-        // delete
+        ApplicationDatabase db = ((Globals)getApplication()).db;
+        db.locationAlarmDAO().deleteLocationAlarms(locationAlarm);
     }
 
     public void addToDatabase(LocationAlarm locationAlarm)
     {
-        //add
+        ApplicationDatabase db = ((Globals)getApplication()).db;
+        db.locationAlarmDAO().insertLocationAlarms(locationAlarm);
     }
 
     public void updateDatabase(LocationAlarm locationAlarm)
     {
-        //update database
+        ApplicationDatabase db = ((Globals)getApplication()).db;
+        db.locationAlarmDAO().updateLocationAlarms(locationAlarm);
     }
 
     public LocationAlarm getAlarmFromDatabase(int alarmID)
@@ -137,7 +183,7 @@ public class AddLocationAlarm extends AppCompatActivity {
             {
                 case 1:
                     Uri uri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
-                    locationAlarm.setRingtoneURI(uri);
+                    locationAlarm.setRingtoneUri(uri.toString());
                     break;
                 case 2:
                     locationAlarm.setRadius(data.getFloatExtra("Radius", 200));
