@@ -56,8 +56,8 @@ public class FirebasePhoneVerify extends Activity{
     private Button codeBtn;
     private Button nameBtn;
 
-    SharedPreferences preferencesFile = getSharedPreferences(getString(R.string.preference_file_key) + ".prefs", Context.MODE_PRIVATE);
-    SharedPreferences.Editor editor = preferencesFile.edit();
+    SharedPreferences preferencesFile;
+    SharedPreferences.Editor editor;
 
 
     @Override
@@ -66,8 +66,9 @@ public class FirebasePhoneVerify extends Activity{
         setContentView(R.layout.firbase_verify_activity);
 
         //PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, code);
-        //setMCallback();
-
+        setMCallback();
+        preferencesFile = getSharedPreferences(getString(R.string.preference_file_key) + ".prefs", Context.MODE_PRIVATE);
+        editor = preferencesFile.edit();
         number = findViewById(R.id.editPhoneNumber);
 //After first        verify();
 
@@ -241,6 +242,11 @@ public class FirebasePhoneVerify extends Activity{
     public void startApp() {
         Globals globals = (Globals) getApplication();
         globals.firebaseToken = FirebaseInstanceId.getInstance().getToken();
+        editor.putString("userID", globals.userID);
+        editor.putString("userName", globals.userName);
+        editor.putString("firebaseToken", globals.firebaseToken);
+        editor.apply();
+
         Log.d("MainActivity", "BEFORE THREAD");
         Thread thread = new Thread(new Runnable() {
 

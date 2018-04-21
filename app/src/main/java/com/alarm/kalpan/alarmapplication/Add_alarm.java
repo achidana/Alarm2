@@ -90,8 +90,15 @@ public class Add_alarm extends AppCompatActivity {
         // if edit flag is up... Note that the second argument is the default value that will be there, if the extra is not there
         if(getIntent().getBooleanExtra("edit_flag",false))
         {
-            int edit_position = getIntent().getIntExtra("position",0);
-            alarm = timeAlarms.get(edit_position);
+            int alarmID = getIntent().getIntExtra("AlarmID",-1);
+            for(TimeAlarm timeAlarm : timeAlarms)
+            {
+                if(timeAlarm.getAlarmID() == alarmID)
+                {
+                    alarm = timeAlarm;
+                }
+            }
+
             edit = true;
             timePicker.setHour(alarm.getHour());
             timePicker.setMinute(alarm.getMin());
@@ -170,7 +177,16 @@ public class Add_alarm extends AppCompatActivity {
                             ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
                         }
 
-                        final TimeAlarm timeAlarm = new TimeAlarm(timePicker_hour, timePicker_min, textSwitch.isChecked(), callSwitch.isChecked(), nameView.getText().toString(), true, ringtoneUri.toString());
+                        TimeAlarm timeAlarm = new TimeAlarm(getApplicationContext());
+
+                        timeAlarm.setHour(timePicker_hour);
+                        timeAlarm.setMin(timePicker_min);
+                        timeAlarm.setIsText(textSwitch.isChecked());
+                        timeAlarm.setIsCall(callSwitch.isChecked());
+                        timeAlarm.setName(nameView.getText().toString());
+                        timeAlarm.setIsOn(true);
+                        timeAlarm.setRingtoneUri(ringtoneUri.toString());
+
 
                         //TODO: have option of different set of numbers to be notified for text and call
                         if(timeAlarm.getIsText())
@@ -186,11 +202,12 @@ public class Add_alarm extends AppCompatActivity {
                         }
 
                         timeAlarms.add(timeAlarm);
+                        final TimeAlarm timeAlarm1 = timeAlarm;
                         // inserting alarm over to the database
                         Thread insertToDatabaseThread = new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                addToDatabase(timeAlarm);
+                                addToDatabase(timeAlarm1);
                             }
                         });
 
@@ -273,25 +290,7 @@ public class Add_alarm extends AppCompatActivity {
         });
     }   // end of onCreate method
 
-    @Override
-    public void onPause()
-    {
-        super.onPause();
 
-    }
-
-    @Override
-    public void onResume()
-    {
-        super.onResume();
-    }
-
-    @Override
-    public void onStop()
-    {
-        super.onStop();
-        //can add stuff here if important
-    }
 
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data)

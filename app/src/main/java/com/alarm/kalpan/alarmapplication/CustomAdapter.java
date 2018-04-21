@@ -22,16 +22,16 @@ import java.util.ArrayList;
  * Created by ashwin on 2/22/18.
  */
 
-class CustomAdapter extends ArrayAdapter<TimeAlarm>  {
-    TimeAlarm a;
+class CustomAdapter extends ArrayAdapter<AlarmDisplayable>  {
+    AlarmDisplayable a;
     public Context context;
     private AdapterView.OnItemClickListener listCallback;
 
     private int selectedCellBackroundColorResourceID;
 
 
-    CustomAdapter(Context context, ArrayList < TimeAlarm> alarmObjectsList, AdapterView.OnItemClickListener listCallback, int drawableResourceID) {
-        super(context,R.layout.custom_row_homescreen,alarmObjectsList);
+    CustomAdapter(Context context, ArrayList < AlarmDisplayable> alarmDisplayables, AdapterView.OnItemClickListener listCallback, int drawableResourceID) {
+        super(context,R.layout.custom_row_homescreen,alarmDisplayables);
         this.context = context;
         this.listCallback = listCallback;
         this.selectedCellBackroundColorResourceID = drawableResourceID;
@@ -46,13 +46,13 @@ class CustomAdapter extends ArrayAdapter<TimeAlarm>  {
         LayoutInflater inflater = LayoutInflater.from(getContext());
         final View customView = inflater.inflate(R.layout.custom_row_homescreen,parent,false);
 
-        a=getItem(position);
+        a = getItem(position);
 
         TextView alarm_display= customView.findViewById(R.id.alarm_display);
         TextView name_display= customView.findViewById(R.id.name_display);
         Switch homescrn_toggle=(Switch) customView.findViewById(R.id.homescrn_toggle);
 
-        alarm_display.setText(a.getTime());
+        alarm_display.setText(a.getShortDetail());
         name_display.setText(a.getName());
 
 
@@ -72,13 +72,18 @@ class CustomAdapter extends ArrayAdapter<TimeAlarm>  {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
                     a.setIsOn(true);
-                    MyAlarmManager.myCreateTimeAlarm(a, context.getApplicationContext());
+                    if(a.getClass() == TimeAlarm.class)
+                        MyAlarmManager.myCreateTimeAlarm((TimeAlarm) a, context.getApplicationContext());
+                    else if(a.getClass() == LocationAlarm.class)
+                        MyAlarmManager.myCreateLocationAlarm((LocationAlarm)a, context.getApplicationContext());
                     //debug line
                     System.out.println("ON");
                 }
                 else {
                     a.setIsOn(false);
-                    MyAlarmManager.myCancelTimeAlarm(a, context.getApplicationContext());
+                    if(a.getClass() == TimeAlarm.class)
+                        MyAlarmManager.myCancelTimeAlarm((TimeAlarm) a, context.getApplicationContext());
+                    //else if location alarm todo: cancel location alarm
                     //System.out.println("OFF");
                 }
             }

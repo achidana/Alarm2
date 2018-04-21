@@ -62,7 +62,9 @@ public class AlarmRinger extends AppCompatActivity {
             public void onClick(View view) {
                 //todo: what if interrupted before started!
                 playRingtoneThread.interrupt();
-                failThread.interrupt();
+
+                if(alarmType.equals("TimeAlarm"))
+                    failThread.interrupt();
                 finish();
             }
         });
@@ -70,26 +72,52 @@ public class AlarmRinger extends AppCompatActivity {
 
     public void doWork(String alarmType, int id)
     {
-        TimeAlarm timeAlarm;
-        Uri ringtoneUri;
-        Globals globals = (Globals) getApplication();
-        TimeAlarmDAO timeAlarmDAO = globals.db.timeAlarmDAO();
-        timeAlarm = timeAlarmDAO.getAlarm(id);
 
-        //make threads to start timer and play the ringtone
-        if(timeAlarm.getRingtoneUri() == null)
-            ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-        else
-            ringtoneUri = Uri.parse(timeAlarm.getRingtoneUri());
-        ringtone = RingtoneManager.getRingtone(getBaseContext(), ringtoneUri);
+        if(alarmType.equals("TimeAlarm"))
+        {
+            TimeAlarm timeAlarm;
+            Uri ringtoneUri;
+            Globals globals = (Globals) getApplication();
+            TimeAlarmDAO timeAlarmDAO = globals.db.timeAlarmDAO();
+            timeAlarm = timeAlarmDAO.getAlarm(id);
 
-        Runnable runnable = new PlayRingtone(ringtone, 10);
+            //make threads to start timer and play the ringtone
+            if(timeAlarm.getRingtoneUri() == null)
+                ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+            else
+                ringtoneUri = Uri.parse(timeAlarm.getRingtoneUri());
+            ringtone = RingtoneManager.getRingtone(getBaseContext(), ringtoneUri);
 
-        playRingtoneThread = new Thread(runnable, "playRingtoneThread");
-        playRingtoneThread.start();
+            Runnable runnable = new PlayRingtone(ringtone, 10);
 
-        failThread = new Thread(new FailHandler(10, timeAlarm));
+            playRingtoneThread = new Thread(runnable, "playRingtoneThread");
+            playRingtoneThread.start();
 
-        failThread.start();
+            failThread = new Thread(new FailHandler(10, timeAlarm));
+
+            failThread.start();
+        }
+
+        else if(alarmType.equals("LocationAlarm"))
+        {
+            LocationAlarm locationAlarm;
+            Uri ringtoneUri;
+            Globals globals = (Globals) getApplication();
+            LocationAlarmDAO locationAlarmDAO = globals.db.locationAlarmDAO();
+            locationAlarm = locationAlarmDAO.getAlarm(id);
+
+            //make threads to start timer and play the ringtone
+            if(locationAlarm.getRingtoneUri() == null)
+                ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+            else
+                ringtoneUri = Uri.parse(locationAlarm.getRingtoneUri());
+            ringtone = RingtoneManager.getRingtone(getBaseContext(), ringtoneUri);
+
+            Runnable runnable = new PlayRingtone(ringtone, 10);
+
+            playRingtoneThread = new Thread(runnable, "playRingtoneThread");
+            playRingtoneThread.start();
+        }
+
     }
 }

@@ -1,6 +1,5 @@
 package com.alarm.kalpan.alarmapplication;
 
-import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,7 +12,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -22,11 +20,11 @@ import java.util.Map;
 
 public class HomeScreen extends AppCompatActivity {
     ListView listView;
-    ApplicationDatabase db;
-    TimeAlarmDAO timeAlarmDAO;
     ArrayList<TimeAlarm> timeAlarms;
+    ArrayList<LocationAlarm> locationAlarms;
     Button addButton;
     Button deleteButton;
+    ArrayList<AlarmDisplayable> alarmDisplayables;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,15 +43,16 @@ public class HomeScreen extends AppCompatActivity {
         if(preferencesFile.getBoolean("firstTime", true))
         {
             SharedPreferences.Editor editor = preferencesFile.edit();
-
+//
             editor.putBoolean("firstTime", false);
-            editor.putString("username", name); //connect with login screen and get username and number
-            editor.putString("userToken", userToken); //TODO: connect with login screen to get first time token (what if no network?)
-            editor.putString("userNumber", number); //TODO: put correct number
+//            editor.putString("username", name); //connect with login screen and get username and number
+//            editor.putString("userToken", userToken); //TODO: connect with login screen to get first time token (what if no network?)
+//            editor.putString("userNumber", number); //TODO: put correct number
             editor.apply(); //important: editor.apply will do in background (so gui freeze)
 
             System.out.println("flag 1");
             Intent verify = new Intent(this, FirebasePhoneVerify.class);
+            startActivity(verify);
             // TODO: in connect with the login screen: load the variables name, user and userToken
         }
 
@@ -61,9 +60,9 @@ public class HomeScreen extends AppCompatActivity {
         else
         {
             Map<String, ?> kvset = preferencesFile.getAll();
-            name = new String((String)(kvset.get("username")));   // making a new string as original is to be considered immutable
-            number = new String((String)(kvset.get("userNumber")));
-            userToken = new String((String) (kvset.get("userToken")));
+            name = new String((String)(kvset.get("userName")));   // making a new string as original is to be considered immutable
+            number = new String((String)(kvset.get("userID")));
+            userToken = new String((String) (kvset.get("firebaseToken")));
             System.out.println("flag 2");
 
         }
@@ -76,20 +75,8 @@ public class HomeScreen extends AppCompatActivity {
 
         Globals globals = (Globals) getApplication();
 
-        timeAlarms = globals.timeAlarms;
-
-        //loading the database
-        db = globals.db;
-        timeAlarmDAO = db.timeAlarmDAO();
-
-        Thread loadFromDatabaseThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                loadFromDataBase();
-            }
-        });
-
-        loadFromDatabaseThread.start();
+        timeAlarms = new ArrayList<>(globals.timeAlarms);
+        locationAlarms = new ArrayList<>(globals.locationAlarms);
 
         listView= (ListView) findViewById(R.id.listview);
 
@@ -111,10 +98,26 @@ public class HomeScreen extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 if(addButton.getVisibility() == View.VISIBLE)
                 {
-                    Intent startIntent= new Intent(getBaseContext(), Add_alarm.class);
-                    startIntent.putExtra("position", position);
-                    startIntent.putExtra("edit_flag", true);
-                    startActivity(startIntent);
+                    Intent startIntent = null;
+                    if(alarmDisplayables.get(position).getClass() == TimeAlarm.class)
+                    {
+                        TimeAlarm alarm = (TimeAlarm) alarmDisplayables.get(position);
+                        startIntent = new Intent(getApplicationContext(), Add_alarm.class);
+                        startIntent.putExtra("AlarmID", alarm.getAlarmID());
+
+                    }
+                    else if(alarmDisplayables.get(position).getClass() == LocationAlarm.class)
+                    {
+                        LocationAlarm alarm = (LocationAlarm)alarmDisplayables.get(position);
+                        startIntent = new Intent(getApplicationContext(), AddLocationAlarm.class);
+                        startIntent.putExtra("AlarmID", alarm.getAlarmID());
+                    }
+                    if(startIntent != null)
+                    {
+                        startIntent.putExtra("edit_flag", true);
+                        startActivity(startIntent);
+                    }
+
                 }
 
                 else if(deleteButton.getVisibility() == View.VISIBLE)
@@ -128,10 +131,12 @@ public class HomeScreen extends AppCompatActivity {
         };
 
         listView.setOnItemClickListener(listViewCallback);
+        alarmDisplayables = new ArrayList<>();
+        alarmDisplayables.clear();
+        alarmDisplayables.addAll(timeAlarms);
+        alarmDisplayables.addAll(locationAlarms);
 
-
-        final ArrayList <TimeAlarm> timeAlarms = globals.timeAlarms;
-        final ArrayAdapter customAdapter = new CustomAdapter(this, timeAlarms, listViewCallback, R.drawable.common_google_signin_btn_icon_dark_normal_background);
+        final ArrayAdapter customAdapter = new CustomAdapter(this, alarmDisplayables, listViewCallback, R.drawable.common_google_signin_btn_icon_dark_normal_background);
         listView.setAdapter(customAdapter);
 
         //deleting a selected alarm
@@ -158,8 +163,19 @@ public class HomeScreen extends AppCompatActivity {
     public void onResume()
     {
         super.onResume();
-        ((ArrayAdapter) listView.getAdapter()).notifyDataSetChanged();
+        Globals globals = (Globals) getApplication();
 
+        timeAlarms.clear();
+        timeAlarms.addAll(globals.timeAlarms);
+
+        locationAlarms.clear();
+        locationAlarms.addAll(globals.locationAlarms);
+
+        alarmDisplayables.clear();
+        alarmDisplayables.addAll(timeAlarms);
+        alarmDisplayables.addAll(locationAlarms);
+
+        ((ArrayAdapter) (listView.getAdapter())).notifyDataSetChanged();
     }
 
     @Override
@@ -206,13 +222,6 @@ public class HomeScreen extends AppCompatActivity {
             }
         });
         return;
-    }
-
-    public void loadFromDataBase()
-    {
-        TimeAlarm[] timeAlarmArr = timeAlarmDAO.loadTimeAlarms();
-        System.out.println("Flag 3: Size = " + timeAlarmArr.length);
-
     }
 
 }

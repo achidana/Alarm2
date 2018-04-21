@@ -3,6 +3,7 @@ package com.alarm.kalpan.alarmapplication;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.content.Context;
 import android.net.Uri;
 import android.widget.ArrayAdapter;
 
@@ -19,7 +20,7 @@ import java.util.Random;
  */
 
 @Entity
-public class TimeAlarm {
+public class TimeAlarm implements AlarmDisplayable {
 
     private int hour;
     private int min;
@@ -69,9 +70,28 @@ public class TimeAlarm {
         gAdmin = "";
     }
 
-    public TimeAlarm()
+    public TimeAlarm(Context context)
     {
-        this.alarmID = 5;
+        ArrayList<TimeAlarm> timeAlarms = ((Globals)context.getApplicationContext()).timeAlarms;
+        boolean availableFlag = true;
+        for(int i = 0;; i++)
+        {
+            availableFlag = true;
+            for(TimeAlarm timeAlarm : timeAlarms)
+            {
+                if(i == timeAlarm.getAlarmID())
+                {
+                    availableFlag = false;
+                    break;
+                }
+            }
+
+            if(availableFlag)
+            {
+                this.alarmID = i;
+                break;
+            }
+        }
     }
     public TimeAlarm(int hour, int min, int day, boolean isText, boolean isCall, String name, boolean isOn, String ringtoneUri, ArrayList<String> numbersToNotify, String textMessage, String voiceMessage, int alarmID, String esID, String gAdmin, ArrayList<String> members)
     {
@@ -105,6 +125,7 @@ public class TimeAlarm {
 
     @Ignore
     public TimeAlarm(Map<String, String> map) {
+
         Gson gson = new Gson();
         Type type = new TypeToken<ArrayList<String>>() {}.getType();
 
@@ -119,15 +140,15 @@ public class TimeAlarm {
             ampm = "PM";
         }
         this.isOn = Boolean.parseBoolean(map.get("isOn"));
-        this.ringtoneUri = map.get("ringtoneURI");
+        this.ringtoneUri = map.get("ringtoneUri");
         this.esID = map.get("esID");
         this.gAdmin = map.get("gAdmin");
-        alarmID = Integer.parseInt(map.get("alarmID"));
-
         //todo: check this
         numbersToNotify = gson.fromJson(map.get("numbersToNotify"), type);
         members = gson.fromJson(map.get("members"), type);
 
+        //todo: scheme for setting id
+        alarmID = 100 + Integer.parseInt(map.get("alarmID"));
     }
 
 
@@ -273,4 +294,9 @@ public class TimeAlarm {
     }
 
     public void setGAdmin(String gAdmin) {this.gAdmin = gAdmin;}
+
+    public String getShortDetail()
+    {
+        return getTime();
+    }
 }

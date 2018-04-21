@@ -6,18 +6,24 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
-//@Dao
-//public abstract class LocationAlarmDAO {
-//    @Insert
-//    public abstract void insertLocationAlarms(LocationAlarm... locationAlarms);
-//
-//    @Query("SELECT * FROM LocationAlarm")
-//    public abstract LocationAlarm[] loadAllLocationAlarms();
-//
-//    @Delete
-//    public abstract void deleteLocationAlarms(LocationAlarm... locationAlarms);
-//
-//    @Update
-//    public abstract void updateLocationAlarms(LocationAlarm... locationAlarms);
-//
-//}
+import java.util.ArrayList;
+import java.util.List;
+
+@Dao
+public abstract class LocationAlarmDAO {
+    @Insert
+    public abstract void insertLocationAlarms(LocationAlarm... locationAlarms);
+
+    @Query("SELECT * FROM LocationAlarm")
+    public abstract List<LocationAlarm> loadAllLocationAlarms();
+
+    @Delete
+    public abstract void deleteLocationAlarms(LocationAlarm... locationAlarms);
+
+    @Update
+    public abstract void updateLocationAlarms(LocationAlarm... locationAlarms);
+
+    @Query("SELECT * FROM LocationAlarm WHERE alarmID = :id")
+    public abstract LocationAlarm getAlarm(int id);
+
+}

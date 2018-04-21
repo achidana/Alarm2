@@ -7,6 +7,8 @@ import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
 import java.sql.Time;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by kalpanjasani on 4/8/18.
@@ -23,7 +25,7 @@ public abstract class TimeAlarmDAO {
     public abstract void updateAlarms(TimeAlarm... alarms);
 
     @Query("SELECT * FROM TimeAlarm")
-    public abstract TimeAlarm[] loadTimeAlarms();
+    public abstract List<TimeAlarm> loadTimeAlarms();
 
     @Query("SELECT * FROM TimeAlarm WHERE alarmID = :id")
     public abstract TimeAlarm getAlarm(int id);

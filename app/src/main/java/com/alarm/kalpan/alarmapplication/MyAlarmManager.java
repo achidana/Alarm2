@@ -103,6 +103,9 @@ public class MyAlarmManager {
                 .build();
 
         Intent intent = new Intent(context.getApplicationContext(), LocationAlarmReceiver.class);
+        intent.setAction("Ring location alarm");    //this makes intents of time alarms unique
+        intent.putExtra("AlarmType", "LocationAlarm");
+        intent.putExtra("AlarmID", locationAlarm.getAlarmID());
         geofencePendingIntent = PendingIntent.getBroadcast(context.getApplicationContext(), alarmID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         // add the geofence
 
@@ -124,18 +127,9 @@ public class MyAlarmManager {
         return true;
     }
 
-    private GeofencingRequest getGeofencingRequest(Geofence geofence) {
-
-
-        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
-
-
-        // initial_transition_enter indicates that if user is already in one geofence, trigger the transition_enter move
-        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
-
-        builder.addGeofence(geofence);
-        System.out.println("flag ashwin2");
-        return builder.build();
+    static boolean myCancelLocationAlarm(LocationAlarm locationAlarm, Context context)
+    {
+        return true;
     }
 
 

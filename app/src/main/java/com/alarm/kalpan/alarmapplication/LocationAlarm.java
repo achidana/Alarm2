@@ -1,37 +1,71 @@
 package com.alarm.kalpan.alarmapplication;
 
+import android.app.Application;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+import android.content.Context;
 import android.net.Uri;
 
 import com.google.android.gms.location.Geofence;
 
-//@Entity
-public class LocationAlarm {
+import java.util.ArrayList;
+
+@Entity
+public class LocationAlarm implements AlarmDisplayable {
     private boolean isOn;
-    private Geofence geofence;
-    private Uri RingtoneURI;
+    private String ringtoneUri;
     private String name;
     private float radius;
 
-
-
+    @PrimaryKey
     private int alarmID;
 
     private double latitude;
     private double longitude;
 
-
-
-    public LocationAlarm()
+    @Ignore
+    public LocationAlarm(Context context)
     {
-        alarmID = 5;
+        ArrayList<LocationAlarm> locationAlarms = ((Globals) context.getApplicationContext()).locationAlarms;
+        radius = 200;
+        boolean availableFlag = true;
+        for(int i = 0;; i++)
+        {
+            availableFlag = true;
+            for(LocationAlarm locationAlarm : locationAlarms)
+            {
+                if(i == locationAlarm.getAlarmID())
+                {
+                    availableFlag = false;
+                    break;
+                }
+            }
+
+            if(availableFlag)
+            {
+                this.alarmID = i;
+                break;
+            }
+        }
+
+        this.latitude = 0;
+        this.longitude = 0;
+        isOn = false;
+        name = "Location Alarm " + alarmID;
     }
-    public LocationAlarm(String name, boolean isOn, double latitude, double longitude)
+
+
+    //this constructor is called by the database manager
+    public LocationAlarm(String name, boolean isOn, double latitude, double longitude, int alarmID, float radius, String ringtoneUri)
     {
         this.name = name;
         this.isOn = isOn;
         this.latitude=latitude;
         this.longitude=longitude;
+        this.alarmID = alarmID;
+        this.radius = radius;
+        this.ringtoneUri = ringtoneUri;
     }
 
     public int getAlarmID() {
@@ -60,28 +94,20 @@ public class LocationAlarm {
 
 
 
-    public boolean isOn() {
+    public boolean getIsOn() {
         return isOn;
     }
 
-    public void setOn(boolean on) {
-        isOn = on;
+    public void setIsOn(boolean isOn) {
+        this.isOn = isOn;
     }
 
-    public Geofence getGeofence() {
-        return geofence;
+    public String getRingtoneUri() {
+        return ringtoneUri;
     }
 
-    public void setGeofence(Geofence geofence) {
-        this.geofence = geofence;
-    }
-
-    public Uri getRingtoneURI() {
-        return RingtoneURI;
-    }
-
-    public void setRingtoneURI(Uri ringtoneURI) {
-        RingtoneURI = ringtoneURI;
+    public void setRingtoneUri(String ringtoneUri) {
+        this.ringtoneUri = ringtoneUri;
     }
 
     public String getName() {
@@ -100,6 +126,10 @@ public class LocationAlarm {
         this.radius = radius;
     }
 
+    public String getShortDetail()
+    {
+        return String.format("Location: %.2f, %.2f", latitude, longitude);
 
+    }
 
 }

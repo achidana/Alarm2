@@ -16,6 +16,7 @@ public class Globals extends Application
 {
 
     ArrayList<TimeAlarm> timeAlarms;
+    ArrayList<LocationAlarm> locationAlarms;
     public ApplicationDatabase db;      // the single db for the whole application
     User theUser;
 
@@ -40,11 +41,18 @@ public class Globals extends Application
     public void onCreate()
     {
         super.onCreate();
-        timeAlarms = new ArrayList<>();
         groupList = new HashMap<>();
         userList = new HashMap<>();
         timeList = new HashMap<>();
         db = Room.databaseBuilder(getApplicationContext(), ApplicationDatabase.class, "AppDatabase").build();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                timeAlarms = new ArrayList<>(db.timeAlarmDAO().loadTimeAlarms());
+                locationAlarms = new ArrayList<>(db.locationAlarmDAO().loadAllLocationAlarms());
+            }
+        }).start();
         maxBackupNumbers = 5;
     }
 }
