@@ -1,10 +1,12 @@
 package com.alarm.kalpan.alarmapplication;
 
+import android.app.Activity;
 import android.app.Application;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 
 import com.google.android.gms.location.Geofence;
@@ -132,4 +134,7 @@ public class LocationAlarm implements AlarmDisplayable {
 
     }
 
+    public void startActivity(Context context, Intent intent) {
+        context.startActivity(intent);
+    }
 }

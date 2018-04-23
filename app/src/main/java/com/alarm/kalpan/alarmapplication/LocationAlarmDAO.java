@@ -26,4 +26,7 @@ public abstract class LocationAlarmDAO {
     @Query("SELECT * FROM LocationAlarm WHERE alarmID = :id")
     public abstract LocationAlarm getAlarm(int id);
 
+    @Query("DELETE FROM locationalarm WHERE alarmID = :alarmID")
+    public abstract void deleteLocationAlarmFromID(int alarmID);
+
 }

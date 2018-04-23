@@ -7,6 +7,7 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.text.InputType;
@@ -120,11 +121,30 @@ public class GroupAlarm extends Activity{
 
     public void initialize() {
 
-        //Admin is always the information input at the creation of the app
         Globals globals = (Globals) getApplication();
-        String username = globals.userName;
-        String phoneNumber = globals.userID;
 
+        //Admin is always the information input at the creation of the app
+        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key) + ".prefs", Context.MODE_PRIVATE);
+        if(sharedPreferences == null)
+        {
+            // make toast of internal error
+            // cleanup and return
+        }
+
+        Map<String, ?> kvset = sharedPreferences.getAll();
+        String username = (String) kvset.get("userName");
+        if(username == null)
+        {
+            // make toast of username not set (of the application)
+            // cleanup and return
+        }
+
+        String phoneNumber = (String) kvset.get("userID");
+        if(phoneNumber == null)
+        {
+            //make toast of phone number not given (which shouldn't happen, so internal error)
+            // do cleanup or handle case with no number
+        }
 
         if (firstTime) {
             User admin = new User(username, phoneNumber, true);
@@ -151,6 +171,12 @@ public class GroupAlarm extends Activity{
         Intent intent = new Intent(this, Add_alarm.class);
         intent.putExtra("GroupAlarm", "GroupAlarm");
         intent.putExtra("defaultName", groupName);
+        Globals globals = (Globals) getApplication();
+        for (int i = 0; i < globals.timeAlarms.size(); i++) {
+            if (globals.timeAlarms.get(i).getName().equals(groupName)) {
+                    intent.putExtra("edit_flag", true);
+                }
+       }
         System.out.println("flag " + groupName);
         startActivityForResult(intent, REQUEST_GROUP_ALARM);
     }

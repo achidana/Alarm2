@@ -45,11 +45,7 @@ public class HomeScreen extends AppCompatActivity {
             SharedPreferences.Editor editor = preferencesFile.edit();
 //
             editor.putBoolean("firstTime", false);
-//            editor.putString("username", name); //connect with login screen and get username and number
-//            editor.putString("userToken", userToken); //TODO: connect with login screen to get first time token (what if no network?)
-//            editor.putString("userNumber", number); //TODO: put correct number
             editor.apply(); //important: editor.apply will do in background (so gui freeze)
-
             System.out.println("flag 1");
             Intent verify = new Intent(this, FirebasePhoneVerify.class);
             startActivity(verify);
@@ -60,9 +56,6 @@ public class HomeScreen extends AppCompatActivity {
         else
         {
             Map<String, ?> kvset = preferencesFile.getAll();
-            name = new String((String)(kvset.get("userName")));   // making a new string as original is to be considered immutable
-            number = new String((String)(kvset.get("userID")));
-            userToken = new String((String) (kvset.get("firebaseToken")));
             System.out.println("flag 2");
 
         }
@@ -73,7 +66,7 @@ public class HomeScreen extends AppCompatActivity {
         User.setUser(user); // the user of this application
 
 
-        Globals globals = (Globals) getApplication();
+        final Globals globals = (Globals) getApplication();
 
         timeAlarms = new ArrayList<>(globals.timeAlarms);
         locationAlarms = new ArrayList<>(globals.locationAlarms);
@@ -150,10 +143,44 @@ public class HomeScreen extends AppCompatActivity {
                     return;
                 }
 
-                timeAlarms.remove(position);
+                AlarmDisplayable alarmDisplayable = alarmDisplayables.get(position);
+                alarmDisplayables.remove(position);
+
+
+
+                System.out.println("flag 3");
+
+                if(alarmDisplayable.getClass() == TimeAlarm.class)
+                {
+                    if(MyAlarmManager.removeTimeAlarmFromID(globals, alarmDisplayable.getAlarmID()))
+                    {
+                        /* if removal matched a valid id in time alarms (global time alarms) */
+                        timeAlarms.clear(); //match the global time alarms
+                        timeAlarms.addAll(globals.timeAlarms);  //match the global time alarms
+                        //todo: call server too
+                    }
+
+                }
+
+                else if(alarmDisplayable.getClass() == LocationAlarm.class)
+                {
+                    if(MyAlarmManager.removeLocationAlarmFromID(globals, alarmDisplayable.getAlarmID()))
+                    {
+                        locationAlarms.clear();
+                        locationAlarms.addAll(globals.locationAlarms);
+                        //todo: call server too
+                    }
+                }
+
+                alarmDisplayables.clear();
+                alarmDisplayables.addAll(timeAlarms);
+                alarmDisplayables.addAll(locationAlarms);
+
                 listView.setSelection(-1);
                 listView.setItemChecked(position, false);
-                customAdapter.notifyDataSetChanged();
+
+                ((ArrayAdapter)listView.getAdapter()).notifyDataSetChanged();
+
             }
         });
 

@@ -14,6 +14,7 @@ import com.google.android.gms.location.GeofencingClient;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
@@ -132,6 +133,63 @@ public class MyAlarmManager {
         return true;
     }
 
+    // remove from arraylist and database
+    public static boolean removeTimeAlarmFromID(final Globals globals, final int alarmID)
+    {
+        ArrayList<TimeAlarm> timeAlarms = globals.timeAlarms;
+        boolean removedFlag = false;
+
+        for(int i = 0; i < timeAlarms.size(); i++)
+        {
+            if(alarmID == timeAlarms.get(i).getAlarmID())
+            {
+                timeAlarms.remove(i);
+                removedFlag = true;
+                break;
+            }
+        }
+
+        if(removedFlag)
+        {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    globals.db.timeAlarmDAO().deleteAlarmFromID(alarmID);
+                }
+            }).start();
+        }
+
+        return removedFlag;
+
+    }
+
+    //remove from data structure and database
+    public static boolean removeLocationAlarmFromID(final Globals globals, final int alarmID)
+    {
+        ArrayList<LocationAlarm> locationAlarms = globals.locationAlarms;
+        boolean removedFlag = false;
+
+        for (int i = 0; i < locationAlarms.size(); i++) {
+            if(alarmID == locationAlarms.get(i).getAlarmID())
+            {
+                locationAlarms.remove(i);
+                removedFlag = true;
+                break;
+            }
+        }
+
+        if(removedFlag)
+        {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    globals.db.locationAlarmDAO().deleteLocationAlarmFromID(alarmID);
+                }
+            }).start();
+        }
+
+        return removedFlag;
+    }
 
 
 }

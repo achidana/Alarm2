@@ -247,6 +247,9 @@ public class FirebasePhoneVerify extends Activity{
         editor.putString("firebaseToken", globals.firebaseToken);
         editor.apply();
 
+
+        //todo: store results in globals, or change usage from globals to sharedpreferences in groupalarm
+
         Log.d("MainActivity", "BEFORE THREAD");
         Thread thread = new Thread(new Runnable() {
 

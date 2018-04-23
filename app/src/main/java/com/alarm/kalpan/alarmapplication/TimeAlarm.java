@@ -1,9 +1,11 @@
 package com.alarm.kalpan.alarmapplication;
 
+import android.app.Activity;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.widget.ArrayAdapter;
 
@@ -298,5 +300,10 @@ public class TimeAlarm implements AlarmDisplayable {
     public String getShortDetail()
     {
         return getTime();
+    }
+
+    public void startActivity(Context context, Intent intent)
+    {
+        context.startActivity(intent);
     }
 }

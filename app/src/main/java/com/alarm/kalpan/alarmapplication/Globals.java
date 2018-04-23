@@ -25,8 +25,8 @@ public class Globals extends Application
     public Map<String, ArrayList<User>> userList = new HashMap<>();
     public Map<String, String> timeList = new HashMap<>();
 
-    public String userName; //Input username during verification
-    public String userID;   //phone number
+    public String userName = "developer"; //Input username during verification
+    public String userID = "developerID";   //phone number
     public String firebaseToken;    //id
     public String eID;
 

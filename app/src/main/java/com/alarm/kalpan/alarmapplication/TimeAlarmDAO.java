@@ -30,4 +30,7 @@ public abstract class TimeAlarmDAO {
     @Query("SELECT * FROM TimeAlarm WHERE alarmID = :id")
     public abstract TimeAlarm getAlarm(int id);
 
+    @Query("DELETE FROM timealarm WHERE alarmID = :alarmID")
+    public abstract void deleteAlarmFromID(int alarmID);
+
 }
