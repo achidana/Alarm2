@@ -119,7 +119,7 @@ public class TimeAlarm {
             ampm = "PM";
         }
         this.isOn = Boolean.parseBoolean(map.get("isOn"));
-        this.ringtoneUri = map.get("ringtoneURI");
+        this.ringtoneUri = map.get("ringtoneUri");
         this.esID = map.get("esID");
         this.gAdmin = map.get("gAdmin");
         alarmID = Integer.parseInt(map.get("alarmID"));

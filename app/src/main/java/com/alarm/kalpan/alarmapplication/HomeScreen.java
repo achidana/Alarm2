@@ -47,13 +47,14 @@ public class HomeScreen extends AppCompatActivity {
             SharedPreferences.Editor editor = preferencesFile.edit();
 
             editor.putBoolean("firstTime", false);
-            editor.putString("username", name); //connect with login screen and get username and number
-            editor.putString("userToken", userToken); //TODO: connect with login screen to get first time token (what if no network?)
-            editor.putString("userNumber", number); //TODO: put correct number
+            //editor.putString("username", name); //connect with login screen and get username and number
+            //editor.putString("userToken", userToken); //TODO: connect with login screen to get first time token (what if no network?)
+            //editor.putString("userNumber", number); //TODO: put correct number
             editor.apply(); //important: editor.apply will do in background (so gui freeze)
 
             System.out.println("flag 1");
             Intent verify = new Intent(this, FirebasePhoneVerify.class);
+            startActivity(verify);
             // TODO: in connect with the login screen: load the variables name, user and userToken
         }
 
@@ -61,9 +62,9 @@ public class HomeScreen extends AppCompatActivity {
         else
         {
             Map<String, ?> kvset = preferencesFile.getAll();
-            name = new String((String)(kvset.get("username")));   // making a new string as original is to be considered immutable
-            number = new String((String)(kvset.get("userNumber")));
-            userToken = new String((String) (kvset.get("userToken")));
+            name = new String((String)(kvset.get("userName")));   // making a new string as original is to be considered immutable
+            number = new String((String)(kvset.get("userID")));
+            userToken = new String((String) (kvset.get("firebaseToken")));
             System.out.println("flag 2");
 
         }

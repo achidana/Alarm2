@@ -151,6 +151,12 @@ public class GroupAlarm extends Activity{
         Intent intent = new Intent(this, Add_alarm.class);
         intent.putExtra("GroupAlarm", "GroupAlarm");
         intent.putExtra("defaultName", groupName);
+        Globals globals = (Globals) getApplication();
+        for (int i = 0; i < globals.timeAlarms.size(); i++) {
+            if (globals.timeAlarms.get(i).getName().equals(groupName)) {
+                intent.putExtra("edit_flag", true);
+            }
+        }
         System.out.println("flag " + groupName);
         startActivityForResult(intent, REQUEST_GROUP_ALARM);
     }
