@@ -40,10 +40,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Log.d(TAG, "JSON: " + remoteMessage.getData().toString());
             Log.d(TAG, "members: " + remoteMessage.getData().get("members"));
             //Alarm_object alarm = gson.fromJson(remoteMessage.getData().toString(), Alarm_object.class);
-            TimeAlarm alarm = new TimeAlarm(remoteMessage.getData());
+            final TimeAlarm alarm = new TimeAlarm(remoteMessage.getData());
             if (title.equals("NEW")) {
                 alarmList.add(alarm);
                 MyAlarmManager.myCreateTimeAlarm(alarm, getApplicationContext());
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ApplicationDatabase db = ((Globals)getApplication()).db;
+                        db.timeAlarmDAO().insertAlarms(alarm);
+                    }
+                }).start();
             } else if (title.equals("UPDATE")){
                 boolean hasAlarm = false;
                 for (int i = 0; i < alarmList.size(); i++) {

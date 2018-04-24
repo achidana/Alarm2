@@ -39,6 +39,10 @@ public class FailHandler implements Runnable {
             text = text.replace(" ", "%20");
             for(String phoneNumber : phoneNumbers)
             {
+                phoneNumber = phoneNumber.replace("-", "");
+                phoneNumber = phoneNumber.replace(" ", "");
+                phoneNumber = phoneNumber.replace("(", "");
+                phoneNumber = phoneNumber.replace(")", "");
                 if(myAlarm.getIsText())
                 {
                     URL url;
