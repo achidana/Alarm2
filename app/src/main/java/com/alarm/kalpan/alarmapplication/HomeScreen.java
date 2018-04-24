@@ -1,9 +1,9 @@
 package com.alarm.kalpan.alarmapplication;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -25,9 +25,12 @@ public class HomeScreen extends AppCompatActivity {
     Button addButton;
     Button deleteButton;
     ArrayList<AlarmDisplayable> alarmDisplayables;
+    private final static int MY_PERMISSION_FINE = 101;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
