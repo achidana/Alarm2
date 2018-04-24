@@ -248,24 +248,6 @@ public class HomeScreen extends AppCompatActivity {
     }
 
 
-    public void updateDatabase()
-    {
-        try{Thread.sleep(5000);} catch(InterruptedException e){};   // dummy time absorption for mimicking updation of database
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getApplicationContext(), "saved", Toast.LENGTH_SHORT).show();
-            }
-        });
-        return;
-    }
-
-    public void loadFromDataBase()
-    {
-        TimeAlarm[] timeAlarmArr = timeAlarmDAO.loadTimeAlarms();
-        System.out.println("Flag 3: Size = " + timeAlarmArr.length);
-
-    }
 
     public void setPos(int i) {
         ((CustomAdapter) listView.getAdapter()).setTest(i);
