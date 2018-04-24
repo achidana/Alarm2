@@ -1,3 +1,4 @@
 vcs.xml merge=ours
 workspace.xml merge=ours
+modules.xml merge=ours
 

@@ -44,13 +44,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             if (title.equals("NEW")) {
                 alarmList.add(alarm);
                 MyAlarmManager.myCreateTimeAlarm(alarm, getApplicationContext());
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ApplicationDatabase db = ((Globals)getApplication()).db;
-                        db.timeAlarmDAO().insertAlarms(alarm);
-                    }
-                }).start();
+
+                //update asynchronously to database
+                MyAlarmManager.insertTimeAlarmToDatabase(getApplicationContext(), alarm);
             } else if (title.equals("UPDATE")){
                 boolean hasAlarm = false;
                 for (int i = 0; i < alarmList.size(); i++) {
@@ -67,7 +63,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 }
             } else if (title.equals("DELETE")) {
                 for (int i = 0; i < alarmList.size(); i++) {
-                    Log.d(TAG, "name: " + alarmList.get(i).getName());
+
+                    //if admin and alarm name matches, then do the stuff
                     if (alarmList.get(i).getName().equals(alarm.getName()) && !alarmList.get(i).getGAdmin().equals("")) {
                         TimeAlarm alarm1 = alarmList.get(i);
 
@@ -76,6 +73,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                             MyAlarmManager.myCancelTimeAlarm(alarm1, getApplicationContext());
                         }
                         alarmList.remove(i);
+
+                        //remove the alarm from the database, asynchronously
+                        MyAlarmManager.deleteTimeAlarmFromDatabase(getApplicationContext(), alarm1);
                     }
                 }
 

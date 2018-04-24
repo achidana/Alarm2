@@ -191,5 +191,47 @@ public class MyAlarmManager {
         return removedFlag;
     }
 
+    public static boolean updateTimeAlarmToDatabase(final Context context, final TimeAlarm timeAlarm)
+    {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ApplicationDatabase db = ((Globals) context.getApplicationContext()).db;
+                TimeAlarmDAO timeAlarmDAO = db.timeAlarmDAO();
+                timeAlarmDAO.updateAlarms(timeAlarm);
+            }
+        }).start();
+
+        //todo: manage return type based on succes, currently returning true for all database query functions
+        return true;
+    }
+
+    public static boolean deleteTimeAlarmFromDatabase(final Context context, final  TimeAlarm timeAlarm)
+    {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ApplicationDatabase db = ((Globals) context.getApplicationContext()).db;
+                TimeAlarmDAO timeAlarmDAO = db.timeAlarmDAO();
+                timeAlarmDAO.deleteAlarms(timeAlarm);
+            }
+        }).start();
+
+        return true;
+    }
+
+    public static boolean insertTimeAlarmToDatabase(final Context context, final TimeAlarm timeAlarm)
+    {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ApplicationDatabase db = ((Globals) context.getApplicationContext()).db;
+                TimeAlarmDAO timeAlarmDAO = db.timeAlarmDAO();
+                timeAlarmDAO.insertAlarms(timeAlarm);
+            }
+        }).start();
+
+        return true;
+    }
 
 }
