@@ -35,6 +35,7 @@ public class FailHandler implements Runnable {
         {
             phoneNumbers = myAlarm.getNumbersToNotify();
             text = myAlarm.getTextMessage();
+            System.out.printf("TAG " + myAlarm.getTextMessage());
             text = text.replace("?", "%3f");
             text = text.replace(" ", "%20");
             for(String phoneNumber : phoneNumbers)

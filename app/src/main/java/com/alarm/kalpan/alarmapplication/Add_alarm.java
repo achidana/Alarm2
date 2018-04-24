@@ -241,6 +241,7 @@ public class Add_alarm extends AppCompatActivity {
                         if(timeAlarm.getIsCall())
                         {
                             //add file path of voice message
+                            timeAlarm.setTextMessage(textView.getText().toString());
                             timeAlarm.setNumbersToNotify(phoneNumbers);
                         }
 
