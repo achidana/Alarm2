@@ -10,11 +10,7 @@
     <option name="TOOL_WINDOW_REGEXP_FILTER" value="false" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4bf871be-aca7-4cc5-8d5e-aba7924af7c4" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/alarm/kalpan/alarmapplication/Add_alarm.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/alarm/kalpan/alarmapplication/Add_alarm.java" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/alarm/kalpan/alarmapplication/MyAlarmManager.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/alarm/kalpan/alarmapplication/MyAlarmManager.java" />
-    </list>
+    <list default="true" id="4bf871be-aca7-4cc5-8d5e-aba7924af7c4" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/.gradle/" />
     <ignored path="$PROJECT_DIR$/build/classes/" />
     <ignored path="$PROJECT_DIR$/app/build/intermediates/assets/" />
@@ -79,11 +75,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Add_alarm.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Add_alarm.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/alarm/kalpan/alarmapplication/Add_alarm.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2059">
+            <state relative-caret-position="5730">
               <caret line="427" column="5" lean-forward="false" selection-start-line="427" selection-start-column="5" selection-end-line="427" selection-end-column="5" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MyFirebaseMessagingService.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/alarm/kalpan/alarmapplication/MyFirebaseMessagingService.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="312">
+              <caret line="64" column="44" lean-forward="true" selection-start-line="64" selection-start-column="44" selection-end-line="64" selection-end-column="44" />
               <folding />
             </state>
           </provider>
@@ -2234,10 +2240,10 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/alarm/kalpan/alarmapplication/FirebasePhoneVerify.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/alarm/kalpan/alarmapplication/GroupAlarm.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/alarm/kalpan/alarmapplication/FailHandler.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/alarm/kalpan/alarmapplication/MyFirebaseMessagingService.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/alarm/kalpan/alarmapplication/HomeScreen.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/alarm/kalpan/alarmapplication/MyAlarmManager.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/alarm/kalpan/alarmapplication/Add_alarm.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/alarm/kalpan/alarmapplication/MyFirebaseMessagingService.java" />
       </list>
     </option>
   </component>
@@ -2299,7 +2305,7 @@
     <property name="android.profiler.active" value="true" />
     <property name="SearchEverywhereHistoryKey" value="toString&#9;PSI&#9;JAVA://com.alarm.kalpan.alarmapplication.User#toString&#10;add_alarm_action&#9;PSI&#9;JAVA://com.alarm.kalpan.alarmapplication.R.id#add_alarm_action" />
     <property name="oudtdated.runtime.suppressed.plugin.version" value="1.1.51-release-Studio3.0-1" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1524596144061" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1524596651734" />
     <property name="sync.plugin.last.upgrade.timestamp" value="1524589519564" />
     <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
@@ -3183,14 +3189,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/alarm/kalpan/alarmapplication/MyFirebaseMessagingService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="390">
-          <caret line="42" column="33" lean-forward="false" selection-start-line="42" selection-start-column="28" selection-end-line="42" selection-end-column="33" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/alarm/kalpan/alarmapplication/TimeAlarm.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="513">
@@ -3242,8 +3240,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/alarm/kalpan/alarmapplication/Add_alarm.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2059">
+        <state relative-caret-position="5730">
           <caret line="427" column="5" lean-forward="false" selection-start-line="427" selection-start-column="5" selection-end-line="427" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/alarm/kalpan/alarmapplication/MyFirebaseMessagingService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="312">
+          <caret line="64" column="44" lean-forward="true" selection-start-line="64" selection-start-column="44" selection-end-line="64" selection-end-column="44" />
           <folding />
         </state>
       </provider>
