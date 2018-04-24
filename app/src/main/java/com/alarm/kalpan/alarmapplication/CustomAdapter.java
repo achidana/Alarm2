@@ -2,6 +2,7 @@ package com.alarm.kalpan.alarmapplication;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ class CustomAdapter extends ArrayAdapter<AlarmDisplayable>  {
     AlarmDisplayable a;
     public Context context;
     private AdapterView.OnItemClickListener listCallback;
+    private int selected;
 
     private int selectedCellBackroundColorResourceID;
 
@@ -35,6 +37,7 @@ class CustomAdapter extends ArrayAdapter<AlarmDisplayable>  {
         this.context = context;
         this.listCallback = listCallback;
         this.selectedCellBackroundColorResourceID = drawableResourceID;
+        selected = -1;
     }
 
 
@@ -61,11 +64,14 @@ class CustomAdapter extends ArrayAdapter<AlarmDisplayable>  {
             homescrn_toggle.setChecked(true);
         }
 
-
-        if(((ListView) parent).getSelectedItemPosition() == position)
+        //Shared prefs?
+        System.out.println("Get: " + getSelected());
+        System.out.println("POS: " + position);
+        if(getSelected() == position)
         {
             System.out.println("Kalpan2");
-            customView.setBackgroundResource(selectedCellBackroundColorResourceID);
+            //customView.setBackgroundResource(selectedCellBackroundColorResourceID);
+            customView.setBackgroundResource(android.R.color.darker_gray);
         }
         homescrn_toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -97,6 +103,15 @@ class CustomAdapter extends ArrayAdapter<AlarmDisplayable>  {
             }
         });
         return customView;
+    }
+
+    public void setTest(int i) {
+        selected = i;
+        System.out.println("here");
+    }
+
+    public int getSelected() {
+        return selected;
     }
 }
 

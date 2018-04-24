@@ -25,7 +25,7 @@
 
         <EditText
             android:id="@+id/name"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginLeft="8dp"
@@ -34,6 +34,7 @@
             android:hint="Name"
             android:inputType="text"
             />
+
 
         <Switch
             android:id="@+id/onOffSwitch"
@@ -45,6 +46,34 @@
             android:text="Toggle on/off"
             />
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+        <Button
+            android:id="@+id/chooseContactButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginBottom="5dp"
+            android:layout_gravity="center"
+            android:text="Select Contact"
+            />
+
+        <Button
+            android:id="@+id/choosePremadeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginBottom="5dp"
+            android:layout_gravity="center"
+            android:text="Select Premade Message"
+            />
+        </LinearLayout>
+
+
         <Switch
             android:id="@+id/text_switch"
             android:layout_width="match_parent"
@@ -52,9 +81,18 @@
             android:layout_marginTop="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginBottom="5dp"
-            android:text="Text"
+            android:text="Send Text To Contact"
             />
 
+        <Switch
+            android:id="@+id/Call_switch"
+            android:layout_width="match_parent"
+            android:layout_height="27dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginBottom="5dp"
+            android:text="Call Contact"
+            />
 
         <EditText
             android:id="@+id/textMessageBox"
@@ -66,16 +104,6 @@
             android:layout_marginBottom="5dp"
             android:hint="Enter a message here"
             android:inputType="textPersonName"
-            />
-
-        <Switch
-            android:id="@+id/Call_switch"
-            android:layout_width="match_parent"
-            android:layout_height="27dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginBottom="5dp"
-            android:text="Call"
             />
 
         <Button

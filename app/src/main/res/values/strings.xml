@@ -37,6 +37,9 @@
     <!-- audio message uses same text_hint -->
 
 
+    <!-- String for position for selection -->
+    <string name="position">-1</string>
+
 
     <string name="title_activity_home_screen">HomeScreen</string>
 

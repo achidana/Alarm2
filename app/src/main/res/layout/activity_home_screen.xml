@@ -30,6 +30,7 @@
         app:layout_constraintBottom_toTopOf="@id/addButton"
         app:layout_constraintHeight_default="spread"
         android:choiceMode="singleChoice"
+        android:listSelector="@color/colorPrimaryDark"
         android:drawSelectorOnTop="false"
         />
 
