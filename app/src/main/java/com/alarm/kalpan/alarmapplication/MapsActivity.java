@@ -253,6 +253,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     //add the pin point
                     mMap.addMarker(new MarkerOptions().position(latLng).title(addressList.get(0).getLocality() + "," + addressList.get(0).getCountryName()));
+                    circleOptions = new CircleOptions()
+                            .center(new LatLng(latLng.latitude, latLng.longitude))
+                            .radius(radius)
+                            .fillColor(0x30ff0000);
+                    mMap.addCircle(circleOptions);
+
                     moveCameratoLocation(latLng.latitude, latLng.longitude, 15);
 
 
