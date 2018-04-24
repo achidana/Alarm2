@@ -233,6 +233,7 @@ public class Add_alarm extends AppCompatActivity {
                         timeAlarm.setName(nameView.getText().toString());
                         timeAlarm.setIsOn(true);
                         timeAlarm.setRingtoneUri(ringtoneUri.toString());
+                        timeAlarm.setEsID("");
 
                         Log.d("TAG", textView.getText().toString());
                         //TODO: have option of different set of numbers to be notified for text and call
