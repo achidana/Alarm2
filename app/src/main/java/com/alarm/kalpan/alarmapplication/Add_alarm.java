@@ -245,17 +245,7 @@ public class Add_alarm extends AppCompatActivity {
                         }
 
                         timeAlarms.add(timeAlarm);
-                        final TimeAlarm timeAlarm1 = timeAlarm;
-                        // inserting alarm over to the database
-                        Thread insertToDatabaseThread = new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                addToDatabase(timeAlarm1);
-                            }
-                        });
-
-                        // starting that thread for database things (TODO: have better design  in terms of placement of this thread start)
-                        insertToDatabaseThread.start();
+                        MyAlarmManager.insertTimeAlarmToDatabase(getApplicationContext(), timeAlarm);
                         MyAlarmManager.myCreateTimeAlarm(timeAlarm, getApplicationContext());    //second argument to be given as it cannot be obtained directly by the MyAlarmManager class
                 }
                 else
@@ -275,7 +265,6 @@ public class Add_alarm extends AppCompatActivity {
                         alarm.setName(nameView.getText().toString());
 
                         alarm.setRingtoneUri(ringtoneUri.toString());
-
                         MyAlarmManager.myCreateTimeAlarm(alarm, getApplicationContext());
                     }
 
@@ -296,15 +285,7 @@ public class Add_alarm extends AppCompatActivity {
                     }
 
                     //updating the alarm in the database
-                    //TODO: have better design for placement of this thread
-                    Thread updateDatabaseThread = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            updateDatabase(alarm);
-                        }
-                    });
-
-                    updateDatabaseThread.start();
+                    MyAlarmManager.updateTimeAlarmToDatabase(getApplicationContext(), alarm);
                 }
 
 
@@ -444,15 +425,5 @@ public class Add_alarm extends AppCompatActivity {
         startIntent.putExtra("AlarmName", displayTime);
         setResult(RESULT_OK, startIntent);
         finish();
-    }
-
-    public void addToDatabase(TimeAlarm... timeAlarms)
-    {
-        db.timeAlarmDAO().insertAlarms(timeAlarms);
-    }
-
-    public void updateDatabase(TimeAlarm... timeAlarms)
-    {
-        db.timeAlarmDAO().updateAlarms(timeAlarms);
     }
 }
