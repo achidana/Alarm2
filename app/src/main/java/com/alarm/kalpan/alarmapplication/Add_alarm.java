@@ -109,6 +109,10 @@ public class Add_alarm extends AppCompatActivity {
             timePicker.setMinute(alarm.getMin());
             textSwitch.setChecked(alarm.getIsText());
             callSwitch.setChecked(alarm.getIsCall());
+            textView.setText(alarm.getTextMessage());
+            if (callSwitch.isChecked() || textSwitch.isChecked()) {
+                textView.setEnabled(true);
+            }
             ringtoneUri = Uri.parse(alarm.getRingtoneUri());
             nameView.setText(alarm.getName());
         }
@@ -229,8 +233,9 @@ public class Add_alarm extends AppCompatActivity {
                         timeAlarm.setName(nameView.getText().toString());
                         timeAlarm.setIsOn(true);
                         timeAlarm.setRingtoneUri(ringtoneUri.toString());
+                        timeAlarm.setEsID("");
 
-
+                        Log.d("TAG", textView.getText().toString());
                         //TODO: have option of different set of numbers to be notified for text and call
                         if(timeAlarm.getIsText())
                         {
@@ -241,6 +246,7 @@ public class Add_alarm extends AppCompatActivity {
                         if(timeAlarm.getIsCall())
                         {
                             //add file path of voice message
+                            timeAlarm.setTextMessage(textView.getText().toString());
                             timeAlarm.setNumbersToNotify(phoneNumbers);
                         }
 
@@ -258,7 +264,7 @@ public class Add_alarm extends AppCompatActivity {
 
                         alarm.setIsText(textSwitch.isChecked());
                         alarm.setTextMessage(textView.getText().toString());
-
+                        Log.d("TAG", "Editing alarm text " + textView.getText().toString());
                         //TODO: store the file path of the voice message ??
                         alarm.setIsCall(callSwitch.isChecked());
 
@@ -275,6 +281,7 @@ public class Add_alarm extends AppCompatActivity {
 
                         alarm.setIsText(textSwitch.isChecked());
                         alarm.setTextMessage(textView.getText().toString());
+                        Log.d("TAG", "Editing alarm text (alarm off?)" + textView.getText().toString());
 
                         //TODO: store the file path of the voice message ??
                         alarm.setIsCall(callSwitch.isChecked());
