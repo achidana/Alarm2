@@ -48,4 +48,4 @@ captures/
 
 
 #remove later, but currently not required
-./idea/workspace.xml
+.idea/workspace.xml
