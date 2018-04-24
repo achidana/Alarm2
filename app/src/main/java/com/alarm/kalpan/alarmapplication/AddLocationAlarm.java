@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,6 +17,8 @@ import java.util.ArrayList;
 public class AddLocationAlarm extends AppCompatActivity {
 
     LocationAlarm locationAlarm;
+    private final static int MY_PERMISSION_FINE = 101;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +42,7 @@ public class AddLocationAlarm extends AppCompatActivity {
         latLongTextView = findViewById(R.id.lat_long_display);
         onOffSwitch = findViewById(R.id.onOffSwitch2);
         selectLocation = findViewById(R.id.selectLocationButton);
+
 
         if(getIntent().getBooleanExtra("edit_flag", false))
         {
