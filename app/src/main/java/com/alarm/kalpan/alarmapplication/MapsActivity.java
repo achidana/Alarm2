@@ -3,7 +3,6 @@ package com.alarm.kalpan.alarmapplication;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -23,9 +22,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.Geofence;
-import com.google.android.gms.location.GeofencingClient;
-import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
@@ -41,7 +37,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -242,7 +237,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         placeAutoComplete.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-
+                mMap.clear();
 
                 LatLng latLng = place.getLatLng();
                 Geocoder geocoder = new Geocoder(getApplicationContext());
@@ -253,6 +248,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     //add the pin point
                     mMap.addMarker(new MarkerOptions().position(latLng).title(addressList.get(0).getLocality() + "," + addressList.get(0).getCountryName()));
+                    circleOptions = new CircleOptions()
+                            .center(new LatLng(latLng.latitude, latLng.longitude))
+                            .radius(radius)
+                            .fillColor(0x30ff0000);
+                    mMap.addCircle(circleOptions);
+
                     moveCameratoLocation(latLng.latitude, latLng.longitude, 15);
 
 
