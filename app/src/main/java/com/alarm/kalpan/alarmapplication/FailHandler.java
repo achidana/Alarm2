@@ -15,6 +15,7 @@ public class FailHandler implements Runnable {
     {
         this.myAlarm = myAlarm;
         this.timeInSeconds = timeInSeconds;
+        System.out.println("TAG in fail handler");
     }
     @Override
     public void run() {
@@ -31,11 +32,12 @@ public class FailHandler implements Runnable {
         String text;
         ArrayList<String> phoneNumbers;
 
+        System.out.println("TAG " + myAlarm.getIsCall() + " " + myAlarm.getIsText());
         if(myAlarm.getIsCall() || myAlarm.getIsText())
         {
             phoneNumbers = myAlarm.getNumbersToNotify();
             text = myAlarm.getTextMessage();
-            System.out.printf("TAG " + myAlarm.getTextMessage());
+            System.out.println("TAG " + myAlarm.getTextMessage());
             text = text.replace("?", "%3f");
             text = text.replace(" ", "%20");
             for(String phoneNumber : phoneNumbers)
