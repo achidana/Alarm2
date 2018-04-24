@@ -49,3 +49,5 @@ captures/
 
 #remove later, but currently not required
 ./idea/workspace.xml
+
+local.properties
